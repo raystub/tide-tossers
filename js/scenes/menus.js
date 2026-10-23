@@ -59,7 +59,7 @@ TT.TitleScene = new Phaser.Class({
     TT.menuBackdrop(this);
     this.add.text(W / 2, 190, 'Tide Tossers', { fontFamily: TT.UI.font, fontSize: TT.UI.fs(84), color: '#ffffff', stroke: '#04202c', strokeThickness: 6 }).setOrigin(0.5);
     this.add.text(W / 2, 262, 'Free the trapped. Restore the reef.', { fontFamily: TT.UI.font, fontSize: TT.UI.fs(24), color: '#cfeff5', fontStyle: 'italic' }).setOrigin(0.5);
-    this.add.text(W / 2, 300, 'PROTOTYPE v0.3', { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(12), color: '#9fd8e0', letterSpacing: 3 }).setOrigin(0.5);
+    this.add.text(W / 2, 300, 'PROTOTYPE v0.4', { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(12), color: '#9fd8e0', letterSpacing: 3 }).setOrigin(0.5);
     TT.UI.button(this, W / 2, 400, 240, 58, 'Play', function () { self.scene.start('LevelSelect'); }, { size: 22, fill: 0x14705e });
     TT.UI.button(this, W / 2, 472, 240, 48, 'Field guide', function () { self.scene.start('FieldGuide'); }, { size: 17 });
     if (TT.MOBILE && !TT.INSTALLED && this.scale.fullscreen.available) {

@@ -42,10 +42,10 @@ TT.CFG = {
   SEDIMENT_MIN_SPEED: 5,     // heavy body hitting the floor faster than this raises silt
 
   // ---- Steering ----
-  STEER_BASE_STAMINA: 1.5,   // seconds of steering for a Normal rescuer on Current
-  STEER_STAT: { low: 0.5, normal: 1.0, high: 1.5, double: 2.0, glide: 1.0 },
-  STEER_TURN_WATER: 150,     // max turn rate underwater, degrees/second
-  STEER_TURN_AIR: 35,        // max turn rate in the air, degrees/second
+  STEER_BASE_STAMINA: 2.2,   // seconds of steering for a Normal rescuer on Current
+  STEER_STAT: { low: 0.6, normal: 1.0, high: 1.5, double: 2.0, glide: 1.0 },
+  STEER_TURN_WATER: 220,     // max turn rate underwater, degrees/second
+  STEER_TURN_AIR: 55,        // max turn rate in the air, degrees/second
   STEER_THRUST_WATER: 0.45,  // px/step added per step while steering underwater (swimming)
   STEER_MAX_SWIM_SPEED: 11,  // swimming thrust stops adding speed above this
   TAP_MAX_MS: 180,          // desktop: a press shorter than this (ms) is a tap = ability
@@ -129,7 +129,7 @@ TT.CFG = {
   // ---- Difficulty ----
   DIFFICULTY: {
     splash:  { name: 'Splash',  guide: 1.0,  extraRescuers: 2,  hp: 0.75, stamina: 1.5,  mult: 1.0 },
-    current: { name: 'Current', guide: 0.5,  extraRescuers: 0,  hp: 1.0,  stamina: 1.0,  mult: 1.25 },
+    current: { name: 'Current', guide: 0.65, extraRescuers: 0,  hp: 1.0,  stamina: 1.0,  mult: 1.25 },
     riptide: { name: 'Riptide', guide: 0.15, extraRescuers: -1, hp: 1.25, stamina: 0.75, mult: 1.5 },
     abyss:   { name: 'Abyss',   guide: 0,    extraRescuers: -1, hp: 1.5,  stamina: 0.5,  mult: 2.0 }
   },
@@ -149,8 +149,15 @@ TT.CFG = {
   SLOWMO_SCALE: 0.4,         // physics speed while you steer (1 = normal); makes steering easier on small screens
   SLOWMO_EASE: 12,           // how fast time slows/speeds back up (higher = snappier)
   SLOWMO_VIGNETTE: 0.55,     // darkness of the screen edges during slow-motion
-  SWIPE_DEADZONE: 12,        // swipe steering: finger must move this far (game px) before it turns the rescuer
-  SWIPE_STICK_RADIUS: 60,    // size of the on-screen steering stick
+  SWIPE_DEADZONE: 7,         // swipe steering: thumb must move this far (screen px) before it turns the rescuer
+  SWIPE_STICK_RADIUS: 58,    // size of the on-screen steering stick (screen px, so it's thumb-sized on any phone)
+  STEER_INPUT_SMOOTH: 14,    // filters thumb jitter out of the stick direction (higher = more direct)
+  STEER_TURN_EASE: 7,        // rescuer eases toward the stick direction (higher = snappier)
+  STEER_MIN_PUSH_THRUST: 0.35, // a light push still swims at this share of full thrust
+  STEER_FADE_AT: 0.2,        // steering softens over the last 20% of stamina instead of cutting out
+  STEER_ASSIST_ANGLE: 22,    // steer-assist: aiming within this many degrees of a net/trap...
+  STEER_ASSIST_RANGE: 340,   // ...that is this close (px)...
+  STEER_ASSIST_STRENGTH: 0.55, // ...bends your heading this much of the way onto it (0 = off)
   AIM_ZONE: 0.5,             // aim from anywhere in the left half of the screen
   LONG_PRESS_MS: 450,        // hold this long on something to see what it is
   VIEW_MAX_WIDTH: 1600       // widest view on long phones (height stays 720)

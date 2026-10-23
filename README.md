@@ -1,4 +1,4 @@
-# Tide Tossers (phone prototype v0.3)
+# Tide Tossers (phone prototype v0.4)
 
 Launch real sea creatures, steer them underwater, and free trapped wildlife.
 

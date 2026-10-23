@@ -1,5 +1,5 @@
 // Tide Tossers offline cache. Version changes whenever any game file changes.
-var CACHE = 'tide-tossers-afda7a641d';
+var CACHE = 'tide-tossers-d15a923bec';
 var FILES = ['./'].concat(["assets/manifest.js", "css/style.css", "icons/apple-touch-icon.png", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "index.html", "js/art.js", "js/audio.js", "js/config.js", "js/entities.js", "js/guide.js", "js/levels.js", "js/main.js", "js/ocean.js", "js/save.js", "js/scenes/game.js", "js/scenes/menus.js", "js/scenes/ui.js", "js/steering.js", "js/tutorial.js", "js/water.js", "manifest.webmanifest", "vendor/phaser.min.js"]);
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(FILES); }).then(function () { return self.skipWaiting(); }));
