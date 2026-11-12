@@ -1,4 +1,4 @@
-// Tide Tossers v0.2 — Phaser game config.
+// Tide Tossers v0.5 — Phaser game config.
 window.TT = window.TT || {};
 
 window.addEventListener('load', function () {
@@ -9,12 +9,12 @@ window.addEventListener('load', function () {
     height: TT.CFG.HEIGHT,
     backgroundColor: '#05202c',
     scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
-    input: { activePointers: 2 },
+    input: { activePointers: 3 },
     physics: {
       default: 'matter',
       matter: {
         gravity: { y: TT.CFG.GRAVITY_Y },
-        runner: { isFixed: true, fps: 60 },
+        autoUpdate: false,          // GameScene steps the physics itself at a fixed rate
         positionIterations: 8, velocityIterations: 6,
         enableSleeping: false,
         debug: /[?&]debug=1/.test(location.search)

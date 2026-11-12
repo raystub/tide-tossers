@@ -1,4 +1,4 @@
-// Tide Tossers v0.2 — Boot, Title, LevelSelect and FieldGuide scenes.
+// Tide Tossers v0.5 — Boot, Title, LevelSelect and FieldGuide scenes.
 window.TT = window.TT || {};
 
 // A shared animated underwater backdrop for menus.
@@ -59,7 +59,7 @@ TT.TitleScene = new Phaser.Class({
     TT.menuBackdrop(this);
     this.add.text(W / 2, 190, 'Tide Tossers', { fontFamily: TT.UI.font, fontSize: TT.UI.fs(84), color: '#ffffff', stroke: '#04202c', strokeThickness: 6 }).setOrigin(0.5);
     this.add.text(W / 2, 262, 'Free the trapped. Restore the reef.', { fontFamily: TT.UI.font, fontSize: TT.UI.fs(24), color: '#cfeff5', fontStyle: 'italic' }).setOrigin(0.5);
-    this.add.text(W / 2, 300, 'PROTOTYPE v0.4', { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(12), color: '#9fd8e0', letterSpacing: 3 }).setOrigin(0.5);
+    this.add.text(W / 2, 300, 'PROTOTYPE ' + TT.VERSION, { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(12), color: '#9fd8e0', letterSpacing: 3 }).setOrigin(0.5);
     TT.UI.button(this, W / 2, 400, 240, 58, 'Play', function () { self.scene.start('LevelSelect'); }, { size: 22, fill: 0x14705e });
     TT.UI.button(this, W / 2, 472, 240, 48, 'Field guide', function () { self.scene.start('FieldGuide'); }, { size: 17 });
     if (TT.MOBILE && !TT.INSTALLED && this.scale.fullscreen.available) {
@@ -68,7 +68,7 @@ TT.TitleScene = new Phaser.Class({
       }, { size: 15 });
       this.scale.on('fullscreenfailed', function () {});
     }
-    this.add.text(W / 2, 680, 'Drag back to launch · hold and drag to steer · tap for the ability', { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(14), color: '#ffffff', stroke: '#04202c', strokeThickness: 4 }).setOrigin(0.5);
+    this.add.text(W / 2, 680, TT.MOBILE ? 'Left thumb swims · right thumb uses your ability' : 'Hold the mouse or use WASD to swim · Space for your ability', { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(14), color: '#ffffff', stroke: '#04202c', strokeThickness: 4 }).setOrigin(0.5);
     this.input.keyboard.once('keydown-ENTER', function () { self.scene.start('LevelSelect'); });
   }
 });
@@ -82,7 +82,7 @@ TT.LevelSelectScene = new Phaser.Class({
     this.add.text(W / 2, 46, 'Choose a rescue', { fontFamily: TT.UI.font, fontSize: TT.UI.fs(38), color: '#ffffff' }).setOrigin(0.5);
     // difficulty pills
     var diff = TT.Save.difficulty();
-    this.add.text(W / 2, 92, 'Difficulty', { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(13), color: '#9fd8e0' }).setOrigin(0.5);
+    this.add.text(W / 2, 92, 'Difficulty: ' + C.DIFFICULTY[diff].blurb, { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(13), color: '#9fd8e0' }).setOrigin(0.5);
     C.DIFFICULTY_ORDER.forEach(function (k, i) {
       var on = k === diff;
       TT.UI.button(self, W / 2 + (i - 1.5) * 130, 126, 118, 38, C.DIFFICULTY[k].name, function () { TT.Save.setDifficulty(k); self.scene.restart(); },
@@ -102,17 +102,15 @@ TT.LevelSelectScene = new Phaser.Class({
         var stars = '';
         for (var s = 0; s < 3; s++) stars += (res && s < res.stars) ? '★' : '☆';
         var t3 = self.add.text(0, 20, stars, { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(22), color: res ? '#f4d27a' : '#4f7480' }).setOrigin(0.5);
-        var t4 = self.add.text(0, 44, res ? 'Best reef health ' + res.health + '%' : (l.dark ? 'Dark cave' : l.tide ? 'Tides' : ''), { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(12), color: '#cfeff5' }).setOrigin(0.5);
+        var t4 = self.add.text(0, 44, res ? 'Best reef health ' + res.health + '%' : (l.dark ? 'Dark cave' : l.tide ? 'Tides' : (l.currents && l.currents.length) ? 'Currents' : ''), { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(12), color: '#cfeff5' }).setOrigin(0.5);
         tile.add([t1, t2, t3, t4]);
       });
     });
-    // control options
-    var mode = TT.Save.steerMode();
-    TT.UI.button(this, W / 2 - (TT.Haptics.available() ? 130 : 0), 590, 240, 46, 'Steering: ' + (mode === 'swipe' ? 'Swipe stick' : 'Point to swim'), function () {
-      TT.Save.setSteerMode(mode === 'swipe' ? 'point' : 'swipe'); self.scene.restart();
-    }, { size: 14 });
-    if (TT.Haptics.available()) {
-      TT.UI.button(this, W / 2 + 130, 590, 200, 46, 'Vibration: ' + (TT.Save.haptics() ? 'On' : 'Off'), function () {
+    // options
+    var oy = 590, hasVib = TT.Haptics.available();
+    TT.UI.button(this, W / 2 - (hasVib ? 120 : 0), oy, 220, 46, 'Sound: ' + (TT.Sfx.isMuted() ? 'Off' : 'On'), function () { TT.Sfx.unlock(); TT.Sfx.setMuted(!TT.Sfx.isMuted()); self.scene.restart(); }, { size: 14 });
+    if (hasVib) {
+      TT.UI.button(this, W / 2 + 120, oy, 220, 46, 'Vibration: ' + (TT.Save.haptics() ? 'On' : 'Off'), function () {
         TT.Save.setHaptics(!TT.Save.haptics()); if (TT.Save.haptics()) TT.Haptics.buzz(30); self.scene.restart();
       }, { size: 14 });
     }

@@ -117,7 +117,7 @@ TT.GameScene = new Phaser.Class({
 
   // ---------- per-frame ----------
   update: function (time, delta) {
-    var C = TT.CFG, real = Math.min(0.05, delta / 1000);
+    var C = TT.CFG, real = Math.min(0.05, delta / 1000 * (TT.DEBUG_SPEED || 1));   // DEBUG_SPEED: tests fast-forward
     if (this.paused) return;
     // hit-stop: a few frozen frames on big moments
     var dt = real;

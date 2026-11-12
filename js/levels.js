@@ -40,7 +40,7 @@ window.TT = window.TT || {};
       width: 2700, waterline: 200, start: { x: 170, y: 50 }, team: ['tang', 'flyingfish'], time: 120, exit: { x: 2560, y: 430 },
       statics: [
         { x: 700, y: 290, w: 46, h: 460, look: 'root' },
-        { x: 980, y: 330, w: 46, h: 540, look: 'root' },
+        { x: 980, y: 310, w: 46, h: 500, look: 'root' },
         { x: 840, y: 650, w: 200, h: 60, look: 'rock' },
         { x: 1760, y: 395, w: 130, h: 590, look: 'rock' }     // sandbar wall: top is 100 px above the water
       ],
