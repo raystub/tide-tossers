@@ -490,7 +490,7 @@ window.TT = window.TT || {};
       this.darkRT = scene.add.renderTexture(0, 0, view.w + 120, view.h + 120).setOrigin(0, 0).setDepth(18);
       this.stamp = scene.make.image({ key: 'light_brush', add: false });
       this.glows = (level.glowSpots || []).map(function (s) {
-        return scene.add.image(s.x, s.y, 'light_brush').setBlendMode(Phaser.BlendModes.ADD).setTint(0x4fe9ff).setAlpha(0.35).setScale(0.7).setDepth(18.6);
+        return scene.add.image(s.x, s.y, 'light_brush').setBlendMode(Phaser.BlendModes.ADD).setTint(0x4fe9ff).setAlpha(0.22).setScale(0.7).setDepth(18.6);
       });
     }
   };

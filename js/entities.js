@@ -93,6 +93,10 @@ TT.Entities = (function () {
     // body only covers the lower 70% so hits look right
     M().Body.scale(go.body, 0.92, 0.7);
     M().Body.setPosition(go.body, { x: d.x, y: d.y + d.h * 0.15 });
+    // a soft glow and the odd sparkle mark it as living coral, not background scenery
+    var glow = scene.add.image(d.x, d.y + 6, 'light_brush').setDepth(5.9).setBlendMode(Phaser.BlendModes.ADD).setTint(0xfff0a8).setAlpha(0.3).setDisplaySize(d.w * 1.7, d.h * 1.9);
+    scene.tweens.add({ targets: glow, alpha: 0.14, duration: 1400 + idx * 170, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    scene.time.addEvent({ delay: 900 + idx * 130, loop: true, callback: function () { if (scene.fx) scene.fx.sparkle(d.x + (Math.random() - 0.5) * d.w * 0.8, d.y - d.h * 0.2 + (Math.random() - 0.5) * d.h * 0.6); } });
     return tag(go, { kind: 'coral', lastHit: -9999, alive: true });
   }
 

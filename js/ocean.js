@@ -156,10 +156,19 @@ TT.Ocean.prototype.update = function (t, dt) {
     sw.x += sw.dir * sw.speed * dt * 60;
     if (sw.dir > 0 && sw.x > W + 120) sw.x = -120;
     if (sw.dir < 0 && sw.x < -120) sw.x = W + 120;
+    // the school shies away when the player swims close
+    var pp = this.scene.player ? this.scene.player.pos() : null;
+    if (pp) {
+      var ddx = sw.x - pp.x, ddy = sw.y - pp.y, dd = ddx * ddx + ddy * ddy;
+      if (dd < 190 * 190) { sw.fear = 1; sw.dir = ddx >= 0 ? 1 : -1; sw.y = Phaser.Math.Clamp(sw.y + (ddy >= 0 ? 1 : -1) * dt * 60, water.y + 60, TT.CFG.FLOOR_Y - 60); }
+    }
+    sw.fear = Math.max(0, (sw.fear || 0) - dt * 0.7);
+    sw.x += sw.dir * sw.fear * 4.5 * dt * 60;
     var yy = Math.max(water.y + 30, sw.y + Math.sin(t * 0.7 + i) * 10);
     for (var j = 0; j < sw.group.length; j++) {
       var g = sw.group[j];
-      g.s.setPosition(sw.x + g.ox + Math.sin(t * 1.3 + g.ph) * 6, yy + g.oy + Math.cos(t * 1.1 + g.ph) * 4);
+      g.s.setPosition(sw.x + g.ox * (1 + sw.fear * 0.8) + Math.sin(t * 1.3 + g.ph) * 6, yy + g.oy * (1 + sw.fear * 0.8) + Math.cos(t * 1.1 + g.ph) * 4);
+      g.s.setFlipX(sw.dir < 0); TT.Art.swimRate(g.s, 1 + sw.fear * 2);
     }
   }
 };

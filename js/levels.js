@@ -16,7 +16,7 @@ window.TT = window.TT || {};
   TT.LEVELS = [
     {
       id: '1-1', name: 'Tide Pool Tangle', world: 1, place: 'Florida Keys', background: 'keys',
-      width: 2800, waterline: 190, start: { x: 170, y: 40 }, team: ['tang'], time: 100, exit: { x: 2680, y: 420 },
+      width: 2800, waterline: 190, start: { x: 170, y: 40 }, team: ['tang'], time: 80, exit: { x: 2680, y: 420 },
       statics: [
         { x: 920, y: 615, w: 240, h: 130, look: 'rock' },
         { x: 1620, y: 640, w: 160, h: 80, look: 'rock' },
@@ -41,7 +41,7 @@ window.TT = window.TT || {};
     },
     {
       id: '1-2', name: 'Mangrove Maze', world: 1, place: 'Florida Keys', background: 'keys',
-      width: 3200, waterline: 200, start: { x: 170, y: 50 }, team: ['tang', 'flyingfish'], time: 130, exit: { x: 3080, y: 430 },
+      width: 3200, waterline: 200, start: { x: 170, y: 50 }, team: ['tang', 'flyingfish'], time: 110, exit: { x: 3080, y: 430 },
       statics: [
         { x: 700, y: 290, w: 46, h: 460, look: 'root' },
         { x: 980, y: 310, w: 46, h: 500, look: 'root' },
@@ -68,7 +68,7 @@ window.TT = window.TT || {};
     },
     {
       id: '1-3', name: 'Bottle Graveyard', world: 1, place: 'Florida Keys', background: 'keys',
-      width: 3000, waterline: 190, start: { x: 170, y: 40 }, team: ['pistolshrimp', 'tang'], time: 120, exit: { x: 2880, y: 420 },
+      width: 3000, waterline: 190, start: { x: 170, y: 40 }, team: ['pistolshrimp', 'tang'], time: 100, exit: { x: 2880, y: 420 },
       statics: [{ x: 700, y: 630, w: 200, h: 100, look: 'rock' }, { x: 1560, y: 610, w: 180, h: 140, look: 'rock' }],
       objects: [
         { k: 'glass', x: 1040, y: 650, w: 18, h: 60 }, { k: 'glass', x: 1066, y: 650, w: 18, h: 60 },
@@ -92,7 +92,7 @@ window.TT = window.TT || {};
     },
     {
       id: '1-4', name: 'Spines', world: 1, place: 'Florida Keys', background: 'keys',
-      width: 3000, waterline: 190, start: { x: 170, y: 40 }, team: ['puffer', 'tang'], time: 130, exit: { x: 2880, y: 420 },
+      width: 3000, waterline: 190, start: { x: 170, y: 40 }, team: ['puffer', 'tang'], time: 110, exit: { x: 2880, y: 420 },
       statics: [{ x: 820, y: 600, w: 180, h: 160, look: 'rock' }, { x: 1700, y: 260, w: 46, h: 420, look: 'root' }],
       objects: [
         { k: 'plastic', x: 1420, y: 660, w: 40, h: 40 }, { k: 'plastic', x: 600, y: 195, w: 56, h: 38 },
@@ -110,7 +110,7 @@ window.TT = window.TT || {};
     },
     {
       id: '1-5', name: 'Stone-Crab Traps', world: 1, place: 'Florida Keys', background: 'keys',
-      width: 3300, waterline: 190, start: { x: 170, y: 40 }, team: ['loggerhead', 'hammerhead', 'tang'], time: 150, exit: { x: 3180, y: 420 },
+      width: 3300, waterline: 190, start: { x: 170, y: 40 }, team: ['loggerhead', 'hammerhead', 'tang'], time: 120, exit: { x: 3180, y: 420 },
       statics: [{ x: 760, y: 620, w: 220, h: 120, look: 'rock' }, { x: 2330, y: 600, w: 200, h: 160, look: 'rock' }],
       currents: [{ x: 1650, y: 440, w: 520, h: 480, fx: -0.3, fy: 0 }],
       objects: [
@@ -133,7 +133,7 @@ window.TT = window.TT || {};
     },
     {
       id: '2-1', name: 'Rising Tide', world: 2, place: 'Galápagos Islands', background: 'galapagos',
-      width: 3100, waterline: 250, tide: { min: 170, max: 330 }, start: { x: 170, y: 60 }, team: ['swordfish', 'tang'], time: 140, exit: { x: 2980, y: 460 },
+      width: 3100, waterline: 250, tide: { min: 170, max: 330 }, start: { x: 170, y: 60 }, team: ['swordfish', 'tang'], time: 115, exit: { x: 2980, y: 460 },
       statics: [
         { x: 820, y: 560, w: 150, h: 240, look: 'lava' },
         { x: 1500, y: 150, w: 220, h: 300, look: 'lava' },      // overhang: blocks the surface route
@@ -158,7 +158,7 @@ window.TT = window.TT || {};
     },
     {
       id: '2-5', name: 'Longline', world: 2, place: 'Galápagos Islands', background: 'galapagos',
-      width: 3600, waterline: 180, start: { x: 170, y: 40 }, team: ['swordfish', 'flyingfish'], time: 120, exit: { x: 3480, y: 420 },
+      width: 3600, waterline: 180, start: { x: 170, y: 40 }, team: ['swordfish', 'flyingfish'], time: 100, exit: { x: 3480, y: 420 },
       statics: [{ x: 520, y: 610, w: 200, h: 140, look: 'lava' }, { x: 2760, y: 600, w: 180, h: 160, look: 'lava' }],
       currents: [
         { x: 1300, y: 440, w: 700, h: 480, fx: -0.34, fy: 0 },
@@ -181,7 +181,7 @@ window.TT = window.TT || {};
     },
     {
       id: '2-9', name: 'Lava Tube', world: 2, place: 'Galápagos Islands', background: 'cave',
-      width: 3300, waterline: 150, dark: true, start: { x: 170, y: 220 }, team: ['tang', 'puffer', 'pistolshrimp', 'hammerhead'], time: 180, exit: { x: 3180, y: 430 },
+      width: 3300, waterline: 150, dark: true, start: { x: 170, y: 220 }, team: ['tang', 'puffer', 'pistolshrimp', 'hammerhead'], time: 150, exit: { x: 3180, y: 430 },
       glowSpots: [{ x: 620, y: 560 }, { x: 1150, y: 300 }, { x: 1700, y: 600 }, { x: 2250, y: 330 }, { x: 2750, y: 560 }, { x: 3180, y: 430 }],
       statics: [
         { x: 1650, y: 50, w: 3300, h: 100, look: 'lava' },      // cave roof

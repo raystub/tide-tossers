@@ -247,6 +247,7 @@ TT.GameScene = new Phaser.Class({
     this.removeQueue.push(c.body);
     this.fx.shatter(c.sprite.x, c.sprite.y, c.ctype === 'line' ? 'net' : c.ctype);
     this.fx.ring(c.sprite.x, c.sprite.y, 90, 0xbff7d2);
+    for (var sp = 0; sp < 14; sp++) this.fx.sparkle(c.sprite.x + (Math.random() - 0.5) * c.w * 1.6, c.sprite.y + (Math.random() - 0.5) * c.h * 1.2);
     this.sfx.play(c.ctype === 'trap' ? 'crack' : 'tear');
     if (c.lineGfx) c.lineGfx.destroy();
     if (c.rope) c.rope.destroy();

@@ -1,7 +1,9 @@
-# Tide Tossers (phone prototype v0.4)
+# Tide Tossers (phone prototype v0.5)
 
-Launch real sea creatures, steer them underwater, and free trapped wildlife.
+Swim real sea creatures through living reefs, free trapped wildlife and restore the reef.
 
-Play: open the GitHub Pages link on your phone, then **Add to Home Screen** to install it full screen.
+**Play:** https://raystub.github.io/tide-tossers/ — open it on your phone, then choose **Install app** / **Add to Home Screen** to play full screen and offline.
 
-Install: open the link in Chrome (Android) or Safari (iPhone) and choose Add to Home Screen.
+The earlier sling-launcher version is still playable at https://raystub.github.io/tide-tossers/v0.4/
+
+Developer notes: see `CLAUDE.md`.

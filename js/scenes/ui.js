@@ -60,6 +60,8 @@ TT.UIScene = new Phaser.Class({
     this.panelOpen = null; this.infoBox = null; this.gadgetPanel = null; this.pausePanel = null;
     this.controls = new TT.Controls(this, g);
 
+    // soft dark corners pull the eye to the middle of the screen
+    this.add.image(0, 0, 'vignette').setOrigin(0, 0).setDisplaySize(W, H).setAlpha(g.level.dark ? 0.25 : 0.42);
     // ---- top bar ----
     this.bar = this.add.graphics();
     this.bar.fillGradientStyle(0x031c2a, 0x031c2a, 0x031c2a, 0x031c2a, 0.7, 0.7, 0, 0);

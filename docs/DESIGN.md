@@ -1,26 +1,27 @@
 # Tide Tossers — design summary (full game)
 
-Context for the build; tonight's prototype covers only part of it (see `PROTOTYPE_SPEC.md`).
+**One line:** swim real sea creatures through living reefs, break apart ghost nets, traps and trash to free trapped wildlife, and lead them to open water before the tide runs out.
 
-**One line:** launch real sea creatures through air and water, steer them as they swim, and break apart ghost nets, traps and trash to free trapped wildlife and bring real ocean places back to life.
-
-## What sets it apart from Angry Birds
+## What sets it apart
 
 1. **Rescue, not destruction:** you break junk, never animals. You win by freeing every trapped animal.
-2. **Steering after launch:** drag to guide the rescuer mid-swim with a short stamina bar; strong underwater, weak in air.
-3. **Real animal abilities:** each ability is based on a real behavior.
-4. **Living ocean:** freed fish scatter and return, cleared areas regain color, storms and night levels change the scene.
-5. **Field guide:** every species unlocks a card with real facts.
-6. **Real places:** Florida Keys, Galápagos, Monterey Bay, Great Barrier Reef, Mariana Trench.
+2. **You swim the whole time:** no launcher. One thumb steers, the other triggers the creature's ability.
+3. **A team of real animals:** switch between rescuers; each ability is based on a real behaviour.
+4. **The school you save follows you:** freed animals trail behind you to the open sea.
+5. **Living ocean:** background schools shy away, cleared reefs regain colour, tides and currents move the water.
+6. **Field guide:** every species unlocks a card with real facts.
+7. **Real places:** Florida Keys, Galápagos, Monterey Bay, Great Barrier Reef, Mariana Trench.
 
 ## Decisions
 
 | Topic | Decision |
 | --- | --- |
 | Platforms | Web, iOS and Android at launch (production engine Unity 2D or Godot; prototypes in Phaser) |
-| Art | Vibrant and glossy, in the spirit of Feeding Frenzy 2: real species, bold outlines, big glossy eyes, lush colourful reefs |
+| Core play | Full swim game (v0.5). The sling launcher (v0.1–v0.4) was dropped |
+| Art | Vibrant and glossy, in the spirit of Feeding Frenzy 2: real species, bold outlines, big glossy eyes, lush layered reefs |
 | Primary platform | Phones first |
-| Phone controls | Slow-motion while steering, swipe-stick steering, aim from anywhere, vibration, full-width screen, ghost-finger tutorial |
+| Phone controls | Left thumb: floating stick. Right thumb: ability button. Switch button for the team. Vibration |
+| Pressure | Tide timer (none on Splash). Rescues win time back |
 | Threats | Pollution, lost fishing gear, invasive species; no villain gang |
 | Launch size | Worlds 1–2 (30 levels); Worlds 3–5 free updates |
 | Monetization | Free plus extras: cosmetics, optional rewarded ads, lives |
@@ -31,15 +32,15 @@ Context for the build; tonight's prototype covers only part of it (see `PROTOTYP
 
 ## Core loop
 
-Survey the scene (trapped animals, threats, waterline) → pick rescuer order → aim and launch from the Kelp Sling → steer while swimming → tap for the ability → free every trapped animal. Reef health decides stars.
+The tide tosses you in → swim to the trapped animals (edge arrows point the way) → pick the right rescuer and use its ability to break the net, line or trap → the freed animals join your school, your abilities recharge and you win back tide time → when everyone is free, swim into the open-sea current, or clean up the remaining junk first for more stars. Reef health decides stars.
 
 ## Water rules
 
-Normal gravity in air; strong drag and weaker gravity underwater. Shallow shots skip off the surface (max 2); steep shots bend on entry. Floaters rise, sinkers drop, darters keep going straight. Plastic floats; metal and concrete sink. Currents push, vents lift, whirlpools spin. Tide levels move the waterline between shots.
+Rescuers swim freely underwater and follow real arcs when they leap out. Junk floats, hovers or sinks by material. Plastic floats; metal and concrete sink. Currents push, vents lift, whirlpools spin. On tide levels the waterline rises and falls continuously.
 
 ## Rescuers
 
-| Rescuer | World | Buoyancy | Steering | Ability | Real basis |
+| Rescuer | World | Buoyancy (junk rules only) | Handling | Ability | Real basis |
 | --- | --- | --- | --- | --- | --- |
 | Atlantic blue tang | 1 Florida Keys | Neutral | Normal | Quick burst (starter) | Tangs sprint in bursts |
 | Flying fish ("Finny") | 1 | Floats | Glides in air | Glide ~1 s; breaks light plastic and glass | Gliding fins |
