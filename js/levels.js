@@ -31,7 +31,7 @@ window.TT = window.TT || {};
         { k: 'net', x: 1250, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] },
         { k: 'net', x: 1930, y: 400, w: 74, h: 130, hang: true, holds: [{ k: 'seahorse', n: 1 }] }
       ],
-      coral: [{ x: 1100, y: 655, w: 90, h: 50 }, { x: 1780, y: 655, w: 90, h: 50 }],
+      coral: [{ x: 1100, y: 640, w: 130, h: 80 }, { x: 1780, y: 640, w: 130, h: 80 }],
       invasives: [], startHealth: 30,
       hint: 'Swim to the ghost nets and dash into them to free the animals inside.'
     },
@@ -55,7 +55,7 @@ window.TT = window.TT || {};
         { k: 'net', x: 1330, y: 610, w: 80, h: 140, holds: [{ k: 'seahorse', n: 1 }] },
         { k: 'net', x: 2200, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] }
       ],
-      coral: [{ x: 1150, y: 655, w: 90, h: 50 }, { x: 2420, y: 655, w: 90, h: 50 }],
+      coral: [{ x: 1150, y: 640, w: 130, h: 80 }, { x: 2420, y: 640, w: 130, h: 80 }],
       invasives: [], startHealth: 30,
       hint: 'Switch to the flying fish and leap over the sandbar to reach the lagoon.'
     },
@@ -76,7 +76,7 @@ window.TT = window.TT || {};
         { k: 'net', x: 1140, y: 638, w: 96, h: 84, holds: [{ k: 'seahorse', n: 1 }] },
         { k: 'net', x: 1990, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] }
       ],
-      coral: [{ x: 1350, y: 655, w: 90, h: 50 }, { x: 2200, y: 655, w: 90, h: 50 }],
+      coral: [{ x: 1350, y: 640, w: 130, h: 80 }, { x: 2200, y: 640, w: 130, h: 80 }],
       invasives: [], startHealth: 30,
       hint: 'The pistol shrimp\'s snap shatters glass and plastic all around it.'
     },
@@ -92,7 +92,7 @@ window.TT = window.TT || {};
         { k: 'trap', x: 1280, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] },
         { k: 'net', x: 2020, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] }
       ],
-      coral: [{ x: 1080, y: 655, w: 90, h: 50 }, { x: 1400, y: 655, w: 90, h: 50 }, { x: 2250, y: 655, w: 90, h: 50 }],
+      coral: [{ x: 1080, y: 640, w: 130, h: 80 }, { x: 1400, y: 640, w: 130, h: 80 }, { x: 2250, y: 640, w: 130, h: 80 }],
       invasives: [{ k: 'lionfish', x: 1280, y: 540, patrol: 110 }, { k: 'lionfish', x: 1960, y: 450, patrol: 90 }],
       startHealth: 25,
       hint: 'Lionfish spines sting. The pufferfish is immune, and its puff drives them away.'
@@ -114,7 +114,7 @@ window.TT = window.TT || {};
         { k: 'trap', x: 2020, y: 645, w: 100, h: 70, holds: [{ k: 'hatchling', n: 2 }] },
         { k: 'trap', x: 2600, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] }
       ],
-      coral: [{ x: 1450, y: 655, w: 90, h: 50 }, { x: 2180, y: 655, w: 90, h: 50 }],
+      coral: [{ x: 1450, y: 640, w: 130, h: 80 }, { x: 2180, y: 640, w: 130, h: 80 }],
       invasives: [], startHealth: 30,
       hint: 'Concrete weighs the traps down. The hammerhead\'s ram cracks it; the turtle shoves traps open.'
     },

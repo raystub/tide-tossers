@@ -4,7 +4,8 @@
 window.TT = window.TT || {};
 
 TT.Art = (function () {
-  var S = 2; // supersampling
+  var S = 2; // supersampling for creatures
+  var PS = 1.5; // supersampling for scenery and containers
 
   // ---------- helpers ----------
   function rng(seed) { // mulberry32
@@ -412,24 +413,35 @@ TT.Art = (function () {
   };
 
   // ---------- containers, coral, scenery ----------
+  // Ghost net: a sagging diamond mesh of old rope with a weighted foot line, floats and algae.
   function drawNet(ctx, w, h) {
-    var r = rng(21);
-    ctx.strokeStyle = 'rgba(90,110,85,0.95)'; ctx.lineWidth = 2.4;
-    var step = 18;
-    for (var d = -h; d < w + h; d += step) {
-      ctx.beginPath(); ctx.moveTo(d, 0);
-      for (var y = 0; y <= h; y += 12) ctx.lineTo(d + y + (r() - 0.5) * 3, y);
-      ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(d, h);
-      for (var y2 = h; y2 >= 0; y2 -= 12) ctx.lineTo(d + (h - y2) + (r() - 0.5) * 3, y2);
-      ctx.stroke();
+    var r = rng(21 + Math.round(w + h)), step = 17, m = 5;
+    ctx.fillStyle = 'rgba(40,70,60,0.22)'; ctx.fillRect(m, m, w - m * 2, h - m * 2);
+    ctx.save(); ctx.beginPath(); ctx.rect(m, m, w - m * 2, h - m * 2); ctx.clip();
+    for (var pass = 0; pass < 2; pass++) {
+      ctx.strokeStyle = pass ? 'rgba(196,214,150,0.95)' : 'rgba(40,58,40,0.9)'; ctx.lineWidth = pass ? 2 : 4.2;
+      for (var d = -h; d < w + h; d += step) {
+        ctx.beginPath(); ctx.moveTo(d, 0);
+        for (var y = 0; y <= h; y += 10) ctx.lineTo(d + y + Math.sin(y * 0.09 + d) * 2.5, y);
+        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(d, h);
+        for (var y2 = h; y2 >= 0; y2 -= 10) ctx.lineTo(d + (h - y2) + Math.sin(y2 * 0.09 + d) * 2.5, y2);
+        ctx.stroke();
+      }
     }
-    ctx.strokeStyle = 'rgba(60,75,50,0.9)'; ctx.lineWidth = 4; ctx.strokeRect(2, 2, w - 4, h - 4);
-    ctx.fillStyle = 'rgba(110,130,70,0.35)';
-    for (var i = 0; i < 18; i++) { ctx.beginPath(); ctx.ellipse(r() * w, r() * h, 3 + r() * 6, 2 + r() * 3, r() * 3, 0, 7); ctx.fill(); }
-    // frayed ends
-    ctx.strokeStyle = 'rgba(90,110,85,0.8)'; ctx.lineWidth = 1.5;
-    for (var j = 0; j < 8; j++) { var x = r() * w; ctx.beginPath(); ctx.moveTo(x, h); ctx.lineTo(x + (r() - 0.5) * 10, h + 8); ctx.stroke(); }
+    // algae and snagged weed
+    for (var i = 0; i < 14; i++) { ctx.fillStyle = 'rgba(' + (r() < 0.5 ? '120,160,70' : '70,120,90') + ',0.55)'; ctx.beginPath(); ctx.ellipse(r() * w, r() * h, 4 + r() * 8, 2 + r() * 4, r() * 3, 0, 7); ctx.fill(); }
+    ctx.restore();
+    // rope frame
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#2c3a26'; ctx.lineWidth = 7; ctx.strokeRect(m, m, w - m * 2, h - m * 2);
+    ctx.strokeStyle = '#9fb37a'; ctx.lineWidth = 3; ctx.strokeRect(m, m, w - m * 2, h - m * 2);
+    // floats along the head rope, lead weights along the foot
+    for (var f = 0; f < Math.max(2, Math.round(w / 30)); f++) {
+      var fx = m + 8 + f * (w - m * 2 - 16) / Math.max(1, Math.round(w / 30) - 1);
+      ctx.fillStyle = '#ffb347'; ctx.strokeStyle = '#3a2a12'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(fx, m, 7, 5, 0, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#77808a'; ctx.beginPath(); ctx.ellipse(fx, h - m, 5, 4, 0, 0, 7); ctx.fill(); ctx.stroke();
+    }
   }
   function drawTrap(ctx, w, h) {
     // Florida stone-crab style trap: wooden slats over a frame, weighted base, rope bridle.
@@ -447,63 +459,92 @@ TT.Art = (function () {
     ctx.fillStyle = 'rgba(100,120,70,0.35)'; ctx.fillRect(0, 0, w, h * 0.3);
     ctx.fillStyle = '#4a4436'; ctx.fillRect(w * 0.42, h * 0.08, w * 0.16, 6); // latch
   }
+  // Protected living coral (you lose reef health for smashing it): bright, chunky and clearly alive.
   function drawCoral(ctx, w, h, variant) {
-    var r = rng(31 + variant);
-    if (variant % 2 === 0) { // brain coral dome
-      ctx.beginPath(); ctx.ellipse(w / 2, h, w * 0.48, h * 0.95, 0, Math.PI, 0);
-      ctx.fillStyle = lin(ctx, 0, 0, 0, h, [[0, '#e3d25a'], [1, '#9c8a2c']]); ctx.fill();
-      ctx.save(); ctx.clip(); ctx.strokeStyle = 'rgba(90,75,30,0.6)'; ctx.lineWidth = 2;
-      for (var i = 0; i < 14; i++) { ctx.beginPath(); var y = h * (0.15 + r() * 0.85); ctx.moveTo(0, y); for (var x = 0; x < w; x += 8) ctx.lineTo(x, y + Math.sin(x * 0.25 + i) * 4); ctx.stroke(); }
+    var r = rng(31 + variant), v = variant % 3;
+    function dome(cx, cw, ch, c0, c1) {
+      ctx.fillStyle = rad(ctx, cx - cw * 0.12, h - ch * 0.7, 2, cw * 0.75, [[0, c0], [1, c1]]);
+      ctx.beginPath(); ctx.ellipse(cx, h, cw / 2, ch, 0, Math.PI, 0); ctx.fill();
+      ctx.save(); ctx.clip(); ctx.strokeStyle = 'rgba(110,40,30,0.4)'; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+      for (var i = 0; i < 8; i++) { ctx.beginPath(); for (var x = cx - cw / 2; x <= cx + cw / 2; x += 5) { var yy = h - ch * (0.12 + i * 0.12) + Math.sin(x * 0.2 + i * 1.9) * 3.5 - Math.sin((x - cx + cw / 2) / cw * Math.PI) * ch * 0.1; if (x > cx - cw / 2) ctx.lineTo(x, yy); else ctx.moveTo(x, yy); } ctx.stroke(); }
       ctx.restore();
-    } else { // branching (elkhorn-like) coral
-      ctx.strokeStyle = '#ff8a5c'; ctx.lineCap = 'round';
-      function branch(x, y, len, ang, wd) {
-        if (len < 6) return;
-        var x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len;
-        ctx.lineWidth = wd; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x2, y2); ctx.stroke();
-        branch(x2, y2, len * 0.72, ang - 0.45 - r() * 0.2, wd * 0.72);
-        branch(x2, y2, len * 0.72, ang + 0.45 + r() * 0.2, wd * 0.72);
-      }
-      branch(w / 2, h, h * 0.42, -Math.PI / 2, 10);
-      ctx.fillStyle = 'rgba(255,230,200,0.8)';
-      for (var k = 0; k < 30; k++) { ctx.beginPath(); ctx.arc(r() * w, r() * h * 0.8, 1.5, 0, 7); ctx.fill(); }
     }
+    function fingers(cx, n, len, c0, c1) {
+      ctx.lineCap = 'round';
+      for (var i = 0; i < n; i++) {
+        var a = -Math.PI / 2 + (i / (n - 1) - 0.5) * 1.5, l = len * (0.7 + r() * 0.35);
+        var x2 = cx + Math.cos(a) * l, y2 = h + Math.sin(a) * l;
+        ctx.strokeStyle = c1; ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(cx + (i / (n - 1) - 0.5) * 14, h); ctx.lineTo(x2, y2); ctx.stroke();
+        ctx.strokeStyle = c0; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(cx + (i / (n - 1) - 0.5) * 14, h - 3); ctx.lineTo(x2, y2); ctx.stroke();
+        ctx.fillStyle = '#fff6d8'; ctx.beginPath(); ctx.arc(x2, y2, 3.2, 0, 7); ctx.fill();
+      }
+    }
+    if (v === 0) { dome(w * 0.34, w * 0.6, h * 0.82, '#ffd86a', '#f08a2a'); dome(w * 0.74, w * 0.46, h * 0.6, '#ff9ab0', '#e0486e'); }
+    else if (v === 1) { fingers(w * 0.5, 7, h * 0.92, '#ff8fa8', '#d83a6a'); dome(w * 0.2, w * 0.34, h * 0.42, '#ffe07a', '#f0a02a'); }
+    else { dome(w * 0.5, w * 0.7, h * 0.7, '#8ff0c8', '#2aa888'); fingers(w * 0.8, 4, h * 0.8, '#ffc46a', '#e8782a'); fingers(w * 0.16, 3, h * 0.6, '#c89aff', '#8a4ad8'); }
+    // polyps
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    for (var k = 0; k < 16; k++) { ctx.beginPath(); ctx.arc(w * (0.1 + r() * 0.8), h * (0.35 + r() * 0.6), 1.4, 0, 7); ctx.fill(); }
   }
+  // Unbreakable scenery: rock outcrops, black basalt (lava) and mangrove prop roots.
   function drawStatic(ctx, w, h, look, seed) {
-    var r = rng(seed);
+    var r = rng(seed), i;
     if (look === 'root') {
-      // red-mangrove prop roots: arching roots fanning out from a trunk above the water
+      // red-mangrove prop roots: a trunk with arching roots fanning down into the water
       var cx = w / 2;
       ctx.lineCap = 'round';
-      for (var i = 0; i < 9; i++) {
-        var spread = (i / 8 - 0.5) * w * 0.9, startY = h * (0.05 + r() * 0.25);
-        var grad = ctx.createLinearGradient(0, startY, 0, h);
-        grad.addColorStop(0, '#5a4532'); grad.addColorStop(0.7, '#3e3024'); grad.addColorStop(1, '#2d241b');
-        ctx.strokeStyle = grad; ctx.lineWidth = 5 + r() * 5;
-        ctx.beginPath(); ctx.moveTo(cx + (r() - 0.5) * 10, startY);
-        ctx.bezierCurveTo(cx + spread * 0.2, startY + h * 0.2, cx + spread * 1.1, h * 0.55, cx + spread, h);
-        ctx.stroke();
+      for (i = 0; i < 11; i++) {
+        var spread = (i / 10 - 0.5) * w * 0.92, startY = h * (0.04 + r() * 0.28), lw = 6 + r() * 6, jx = (r() - 0.5) * 4;
+        for (var pass = 0; pass < 2; pass++) {
+          ctx.beginPath(); ctx.moveTo(cx + jx, startY); ctx.bezierCurveTo(cx + spread * 0.15, startY + h * 0.22, cx + spread * 1.15, h * 0.5, cx + spread, h);
+          ctx.strokeStyle = pass ? lin(ctx, 0, startY, 0, h, [[0, '#8a6442'], [0.6, '#6a4a30'], [1, '#4a3626']]) : '#2a1c12';
+          ctx.lineWidth = pass ? lw : lw + 4; ctx.stroke();
+        }
       }
-      ctx.strokeStyle = '#4d3b2a'; ctx.lineWidth = 16; ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx + 3, h * 0.3); ctx.stroke();
-      ctx.strokeStyle = 'rgba(170,150,110,0.3)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx - 4, 0); ctx.lineTo(cx - 2, h * 0.3); ctx.stroke();
-      // barnacles / algae band near the waterline region
-      for (var b = 0; b < 40; b++) { ctx.fillStyle = 'rgba(200,195,170,' + (0.3 + r() * 0.4) + ')'; ctx.beginPath(); ctx.arc(cx + (r() - 0.5) * w * 0.8, h * (0.75 + r() * 0.25), 1.5 + r() * 2, 0, 7); ctx.fill(); }
+      ctx.strokeStyle = '#2a1c12'; ctx.lineWidth = 26; ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx + 2, h * 0.3); ctx.stroke();
+      ctx.strokeStyle = lin(ctx, cx - 11, 0, cx + 11, 0, [[0, '#a07a52'], [0.5, '#7a5838'], [1, '#553c28']]); ctx.lineWidth = 20; ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx + 2, h * 0.3); ctx.stroke();
+      // oysters and algae on the submerged part
+      for (i = 0; i < 46; i++) { ctx.fillStyle = r() < 0.5 ? 'rgba(226,222,200,0.75)' : 'rgba(110,170,90,0.6)'; ctx.beginPath(); ctx.ellipse(cx + (r() - 0.5) * w * 0.85, h * (0.6 + r() * 0.4), 2.5 + r() * 3, 2 + r() * 2, r() * 3, 0, 7); ctx.fill(); }
       return;
     }
-    var base = look === 'lava' ? ['#2b2a2c', '#141316'] : ['#a99a7c', '#6f6450'];
-    ctx.beginPath(); ctx.moveTo(w * 0.04, h);
-    var n = 12, i2;
-    for (i2 = 0; i2 <= 4; i2++) ctx.lineTo(w * (0.04 - 0.04 * i2 / 4) + r() * 6, h - (h * 0.88) * i2 / 4);       // left side
-    for (i2 = 1; i2 < n; i2++) ctx.lineTo(w * i2 / n, r() * h * 0.08 + (i2 < 2 || i2 > n - 2 ? h * 0.06 : 0)); // ragged top
-    for (i2 = 4; i2 >= 0; i2--) ctx.lineTo(w * (0.96 + 0.04 * i2 / 4) - r() * 6, h - (h * 0.88) * i2 / 4);   // right side
-    ctx.closePath();
-    ctx.fillStyle = lin(ctx, 0, 0, 0, h, [[0, base[0]], [1, base[1]]]); ctx.fill();
-    ctx.save(); ctx.clip();
-    for (var j = 0; j < (w * h) / 900; j++) {
-      ctx.fillStyle = look === 'lava' ? 'rgba(80,78,85,' + (0.2 + r() * 0.3) + ')' : 'rgba(60,50,35,' + (0.1 + r() * 0.2) + ')';
-      ctx.beginPath(); ctx.arc(r() * w, r() * h, 2 + r() * 6, 0, 7); ctx.fill();
+    var lava = look === 'lava', n = Math.max(10, Math.round((w * 2 + h * 2) / 46)), pts = [], cx2 = w / 2, cy = h / 2;
+    // organic outline: a rounded rectangle with bumps, flat on the sides that touch the floor or ceiling
+    for (i = 0; i < n; i++) {
+      var a = i / n * Math.PI * 2, ca = Math.cos(a), sa = Math.sin(a);
+      var k = 1 / Math.max(Math.abs(ca) / (w / 2), Math.abs(sa) / (h / 2));   // ray to the box edge
+      var round = 1 - 0.16 * Math.pow(Math.abs(Math.sin(a * 2)), 1.5), bump = 0.94 + r() * 0.06;
+      pts.push([cx2 + ca * k * round * bump, cy + sa * k * round * bump]);
     }
-    if (look !== 'lava') { ctx.fillStyle = 'rgba(90,120,60,0.35)'; ctx.fillRect(0, 0, w, 10); }
+    ctx.beginPath();
+    for (i = 0; i < n; i++) { var p0 = pts[i], p1 = pts[(i + 1) % n], mx = (p0[0] + p1[0]) / 2, my = (p0[1] + p1[1]) / 2; if (!i) ctx.moveTo(mx, my); else ctx.quadraticCurveTo(p0[0], p0[1], mx, my); }
+    ctx.quadraticCurveTo(pts[0][0], pts[0][1], (pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2);
+    ctx.closePath();
+    ctx.fillStyle = lava ? lin(ctx, 0, 0, w * 0.3, h, [[0, '#5b5f6e'], [0.45, '#33353f'], [1, '#17181d']]) : lin(ctx, 0, 0, w * 0.3, h, [[0, '#d9c9a4'], [0.45, '#a89572'], [1, '#6c5e48']]);
+    ctx.fill();
+    ctx.save(); ctx.clip();
+    // facets: big soft light and shadow planes
+    for (i = 0; i < Math.max(4, w * h / 5000); i++) {
+      var fx = r() * w, fy = r() * h, fw = 30 + r() * 70, fh = 20 + r() * 50;
+      ctx.fillStyle = r() < 0.5 ? 'rgba(255,255,255,' + (lava ? 0.05 : 0.1) + ')' : 'rgba(0,0,0,' + (0.07 + r() * 0.08) + ')';
+      ctx.beginPath(); ctx.moveTo(fx, fy); ctx.lineTo(fx + fw, fy + (r() - 0.5) * 20); ctx.lineTo(fx + fw * (0.4 + r() * 0.5), fy + fh); ctx.lineTo(fx - fw * 0.2, fy + fh * 0.7); ctx.closePath(); ctx.fill();
+    }
+    // cracks
+    ctx.strokeStyle = lava ? 'rgba(0,0,0,0.5)' : 'rgba(60,45,25,0.4)'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+    for (i = 0; i < Math.max(3, w * h / 7000); i++) {
+      var x = r() * w, y = r() * h; ctx.beginPath(); ctx.moveTo(x, y);
+      for (var sgm = 0; sgm < 4; sgm++) { x += (r() - 0.5) * 34; y += 8 + r() * 22; ctx.lineTo(x, y); }
+      ctx.stroke();
+    }
+    // pits and barnacles
+    for (i = 0; i < (w * h) / 1500; i++) { ctx.fillStyle = lava ? 'rgba(0,0,0,' + (0.2 + r() * 0.25) + ')' : 'rgba(70,55,35,' + (0.15 + r() * 0.2) + ')'; ctx.beginPath(); ctx.ellipse(r() * w, r() * h, 2 + r() * 5, 1.5 + r() * 3, r() * 3, 0, 7); ctx.fill(); }
+    // growth on top: algae on rock, orange cup corals on basalt
+    for (i = 0; i < w / 9; i++) {
+      var gx = r() * w, gy = 4 + r() * Math.min(26, h * 0.2);
+      ctx.fillStyle = lava ? (r() < 0.4 ? 'rgba(255,150,60,0.85)' : 'rgba(90,150,130,0.55)') : (r() < 0.3 ? 'rgba(255,170,190,0.8)' : 'rgba(110,180,90,0.7)');
+      ctx.beginPath(); ctx.ellipse(gx, gy, 4 + r() * 8, 3 + r() * 5, 0, 0, 7); ctx.fill();
+    }
+    // light from above, shade below
+    ctx.fillStyle = lin(ctx, 0, 0, 0, h, [[0, 'rgba(255,255,255,0.2)'], [0.25, 'rgba(255,255,255,0)'], [0.7, 'rgba(0,10,30,0)'], [1, 'rgba(0,10,30,0.35)']]); ctx.fillRect(0, 0, w, h);
     ctx.restore();
   }
 
@@ -736,6 +777,8 @@ TT.Art = (function () {
       canvas(scene, 'shard', 12, 6, function (ctx, w, h) { ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.moveTo(0, h / 2); ctx.lineTo(w, 0); ctx.lineTo(w * 0.7, h); ctx.fill(); });
     },
 
+    h: { rng: rng, canvas: canvas, lin: lin, rad: rad, stylize: stylize },
+
     // Start the looping swim animation on a sprite (no-op for species without one, or painted PNGs).
     playSwim: function (sprite, id) {
       var k = 'swim_' + id;
@@ -755,22 +798,25 @@ TT.Art = (function () {
       return len / src.width;
     },
 
+    // Scenery and container textures are drawn at PS x size so they stay crisp under the camera zoom;
+    // sprites using them are scaled by 1 / PS.
+    PS: PS,
     netTexture: function (scene, w, h) {
-      var key = 'net_' + w + 'x' + h;
-      return canvas(scene, key, w, h, drawNet);
+      return canvas(scene, 'net_' + w + 'x' + h, w * PS, h * PS, function (ctx) { ctx.scale(PS, PS); drawNet(ctx, w, h); });
     },
     trapTexture: function (scene, w, h) {
-      var key = 'trap_' + w + 'x' + h;
-      return canvas(scene, key, w, h, function (ctx, cw, ch) { drawTrap(ctx, cw, ch); stylize(ctx, cw, ch, { sat: 1.2, outline: 0 }); });
+      return canvas(scene, 'trap_' + w + 'x' + h, w * PS, h * PS, function (ctx, cw, ch) { ctx.save(); ctx.scale(PS, PS); drawTrap(ctx, w, h); ctx.restore(); stylize(ctx, cw, ch, { sat: 1.25, outline: 0 }); });
     },
     coralTexture: function (scene, w, h, variant) {
-      var key = 'coral_' + w + 'x' + h + '_' + variant;
-      return canvas(scene, key, w, h, function (ctx, cw, ch) { drawCoral(ctx, cw, ch, variant); stylize(ctx, cw, ch, { sat: 1.5, outline: 2 }); });
+      return canvas(scene, 'coral_' + w + 'x' + h + '_' + variant, w * PS, h * PS, function (ctx, cw, ch) { ctx.save(); ctx.scale(PS, PS); ctx.translate(4, 6); ctx.scale((w - 8) / w, (h - 6) / h); drawCoral(ctx, w, h, variant); ctx.restore(); stylize(ctx, cw, ch, { sat: 1.5, outline: 3 }); });
     },
     staticTexture: function (scene, s, idx) {
       var key = 'static_' + s.look + '_' + s.w + 'x' + s.h + '_' + idx;
       var tw = s.look === 'root' ? s.w * 4 : s.w;   // roots are drawn wider than their collision body
-      return canvas(scene, key, tw, s.h, function (ctx, w, h) { drawStatic(ctx, w, h, s.look, idx * 13 + s.w); stylize(ctx, w, h, { sat: 1.25, outline: 2, gloss: false }); });
+      return canvas(scene, key, tw * PS, s.h * PS, function (ctx, cw, ch) {
+        ctx.save(); ctx.scale(PS, PS); ctx.translate(3, 3); ctx.scale((tw - 6) / tw, (s.h - 6) / s.h); drawStatic(ctx, tw, s.h, s.look, idx * 13 + s.w); ctx.restore();
+        stylize(ctx, cw, ch, { sat: 1.2, outline: s.look === 'root' ? 0 : 3.5, gloss: false });
+      });
     },
     canopyTexture: function (scene) {
       return canvas(scene, 'mangrove_canopy', 360, 170, function (ctx, w, h) {

@@ -37,6 +37,7 @@ TT.Entities = (function () {
     var cdef = C.CONTAINERS[d.k], go, ent;
     if (d.k === 'trap') {
       go = scene.matter.add.image(d.x, d.y, TT.Art.trapTexture(scene, d.w, d.h), null, { density: cdef.density, friction: 0.7, restitution: 0.02 });
+      go.setScale(1 / TT.Art.PS);
       go.body.ttWater = { buoy: cdef.buoy };
     } else if (d.k === 'line') {
       // fishing line: a sensor so rescuers pass through and cut it
@@ -45,6 +46,7 @@ TT.Entities = (function () {
       M().Body.scale(go.body, 30 / 32, d.h / 32);
     } else {
       go = scene.matter.add.image(d.x, d.y, TT.Art.netTexture(scene, d.w, d.h), null, { isStatic: true, friction: 0.8 });
+      go.setScale(1 / TT.Art.PS);
       go.setAlpha(0.95);
     }
     go.setDepth(7.5);
@@ -87,7 +89,7 @@ TT.Entities = (function () {
 
   function coral(scene, d, idx) {
     var go = scene.matter.add.image(d.x, d.y, TT.Art.coralTexture(scene, d.w, d.h, idx), null, { isStatic: true, friction: 0.8 });
-    go.setDepth(6);
+    go.setScale(1 / TT.Art.PS).setDepth(6);
     // body only covers the lower 70% so hits look right
     M().Body.scale(go.body, 0.92, 0.7);
     M().Body.setPosition(go.body, { x: d.x, y: d.y + d.h * 0.15 });
@@ -105,7 +107,7 @@ TT.Entities = (function () {
 
   function staticBody(scene, d, idx) {
     var go = scene.matter.add.image(d.x, d.y, TT.Art.staticTexture(scene, d, idx), null, { isStatic: true, friction: 0.9 });
-    go.setDepth(5);
+    go.setScale(1 / TT.Art.PS).setDepth(5);
     if (d.look === 'root') {
       M().Body.scale(go.body, 0.6 / 4, 1);     // texture is 4x wider than the collision column
       scene.add.image(d.x, d.y - d.h / 2 + 10, TT.Art.canopyTexture(scene)).setDepth(5.1);

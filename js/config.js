@@ -17,7 +17,7 @@ TT.CFG = {
   HEIGHT: 720,               // view height and world height
   FLOOR_Y: 680,              // top of the sea floor
   VIEW_MAX_WIDTH: 1600,      // widest view on long phones
-  CAMERA_ZOOM: TT.MOBILE ? 1.3 : 1.12, // closer camera = bigger creatures
+  CAMERA_ZOOM: TT.MOBILE ? 1.45 : 1.15, // closer camera = bigger creatures
   CAMERA_LERP: 0.1,
   CAMERA_LOOKAHEAD: 14,      // px of look-ahead per unit of swim speed
 
@@ -38,6 +38,7 @@ TT.CFG = {
   SWIM_IDLE_DRAG: 0.045,     // how quickly you coast to a stop with the stick released
   SWIM_AIR_CONTROL: 0.05,    // sideways push per 1/60 s while airborne
   SWIM_BREACH_KEEP: 0.9,     // speed kept when leaping out of the water
+  FLOP_HOP: 5.5,             // hop speed when stranded out of the water
   SWIM_TURN_EASE: 12,        // how fast the sprite turns to face its heading
   STUN_TIME: 0.9,            // seconds without control after a lionfish sting
   STING_TIME_PENALTY: 5,     // seconds of tide lost per sting

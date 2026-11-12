@@ -90,6 +90,11 @@ TT.Player.prototype.step = function () {
   } else {
     // airborne: gravity does the work, the stick only nudges sideways
     if (push > 0) vx += ix * push * C.SWIM_AIR_CONTROL * k;
+    // stranded on a rock or sandbar: flop back toward the water
+    if (vx * vx + vy * vy < 1.5) {
+      e.strandedAt = e.strandedAt || now;
+      if (now - e.strandedAt > 0.22) { e.strandedAt = 0; vy = -C.FLOP_HOP; vx = (push > 0 && Math.abs(ix) > 0.2 ? (ix > 0 ? 1 : -1) : (Math.cos(this.heading) >= 0 ? 1 : -1)) * C.FLOP_HOP * 0.7; g.sfx.play('breach'); }
+    } else e.strandedAt = 0;
   }
   M.Body.setVelocity(b, { x: vx, y: vy });
 
