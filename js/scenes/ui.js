@@ -300,6 +300,7 @@ TT.UIScene = new Phaser.Class({
         if (tgt.x > v.x + 20 && tgt.x < v.right - 20 && tgt.y > v.y + 20 && tgt.y < v.bottom - 20) return;
         var sx = (tgt.x - v.x) * z, sy = (tgt.y - v.y) * z;
         var px = Phaser.Math.Clamp(sx, mx, W - mx), py2 = Phaser.Math.Clamp(sy, top, H - mx - 10);
+        if (px > self.actX - self.actR * (g.player.team.length > 1 ? 3.4 : 1.4) && py2 > self.actY - self.actR - 34) py2 = self.actY - self.actR - 34;   // keep clear of the buttons
         var ang = Math.atan2(sy - py2, sx - px), bob = 4 * Math.sin(time / 180), s = M ? 20 : 15;
         px += Math.cos(ang) * bob; py2 += Math.sin(ang) * bob;
         arr.fillStyle(0x02131c, 0.55); arr.fillCircle(px, py2, s + 6);

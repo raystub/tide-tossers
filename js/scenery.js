@@ -97,7 +97,7 @@ window.TT = window.TT || {};
       ctx.fillStyle = lin(ctx, 0, 0, 0, h, [[0, cols[L]], [1, cols[L + 1]]]);
       ctx.globalAlpha = L === 0 ? 0.55 : 0.9;
       ctx.beginPath(); ctx.moveTo(0, h);
-      for (var x = 0; x <= w; x += 6) ctx.lineTo(x, h * (0.62 + L * 0.2) - hl(x + L * 311) * (L ? 0.6 : 1));
+      for (var x = 0; x <= w; x += 8) ctx.lineTo(x, h * (0.62 + L * 0.2) - hl(x + L * 311) * (L ? 0.6 : 1));
       ctx.lineTo(w, h); ctx.closePath(); ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -122,7 +122,7 @@ window.TT = window.TT || {};
     // ground swell
     ctx.fillStyle = near ? lin(ctx, 0, base - 60, 0, h, [[0, P.mid], [1, P.mid2]]) : lin(ctx, 0, base - 80, 0, h, [[0, P.far], [1, P.far2]]);
     ctx.beginPath(); ctx.moveTo(0, h);
-    for (var x = 0; x <= w; x += 6) ctx.lineTo(x, base + hl(x));
+    for (var x = 0; x <= w; x += 8) ctx.lineTo(x, base + hl(x));
     ctx.lineTo(w, h); ctx.closePath(); ctx.fill();
     var n = near ? 16 : 12;
     for (var i = 0; i < n; i++) {
@@ -212,7 +212,7 @@ window.TT = window.TT || {};
       ctx.fillStyle = rad(ctx, w * 0.42, h * 0.35, 4, w * 0.6, [[0, cols[0]], [1, cols[1]]]);
       blob(ctx, w / 2, h, w * 0.96, h * 0.94, r, 0.1); ctx.fill();
       ctx.save(); ctx.clip(); ctx.strokeStyle = 'rgba(120,70,20,0.45)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
-      for (var i = 0; i < 9; i++) { ctx.beginPath(); var y = h * (0.2 + i * 0.1); for (var x = 0; x <= w; x += 6) { var yy = y + Math.sin(x * 0.16 + i * 1.7) * 5 - Math.sin(x / w * Math.PI) * 10; if (x) ctx.lineTo(x, yy); else ctx.moveTo(x, yy); } ctx.stroke(); }
+      for (var i = 0; i < 9; i++) { ctx.beginPath(); var y = h * (0.2 + i * 0.1); for (var x = 0; x <= w; x += 8) { var yy = y + Math.sin(x * 0.16 + i * 1.7) * 5 - Math.sin(x / w * Math.PI) * 10; if (x) ctx.lineTo(x, yy); else ctx.moveTo(x, yy); } ctx.stroke(); }
       ctx.restore();
     } },
     tubes: { w: 110, h: 150, sway: 0.02, draw: function (ctx, w, h, r, hue) {
@@ -346,7 +346,14 @@ window.TT = window.TT || {};
     canvas(scene, 'mid_' + fam, TILE, 360, function (c, w, h) { drawReefLayer(c, w, h, fam, true); });
     canvas(scene, 'sand_' + fam, TILE, 80, function (c, w, h) { drawSand(c, w, h, fam); });
     canvas(scene, 'ray_' + fam, 160, 512, function (c, w, h) { drawRay(c, w, h, fam); });
-    canvas(scene, 'wave', 256, 72, drawWave);
+    canvas(scene, 'wave', 1024, 72, function (c, w, h) { for (var i = 0; i < 4; i++) { c.save(); c.translate(i * 256, 0); drawWave(c, 256, h); c.restore(); } });
+    canvas(scene, 'caustic_strip', 1024, 256, function (c, w, h) {
+      var src = scene.textures.get('caustics').getSourceImage();
+      for (var i = 0; i < 4; i++) c.drawImage(src, i * 256, 0);
+      c.globalCompositeOperation = 'destination-in';   // fade out toward the top so the light pools on the floor
+      c.fillStyle = lin(c, 0, 0, 0, h, [[0, 'rgba(0,0,0,0)'], [0.6, 'rgba(0,0,0,0.8)'], [1, 'rgba(0,0,0,1)']]); c.fillRect(0, 0, w, h);
+      c.globalCompositeOperation = 'source-over';
+    });
     canvas(scene, 'streak', 48, 6, function (c, w, h) { var g = c.createLinearGradient(0, 0, w, 0); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.7, 'rgba(255,255,255,0.9)'); g.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = g; c.fillRect(0, 1, w, h - 2); });
     canvas(scene, 'exit_ring', 220, 220, function (c, w) {
       var cx = w / 2;
@@ -365,22 +372,37 @@ window.TT = window.TT || {};
     });
   }
 
+  // A horizontally repeating layer made of plain images laid side by side. (Phaser's TileSprite redraws and
+  // re-uploads a screen-sized canvas whenever it scrolls, which is slow on phones; plain images are just quads.)
+  function Strip(scene, key, spanW, depth, originY) {
+    var tw = scene.textures.get(key).getSourceImage().width;
+    this.tw = tw; this.imgs = [];
+    for (var i = 0; i < Math.ceil(spanW / tw) + 1; i++) this.imgs.push(scene.add.image(0, 0, key).setOrigin(0, originY || 0).setDepth(depth));
+  }
+  // x0 = left edge to cover; offset = how far the pattern has scrolled; y = vertical position.
+  Strip.prototype.place = function (x0, y, offset) {
+    var tw = this.tw * (this.sx || 1), start = x0 - (((offset % tw) + tw) % tw);
+    for (var i = 0; i < this.imgs.length; i++) this.imgs[i].setPosition(Math.round(start + i * tw), y);
+  };
+  Strip.prototype.each = function (fn) { this.imgs.forEach(fn); return this; };
+
   // Build the layer stack. `view` = { w, h } of the visible world; returns the layer objects.
   function buildLayers(scene, fam, worldW, view, opts) {
     ensureTextures(scene, fam);
     var C = TT.CFG, L = { fam: fam, props: [], rays: [] }, vw = view.w + 80, r = rng(opts.seed || 1);
-    L.sky = scene.add.tileSprite(0, 0, vw, 400, 'sky_' + fam).setOrigin(0, 1).setDepth(0);
-    L.shore = scene.add.tileSprite(0, 0, vw, 130, 'shore_' + fam).setOrigin(0, 1).setDepth(0.2);
+    L.sky = new Strip(scene, 'sky_' + fam, vw, 0, 1);
+    L.shore = new Strip(scene, 'shore_' + fam, vw, 0.2, 1);
     L.depth = scene.add.image(0, 0, 'depth_' + fam).setOrigin(0, 0).setDepth(1);
-    L.far = scene.add.tileSprite(0, C.FLOOR_Y + 30, vw, 460, 'far_' + fam).setOrigin(0, 1).setDepth(1.2);
+    L.far = new Strip(scene, 'far_' + fam, vw, 1.2, 1);
     for (var i = 0; i < 7; i++) {
       var ray = scene.add.image(0, 0, 'ray_' + fam).setOrigin(0.5, 0).setDepth(1.4).setBlendMode(Phaser.BlendModes.ADD);
       ray.ttU = (i + r() * 0.7) / 7; ray.ttPh = r() * 6.28; ray.ttW = 0.7 + r() * 1.1;
       ray.setRotation(-0.32 + r() * 0.12);
       L.rays.push(ray);
     }
-    L.mid = scene.add.tileSprite(0, C.FLOOR_Y + 30, vw, 360, 'mid_' + fam).setOrigin(0, 1).setDepth(1.6);
-    L.sand = scene.add.tileSprite(0, C.FLOOR_Y - 12, worldW + 400, 80, 'sand_' + fam).setOrigin(0, 0).setDepth(2).setX(-200);
+    L.mid = new Strip(scene, 'mid_' + fam, vw, 1.6, 1);
+    L.sand = new Strip(scene, 'sand_' + fam, worldW + 400, 2, 0);
+    L.sand.place(-200, C.FLOOR_Y - 12, 0);
     // reef garden along the floor (behind the action), seeded so a level always looks the same
     var set = PROP_SETS[fam], x = -60, avoid = opts.avoid || [];
     while (x < worldW + 60) {
@@ -394,7 +416,7 @@ window.TT = window.TT || {};
       if (def.sway) { img.ttSway = def.sway; img.ttPh = r() * 6.28; }
       L.props.push(img);
     }
-    L.caustics = scene.add.tileSprite(0, C.FLOOR_Y - 150, vw, 220, 'caustics').setOrigin(0, 0).setDepth(2.8).setBlendMode(Phaser.BlendModes.ADD).setAlpha(fam === 'cave' ? 0.05 : 0.16);
+    L.caustics = new Strip(scene, 'caustic_strip', vw, 2.8, 0).each(function (im) { im.setBlendMode(Phaser.BlendModes.ADD).setAlpha(fam === 'cave' ? 0.05 : 0.16); });
     // foreground silhouettes: big, dark, out of focus, scroll faster than the world
     L.fg = [];
     if (!opts.noForeground) {
@@ -409,30 +431,31 @@ window.TT = window.TT || {};
       }
     }
     // surface: two wave strips sliding against each other
-    L.wave = scene.add.tileSprite(0, 0, vw, 72, 'wave').setOrigin(0, 0).setDepth(15);
-    L.wave2 = scene.add.tileSprite(0, 0, vw, 72, 'wave').setOrigin(0, 0).setDepth(14.9).setAlpha(0.5).setFlipX(true);
+    L.wave = new Strip(scene, 'wave', vw, 15, 0);
+    L.wave2 = new Strip(scene, 'wave', vw, 14.9, 0).each(function (im) { im.setAlpha(0.5).setFlipX(true); });
     L.view = view;
     return L;
   }
 
   // Position the camera-attached layers. vx, vy = top-left of the visible world.
-  function placeLayers(L, vx, vy, waterY, t) {
-    var C = TT.CFG, x0 = vx - 40, vw = L.view.w + 80;
-    L.sky.setPosition(x0, waterY + 4); L.sky.tilePositionX = vx * 0.08 + t * 3;
-    L.shore.setPosition(x0, waterY + 3); L.shore.tilePositionX = vx * 0.16;
+  // For a still backdrop pass anchorX = 0: the layers stay put while vx only drives the parallax drift.
+  function placeLayers(L, vx, vy, waterY, t, anchorX) {
+    var C = TT.CFG, x0 = (anchorX === undefined ? vx : anchorX) - 40, vw = L.view.w + 80;
+    L.sky.place(x0, waterY + 4, vx * 0.08 + t * 3);
+    L.shore.place(x0, waterY + 3, vx * 0.16);
     L.depth.setPosition(x0, waterY).setDisplaySize(vw, C.HEIGHT - waterY + 40);
-    L.far.x = x0; L.far.tilePositionX = vx * 0.3;
-    L.mid.x = x0; L.mid.tilePositionX = vx * 0.6;
-    L.caustics.x = x0; L.caustics.tilePositionX = vx + t * 14; L.caustics.tilePositionY = t * 5;
-    L.wave.setPosition(x0, waterY - 12); L.wave.tilePositionX = vx + t * 26;
-    L.wave2.setPosition(x0, waterY - 9); L.wave2.tilePositionX = -(vx - t * 17);
+    L.far.place(x0, C.FLOOR_Y + 30, vx * 0.3);
+    L.mid.place(x0, C.FLOOR_Y + 30, vx * 0.6);
+    L.caustics.place(x0, C.FLOOR_Y - 190 + Math.sin(t * 0.5) * 6, vx + t * 14);
+    L.wave.place(x0, waterY - 12, vx + t * 26);
+    L.wave2.place(x0, waterY - 9, vx * 0.9 - t * 17);
     for (var i = 0; i < L.rays.length; i++) {
       var ray = L.rays[i], span = vw + 300, px = ((ray.ttU * span - vx * 0.25) % span + span) % span;
       ray.setPosition(x0 - 150 + px, waterY + 2);
       ray.setScale(ray.ttW, (C.HEIGHT - waterY) / 512 * 1.05);
       ray.setAlpha((L.fam === 'cave' ? 0.05 : 0.14) * (0.6 + 0.4 * Math.sin(t * 0.7 + ray.ttPh)));
     }
-    for (var p = 0; p < L.props.length; p++) { var im = L.props[p]; if (im.ttSway && im.x > vx - 160 && im.x < vx + vw + 160) im.rotation = Math.sin(t * 1.4 + im.ttPh) * im.ttSway; }
+    for (var p = 0; p < L.props.length; p++) { var im = L.props[p]; if (im.ttSway && im.x > x0 - 160 && im.x < x0 + vw + 160) im.rotation = Math.sin(t * 1.4 + im.ttPh) * im.ttSway; }
     for (var f = 0; f < L.fg.length; f++) { var fi = L.fg[f]; if (fi.ttSway) fi.rotation = Math.sin(t * 1.1 + fi.ttPh) * fi.ttSway; }
   }
 
@@ -444,7 +467,7 @@ window.TT = window.TT || {};
     var avoid = (level.statics || []).concat(level.coral || []).concat(level.containers || []).map(function (s) { return { x: s.x, w: (s.w || 60) + 30 }; });
     var seed = 0; for (var i = 0; i < level.id.length; i++) seed = seed * 31 + level.id.charCodeAt(i);
     this.L = buildLayers(scene, fam, level.width, view, { seed: seed, avoid: avoid });
-    if (level.dark) this.L.sky.setVisible(false);
+    if (level.dark) this.L.sky.each(function (im) { im.setVisible(false); });
 
     // drifting specks ("marine snow") around the camera
     this.snow = scene.add.particles(0, 0, 'dot', {
@@ -495,9 +518,10 @@ window.TT = window.TT || {};
   TT.Scenery.backdrop = function (scene, fam, waterY) {
     var C = TT.CFG, L = buildLayers(scene, fam, C.WIDTH, { w: C.WIDTH, h: C.HEIGHT }, { seed: 77, noForeground: true });
     var o = { t: 0 };
-    placeLayers(L, 0, 0, waterY, 0);
-    scene.events.on('update', function (time, delta) { o.t += delta / 1000; placeLayers(L, o.t * 12, 0, waterY, o.t); });
-    scene.events.once('shutdown', function () { scene.events.off('update'); });
+    placeLayers(L, 0, 0, waterY, 0, 0);
+    var tick = function (time, delta) { o.t += delta / 1000; placeLayers(L, o.t * 14, 0, waterY, o.t, 0); };
+    scene.events.on('update', tick);
+    scene.events.once('shutdown', function () { scene.events.off('update', tick); });
     return L;
   };
 
