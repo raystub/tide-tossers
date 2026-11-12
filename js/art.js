@@ -513,7 +513,7 @@ TT.Art = (function () {
     galapagos: { sky: ['#6aaee0', '#d8eef8'], far: '#2b2b2e', under: ['#38bccf', '#167aa6', '#0b3666'], sand: ['#a59c8c', '#766e62'] },
     cave:      { sky: ['#0b0c10', '#1a1b20'], far: '#121216', under: ['#1b6a78', '#0c3446', '#061a26'], sand: ['#4a443f', '#2a2624'] }
   };
-  function family(key) { return key.indexOf('galapagos') === 0 ? 'galapagos' : key.indexOf('lava') === 0 ? 'cave' : 'keys'; }
+  function family(key) { return key.indexOf('galapagos') === 0 ? 'galapagos' : (key.indexOf('lava') === 0 || key === 'cave') ? 'cave' : 'keys'; }
 
   // Air layer: sky and distant scenery. Drawn full height; the water overlay covers the lower part.
   function drawAir(ctx, w, h, key) {
@@ -655,6 +655,31 @@ TT.Art = (function () {
     ctx.fillRect(0, 0, w, h);
   }
 
+  // Swim animation: how far the tail end bends, as a share of body height (0 = no animation).
+  var WIGGLE = { tang: 0.08, flyingfish: 0.09, puffer: 0.06, puffer_inflated: 0, pistolshrimp: 0.05, loggerhead: 0.035, swordfish: 0.1,
+    hammerhead: 0.11, hatchling: 0.07, seahorse: 0.03, smallfish: 0.16, fishschool: 0, lionfish: 0.06 };
+  var SWIM_FRAMES = 8;
+  // Bake a looping swim cycle from one picture: slice it into thin columns and bend them in a travelling wave
+  // that is still at the head (right) and widest at the tail (left). Works in WebGL and Canvas alike.
+  function bakeSwim(scene, id, baseKey, amp) {
+    var src = scene.textures.get(baseKey).getSourceImage(), w = src.width, h = src.height, N = SWIM_FRAMES;
+    var sheetKey = 'sw_' + id;
+    if (scene.textures.exists(sheetKey)) return;
+    var tex = scene.textures.createCanvas(sheetKey, w * N, h), ctx = tex.getContext(), col = 2;
+    for (var f = 0; f < N; f++) {
+      var ph = f / N * Math.PI * 2;
+      for (var x = 0; x < w; x += col) {
+        var u = 1 - x / w, dy = amp * Math.pow(u, 1.6) * Math.sin(ph - u * 2.4);
+        ctx.drawImage(src, x, 0, col, h, f * w + x, dy, col, h);
+      }
+      tex.add(f, 0, f * w, 0, w, h);
+    }
+    tex.refresh();
+    var frames = [];
+    for (var i = 0; i < N; i++) frames.push({ key: sheetKey, frame: i });
+    scene.anims.create({ key: 'swim_' + id, frames: frames, frameRate: 11, repeat: -1 });
+  }
+
   // Size of each species texture (display px, before 2x supersampling)
   var SPECIES_SIZE = {
     tang: [64, 52], flyingfish: [72, 46], puffer: [62, 44], puffer_inflated: [120, 120], pistolshrimp: [58, 40],
@@ -673,8 +698,13 @@ TT.Art = (function () {
       Object.keys(species).forEach(function (id) {
         var key = 'sp_' + id;
         if (loaded.indexOf(id) >= 0 && scene.textures.exists('png_' + id)) return; // real art wins
-        var sz = SPECIES_SIZE[id];
-        canvas(scene, key, sz[0] * S, sz[1] * S, function (ctx, w, h) { species[id](ctx, w, h); stylize(ctx, w, h, { outline: id === 'fishschool' || id === 'smallfish' ? 2 : 3.5 }); });
+        var sz = SPECIES_SIZE[id], w = sz[0] * S, h = sz[1] * S, amp = (WIGGLE[id] === undefined ? 0.09 : WIGGLE[id]) * h, pad = Math.ceil(amp) + 2;
+        // the base picture has spare rows above and below so the swim frames have room to bend
+        canvas(scene, key, w, h + pad * 2, function (ctx, cw, ch) {
+          ctx.save(); ctx.translate(0, pad); species[id](ctx, w, h); ctx.restore();
+          stylize(ctx, cw, ch, { outline: id === 'fishschool' || id === 'smallfish' ? 2 : 3.5 });
+        });
+        if (amp > 0) bakeSwim(scene, id, key, amp);
       });
       Object.keys(materials).forEach(function (m) {
         canvas(scene, 'mat_' + m, 96, 96, function (ctx, w, h) { materials[m](ctx, w, h); stylize(ctx, w, h, { sat: 1.25, outline: 0 }); });
@@ -698,8 +728,22 @@ TT.Art = (function () {
         ctx.strokeStyle = 'rgba(230,250,255,0.9)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(w / 2, w / 2, w / 2 - 2, 0, 7); ctx.stroke();
         ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.beginPath(); ctx.arc(w * 0.36, w * 0.36, 3, 0, 7); ctx.fill();
       });
+      canvas(scene, 'spark', 24, 24, function (ctx, w) {
+        ctx.fillStyle = '#ffffff'; ctx.beginPath();
+        for (var i = 0; i < 8; i++) { var a = i / 8 * Math.PI * 2, r = i % 2 ? 3 : 11; ctx.lineTo(w / 2 + Math.cos(a) * r, w / 2 + Math.sin(a) * r); }
+        ctx.fill();
+      });
       canvas(scene, 'shard', 12, 6, function (ctx, w, h) { ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.moveTo(0, h / 2); ctx.lineTo(w, 0); ctx.lineTo(w * 0.7, h); ctx.fill(); });
     },
+
+    // Start the looping swim animation on a sprite (no-op for species without one, or painted PNGs).
+    playSwim: function (sprite, id) {
+      var k = 'swim_' + id;
+      if (!sprite.anims || !sprite.scene.anims.exists(k) || sprite.scene.textures.exists('png_' + id)) return;
+      sprite.play({ key: k, startFrame: Math.floor(Math.random() * SWIM_FRAMES) });
+    },
+    // Tail-beat speed: 1 = normal, 0 = frozen.
+    swimRate: function (sprite, rate) { if (sprite.anims && sprite.anims.isPlaying) sprite.anims.timeScale = rate; },
 
     speciesKey: function (scene, id) {
       if (scene.textures.exists('png_' + id)) return 'png_' + id;
