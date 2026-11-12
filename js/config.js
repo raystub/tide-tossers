@@ -9,7 +9,8 @@ TT.VERSION = 'v0.5';
 TT.MOBILE = /[?&]mobile=1/.test(location.search) ||
   (!!window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 // Installed to the home screen (already full screen, no browser bars).
-TT.INSTALLED = !!window.navigator.standalone ||
+TT.NATIVE = !!window.Capacitor;   // running inside the Android app shell
+TT.INSTALLED = TT.NATIVE || !!window.navigator.standalone ||
   (!!window.matchMedia && window.matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches);
 
 TT.CFG = {
