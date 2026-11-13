@@ -66,7 +66,7 @@ TT.TitleScene = new Phaser.Class({
     var best = TT.Save.arcadeBest();
     TT.UI.button(this, W / 2 - 160, 494, 290, 62, 'Puzzle\n' + TT.PUZZLES.length + ' planning challenges', function () { TT.Sfx.unlock(); self.scene.start('PuzzleSelect'); }, { size: 15, fill: 0x16806a, stroke: 0xbff7d2, radius: 24 }).setDepth(D);
     TT.UI.button(this, W / 2 + 160, 494, 290, 62, 'Arcade\n' + (best.wave ? 'Best: ' + best.wave + ' waves' : 'Endless waves'), function () { TT.Sfx.unlock(); self.scene.start('Game', { mode: 'arcade' }); }, { size: 15, fill: 0x7a5a14, stroke: 0xffe7a8, radius: 24 }).setDepth(D);
-    TT.UI.button(this, W / 2 - 130, 574, 220, 48, 'Field guide', function () { self.scene.start('FieldGuide'); }, { size: 15 }).setDepth(D);
+    TT.UI.button(this, W / 2 - 130, 574, 220, 48, 'Field guide', function () { self.scene.start('FieldGuide', { from: 'Title' }); }, { size: 15 }).setDepth(D);
     TT.UI.button(this, W / 2 + 130, 574, 220, 48, 'Sound: ' + (TT.Sfx.isMuted() ? 'Off' : 'On'), function () { TT.Sfx.unlock(); TT.Sfx.setMuted(!TT.Sfx.isMuted()); self.scene.restart(); }, { size: 15 }).setDepth(D);
     if (TT.MOBILE && !TT.INSTALLED && this.scale.fullscreen.available) {
       TT.UI.button(this, W - 150, 46, 220, 48, 'Full screen', function () {
@@ -134,7 +134,7 @@ TT.LevelSelectScene = new Phaser.Class({
     var gs = Object.keys(C.GADGETS).map(function (k) { return C.GADGETS[k].name + ' ×' + TT.Save.gadgetCount(k); }).join('    ');
     this.add.text(W / 2, 668, 'Gadgets: ' + gs, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(13), color: '#ffe7a8', stroke: '#06283a', strokeThickness: 3 }).setOrigin(0.5).setDepth(D);
     TT.UI.button(this, 90, 46, 130, 44, '‹ Title', function () { self.scene.start('Title'); }, { size: 15 }).setDepth(D);
-    TT.UI.button(this, W - 110, 46, 170, 44, 'Field guide', function () { self.scene.start('FieldGuide'); }, { size: 15 }).setDepth(D);
+    TT.UI.button(this, W - 110, 46, 170, 44, 'Field guide', function () { self.scene.start('FieldGuide', { from: 'LevelSelect' }); }, { size: 15 }).setDepth(D);
     if (TT.Haptics.available()) TT.UI.button(this, W - 110, 100, 170, 40, 'Vibration: ' + (TT.Save.haptics() ? 'On' : 'Off'), function () {
       TT.Save.setHaptics(!TT.Save.haptics()); if (TT.Save.haptics()) TT.Haptics.buzz(30); self.scene.restart();
     }, { size: 13 }).setDepth(D);
@@ -204,21 +204,21 @@ TT.FieldGuideScene = new Phaser.Class({
   create: function (data) {
     var C = TT.CFG, W = C.WIDTH, self = this;
     TT.menuBackdrop(this, 0.62);
-    var D = 30, tab = (data && data.tab) || 'wildlife', CARDS = tab === 'trash' ? TT.TRASH : TT.GUIDE;
+    var D = 30, tab = (data && data.tab) || 'wildlife', from = (data && data.from) || 'Title', CARDS = tab === 'trash' ? TT.TRASH : TT.GUIDE;
     var unlocked = CARDS.filter(function (c) { return TT.Save.cardUnlocked(c.id); }).length;
     TT.UI.title(this, W / 2, 46, 'Field guide', 36).setDepth(D);
     // two tabs: the wildlife and places you meet, and the trash you clear up
     [['wildlife', 'Wildlife & places'], ['trash', 'Trash']].forEach(function (t, i) {
       var on = t[0] === tab;
-      TT.UI.button(self, W / 2 + (i ? 130 : -130), 140, 240, 46, t[1], function () { if (!on) self.scene.restart({ tab: t[0] }); },
+      TT.UI.button(self, W / 2 + (i ? 130 : -130), 140, 240, 46, t[1], function () { if (!on) self.scene.restart({ tab: t[0], from: from }); },
         { size: 15, fill: on ? 0x16806a : 0x0a3d55, stroke: on ? 0xbff7d2 : 0x7fb7c6, radius: 20 }).setDepth(D);
     });
     this.add.text(W / 2, 86, unlocked + ' of ' + CARDS.length + ' cards · ' + (tab === 'trash' ? 'clear levels to learn about the trash in them' : 'clear levels to unlock species and places'), { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(13), color: '#bdf3ff' }).setOrigin(0.5).setDepth(D);
-    TT.UI.button(this, 90, 46, 130, 44, '‹ Back', function () { self.scene.start('LevelSelect'); }, { size: 15 }).setDepth(D);
+    TT.UI.button(this, 90, 46, 130, 44, '‹ Back', function () { self.scene.start(from); }, { size: 15 }).setDepth(D);
     // measurement units: cycles Metric -> Imperial -> Both
     var um = TT.Units.mode();
     TT.UI.button(this, W - 120, 46, 190, 44, 'Units: ' + TT.Units.NAMES[um], function () {
-      var o = TT.Units.ORDER; TT.Save.setUnits(o[(o.indexOf(um) + 1) % o.length]); self.scene.restart({ tab: tab });
+      var o = TT.Units.ORDER; TT.Save.setUnits(o[(o.indexOf(um) + 1) % o.length]); self.scene.restart({ tab: tab, from: from });
     }, { size: 14 }).setDepth(D);
     // a scrolling grid of cards (drag or use the mouse wheel when there are more than fit)
     var grid = this.add.container(0, 0).setDepth(D - 1), cols = tab === 'trash' ? 4 : 6, top = 260, rowH = 165, dragged = false;
@@ -226,7 +226,7 @@ TT.FieldGuideScene = new Phaser.Class({
     CARDS.forEach(function (card, i) {
       var col = i % cols, row = Math.floor(i / cols), x = W / 2 + (col - (cols - 1) / 2) * 200, y = top + row * rowH;
       var on = TT.Save.cardUnlocked(card.id);
-      var tile = TT.UI.button(self, x, y, 188, 150, '', function () { if (on && !dragged) self.showCard(card); }, { fill: on ? 0x0f5a78 : 0x16262e, stroke: on ? 0xbdf3ff : 0x3f5a66 });
+      var tile = TT.UI.button(self, x, y, 188, 150, '', function () { var p = self.input.activePointer; if (on && !(dragged && p.downTime === gesture)) self.showCard(card); }, { fill: on ? 0x0f5a78 : 0x16262e, stroke: on ? 0xbdf3ff : 0x3f5a66 });
       grid.add(tile);
       var isPlace = card.id.indexOf('place_') === 0;
       if (card.trash) {
@@ -245,9 +245,16 @@ TT.FieldGuideScene = new Phaser.Class({
       tile.add(self.add.text(0, 48, on ? card.name : '???', { fontFamily: TT.UI.font, fontSize: TT.UI.fs(15), color: on ? '#ffffff' : '#56707a', align: 'center', wordWrap: { width: 176 } }).setOrigin(0.5));
     });
     if (minY < 0) {
-      var startY = 0, startP = 0;
-      this.input.on('pointerdown', function (p) { startY = p.y; startP = grid.y; dragged = false; });
-      this.input.on('pointermove', function (p) { if (!p.isDown) return; if (Math.abs(p.y - startY) > 10) dragged = true; if (dragged) grid.y = Phaser.Math.Clamp(startP + p.y - startY, minY, 0); });
+      // The card buttons stop 'pointerdown' from reaching the scene, so each gesture is tracked from the
+      // pointer's own press position (downY) and press time. A small wobble of the finger is still a tap.
+      var gesture = -1, startP = 0;
+      this.input.on('pointermove', function (p) {
+        if (!p.isDown) return;
+        if (p.downTime !== gesture) { gesture = p.downTime; startP = grid.y; dragged = false; }
+        if (Math.abs(p.y - p.downY) > 18) dragged = true;
+        if (dragged) grid.y = Phaser.Math.Clamp(startP + p.y - p.downY, minY, 0);
+      });
+      this.input.on('pointerdown', function (p) { gesture = p.downTime; startP = grid.y; dragged = false; });
       this.input.on('wheel', function (p, o, dx, dy) { grid.y = Phaser.Math.Clamp(grid.y - dy, minY, 0); });
       this.add.text(W - 24, 96, 'Drag to see more', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(12), color: '#ffe7a8' }).setOrigin(1, 0.5).setDepth(D);
     }

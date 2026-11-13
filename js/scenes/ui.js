@@ -395,7 +395,7 @@ TT.UIScene = new Phaser.Class({
     layer.add(TT.UI.button(this, px - gap, by, bw, bh, 'Retry', function () { g.restartLevel(); }, { size: 16 }));
     layer.add(TT.UI.button(this, px, by, bw, bh, res.mode === 'puzzle' ? 'Puzzles' : 'Levels', function () { g.toMenu(); }, { size: 16 }));
     if (res.win) layer.add(TT.UI.button(this, px + gap, by, bw, bh, 'Next', function () { g.nextLevel(); }, { size: 16, fill: 0x16806a, stroke: 0xbff7d2 }));
-    else layer.add(TT.UI.button(this, px + gap, by, bw, bh, 'Field guide', function () { self.scene.stop('UI'); g.scene.start('FieldGuide'); }, { size: 15 }));
+    else layer.add(TT.UI.button(this, px + gap, by, bw, bh, 'Field guide', function () { self.scene.stop('UI'); g.scene.start('FieldGuide', { from: 'LevelSelect' }); }, { size: 15 }));
     layer.setAlpha(0); this.tweens.add({ targets: layer, alpha: 1, duration: 250 });
   }
 });
