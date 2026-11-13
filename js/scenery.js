@@ -315,7 +315,7 @@ window.TT = window.TT || {};
   };
   var PROP_SETS = {
     keys: ['brain', 'tubes', 'fan', 'staghorn', 'anemone', 'grass', 'grass', 'star', 'boulder', 'fan', 'tubes'],
-    galapagos: ['boulder', 'kelp', 'cups', 'urchin', 'kelp', 'star', 'boulder', 'grass', 'cups'],
+    galapagos: ['boulder', 'kelp', 'cups', 'urchin', 'kelp', 'star', 'boulder', 'cups'],   // no seagrass: the Galápagos have almost none
     cave: ['boulder', 'glowtube', 'urchin', 'boulder', 'glowtube', 'cups']
   };
   function propTexture(scene, name, hue, fam, dark) {
@@ -515,6 +515,9 @@ window.TT = window.TT || {};
   };
 
   // A still backdrop for the menus (same layers, no camera).
+  // a prop's picture for the field guide
+  TT.Scenery.propTexture = function (scene, name) { return propTexture(scene, name, 1, name === 'glowtube' ? 'cave' : 'keys', false); };
+
   TT.Scenery.backdrop = function (scene, fam, waterY) {
     var C = TT.CFG, L = buildLayers(scene, fam, C.WIDTH, { w: C.WIDTH, h: C.HEIGHT }, { seed: 77, noForeground: true });
     var o = { t: 0 };

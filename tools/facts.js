@@ -29,6 +29,14 @@ TT.GUIDE.forEach((c) => {
   rows.push([card, 'Did you know?', strip(c.fact)]);
   rows.push([card, 'Threats', strip(c.threat)]);
 });
+(TT.HABITAT || []).forEach((c) => {
+  const card = c.name + ' (habitat)';
+  rows.push([card, 'Scientific name', c.sci]);
+  rows.push([card, 'Where', c.where]);
+  rows.push([card, 'Size', c.size]);
+  rows.push([card, 'Did you know?', strip(c.fact)]);
+  rows.push([card, 'Threats', strip(c.threat)]);
+});
 (TT.TRASH || []).forEach((c) => {
   const card = c.name + ' (trash)';
   rows.push([card, 'Where it comes from', strip(c.where)]);

@@ -607,9 +607,8 @@ TT.GameScene = new Phaser.Class({
       (this.level.invasives || []).forEach(function (l) { var sp = l.k || 'lionfish'; if (ids.indexOf(sp) < 0) ids.push(sp); });
       (this.level.gentle || []).forEach(function (gd) { if (ids.indexOf(gd.k) < 0) ids.push(gd.k); });
       if (!this.puzzle) ids.push(TT.worldByN(this.level.world).card);
-      // trash cards for every kind of junk in the level
-      (this.level.objects || []).forEach(function (o) { if (o.k !== 'rubble' && ids.indexOf('trash_' + o.k) < 0) ids.push('trash_' + o.k); });
-      (this.level.containers || []).forEach(function (c) { if (ids.indexOf('trash_' + c.k) < 0) ids.push('trash_' + c.k); });
+      // trash and habitat cards for what the level has in it
+      TT.cardsForLevel(this.level).forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); });
       res.newCards = TT.Save.unlockCards(ids);
       this.sfx.play('win'); TT.Haptics.buzz([30, 60, 30, 60, 70]);
     } else this.sfx.play('lose');

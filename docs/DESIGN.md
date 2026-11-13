@@ -112,6 +112,10 @@ Abilities, real behaviours and handling for all 42 rescuers are in the Claude do
 - **Puzzle:** small rooms, no tide. Every ability use is a move and only abilities break things; stars come from moves used against par. Six rooms at launch, more with each world.
 - **Arcade:** one arena, endless waves. Each wave places more nets, lines and traps (then concrete and lionfish, and a sawfish big rescue every fifth wave); clearing a wave adds time, rescues don't. Best wave and score are saved.
 
+## Field guide: habitat (v0.6.8)
+
+A third tab, Habitat, covers the corals, plants, algae and background life drawn in the levels: reef-building coral, brain coral, staghorn coral, sea fans, tube sponges, anemones, turtle grass, red mangrove, kelp, orange cup coral, sea urchins, sea stars, volcanic rock, glowing plankton and marine snow. Cards unlock from what a cleared level contains (its background, coral, seagrass, mangrove roots, darkness). Levels cleared earlier unlock their cards when the field guide opens. Seagrass props were removed from Galápagos backgrounds, which have almost none.
+
 ## Field guide: trash (v0.6.4)
 
 The field guide has a second tab, Trash, with a card for each kind of junk in the game: plastic, glass, metal, wood, concrete, ghost nets, fishing line and lost traps. Each card says where it comes from, how long it lasts, how it harms wildlife, and how people can help. A card unlocks when you clear a level that has that junk.

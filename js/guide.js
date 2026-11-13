@@ -132,6 +132,55 @@ TT.INFO = {
   lionfish: 'Its spines knock out a rescuer\'s ability. The pufferfish is immune, and a snap or a puff scares it away.'
 };
 
+// Habitat cards: the corals, plants, algae and background life of each place. Unlocked by clearing a level
+// where they appear (tags: background family, 'coral', 'seagrass', 'mangrove', 'dark', 'any'). img: what the card shows.
+TT.HABITAT = [
+  { id: 'hab_coral', habitat: true, name: 'Reef-building coral', sci: 'Many species (stony corals)', where: 'Warm, clear, shallow seas around the world', size: 'Each polyp is often just a few millimetres; reefs can stretch for thousands of kilometres',
+    fact: 'Corals are animals. Tiny algae living inside their tissues make food from sunlight and give corals much of their colour.', threat: 'Marine heatwaves cause bleaching: the coral loses its algae and turns white, and may starve if the heat lasts.', img: 'coral', tags: ['coral'] },
+  { id: 'hab_brain', habitat: true, name: 'Brain coral', sci: 'Several species, e.g. grooved brain coral', where: 'Coral reefs of Florida and the Caribbean', size: 'Colonies can grow to about 1–2 m across',
+    fact: 'Its winding grooves are rows of polyps sharing a skeleton. Big brain corals can be well over a hundred years old.', threat: 'Warming water and coral diseases such as stony coral tissue loss disease.', img: 'prop:brain', tags: ['keys'] },
+  { id: 'hab_staghorn', habitat: true, name: 'Staghorn coral', sci: 'Acropora cervicornis', where: 'Shallow reefs of Florida and the Caribbean', size: 'Branches can form thickets several metres wide',
+    fact: 'One of the fastest-growing corals. Teams grow pieces in underwater nurseries and plant them back on reefs.', threat: 'Disease, bleaching and storms; listed as threatened under the US Endangered Species Act.', img: 'prop:staghorn', tags: ['keys'] },
+  { id: 'hab_seafan', habitat: true, name: 'Sea fan', sci: 'Gorgonia species', where: 'Reefs of Florida and the Caribbean', size: 'Commonly up to about 1 m across',
+    fact: 'A sea fan is a soft coral colony. It grows across the current so its tiny polyps can catch plankton drifting past.', threat: 'Disease, warming water and damage from anchors and fishing gear.', img: 'prop:fan', tags: ['keys'] },
+  { id: 'hab_sponge', habitat: true, name: 'Tube sponges', sci: 'Many species', where: 'Coral reefs worldwide, including Florida and the Caribbean', size: 'Tubes from a few centimetres to over 1 m tall',
+    fact: 'Sponges are simple animals. They pump water through tiny pores and filter out food, which helps keep reef water clear.', threat: 'Warming water, disease and pollution.', img: 'prop:tubes', tags: ['keys'] },
+  { id: 'hab_anemone', habitat: true, name: 'Sea anemone', sci: 'Many species', where: 'Coral reefs and rocky shores worldwide', size: 'Most are a few centimetres to about 30 cm across',
+    fact: 'Anemones are relatives of corals and jellyfish. They catch food with stinging tentacles, and some shelter small fish and shrimp.', threat: 'Warming water (anemones can bleach like corals) and collection for aquariums.', img: 'prop:anemone', tags: ['keys'] },
+  { id: 'hab_turtlegrass', habitat: true, name: 'Turtle grass', sci: 'Thalassia testudinum', where: 'Shallow, sandy bays of Florida, the Gulf of Mexico and the Caribbean', size: 'Ribbon-like leaves often 10–30 cm long',
+    fact: 'Seagrasses are true flowering plants that live underwater. Meadows shelter young fish and feed manatees and green turtles.', threat: 'Boat propeller scars, murky water from pollution, and coastal building.', img: 'seagrass', tags: ['seagrass'] },
+  { id: 'hab_mangrove', habitat: true, name: 'Red mangrove', sci: 'Rhizophora mangle', where: 'Sheltered tropical coasts, including Florida and the Caribbean', size: 'Trees often 5–10 m tall; prop roots arch down into the water',
+    fact: 'Its arching prop roots hold the tree up in soft mud and make a nursery where young fish hide.', threat: 'Clearing for coastal building and farming, pollution, and rising seas.', img: 'static:root', tags: ['mangrove'] },
+  { id: 'hab_kelp', habitat: true, name: 'Kelp and seaweeds', sci: 'Large brown algae', where: 'Cool, nutrient-rich water; in the Galápagos only where cold currents rise', size: 'Some giant kelp grows tens of metres long',
+    fact: 'Kelp is an alga, not a plant: it has no roots or flowers. Gas-filled floats hold its blades up toward the light.', threat: 'Warm-water events, and too many sea urchins grazing it away.', img: 'prop:kelp', tags: ['galapagos'] },
+  { id: 'hab_cupcoral', habitat: true, name: 'Orange cup coral', sci: 'Tubastraea coccinea', where: 'Shaded rock, caves and overhangs in warm seas, including the Galápagos', size: 'Each cup is about 1–2 cm across',
+    fact: 'Unlike reef-building corals, it has no algae inside, so it can live in dark caves and catches plankton at night.', threat: 'It is native in the Pacific but invasive in parts of the Atlantic, where it spreads on reefs and structures.', img: 'prop:cups', tags: ['galapagos', 'cave'] },
+  { id: 'hab_urchin', habitat: true, name: 'Sea urchins', sci: 'Many species', where: 'Rocky reefs and kelp forests worldwide, including the Galápagos', size: 'Most are about 3–10 cm across without their spines',
+    fact: 'Urchins graze algae with five teeth on the underside. A healthy number keeps algae in check; too many can strip a reef.', threat: 'Disease outbreaks, and losing the predators that keep their numbers balanced.', img: 'prop:urchin', tags: ['galapagos', 'cave'] },
+  { id: 'hab_seastar', habitat: true, name: 'Sea stars', sci: 'Many species', where: 'Oceans worldwide, from tide pools to the deep sea', size: 'Most are about 10–30 cm across',
+    fact: 'Sea stars move on hundreds of tiny tube feet, and many can regrow a lost arm.', threat: 'Sea star wasting disease has killed huge numbers of some species.', img: 'prop:star', tags: ['keys', 'galapagos'] },
+  { id: 'hab_lava', habitat: true, name: 'Volcanic rock', sci: 'Basalt lava', where: 'The Galápagos Islands, built by volcanoes', size: 'Some of the islands are still volcanically active',
+    fact: 'The Galápagos sit over a volcanic hotspot. New lava rock becomes a home for algae, crabs and marine iguanas.', threat: 'Lava itself is not threatened, but the life on it faces warming water and pollution.', img: 'static:lava', tags: ['galapagos'] },
+  { id: 'hab_glowplankton', habitat: true, name: 'Glowing plankton', sci: 'Bioluminescent dinoflagellates and others', where: 'Oceans worldwide, often in warm coastal waters', size: 'Each is a single cell, too small to see on its own',
+    fact: 'Many plankton make their own light. When the water is stirred, they flash blue-green.', threat: 'Pollution and changes in water temperature can shift where they bloom.', img: 'prop:glowtube', tags: ['dark'] },
+  { id: 'hab_marinesnow', habitat: true, name: 'Marine snow', sci: 'Drifting organic particles', where: 'Every ocean, falling from the surface to the deep sea', size: 'Flakes are usually a few millimetres or smaller',
+    fact: 'Marine snow is bits of dead plankton, waste and dust slowly sinking. It feeds many deep-sea animals.', threat: 'Changes at the surface, like warming water, change how much food falls to the deep.', img: 'snow', tags: ['any'] },
+];
+
+// The trash and habitat cards a level unlocks when it is cleared.
+TT.cardsForLevel = function (level) {
+  var ids = [], add = function (id) { if (ids.indexOf(id) < 0) ids.push(id); };
+  (level.objects || []).forEach(function (o) { if (o.k !== 'rubble') add('trash_' + o.k); });
+  (level.containers || []).forEach(function (c) { add('trash_' + c.k); });
+  var tags = ['any', level.background];
+  if ((level.coral || []).length) tags.push('coral');
+  if ((level.seagrass || []).length) tags.push('seagrass');
+  if ((level.statics || []).some(function (st) { return st.look === 'root'; })) tags.push('mangrove');
+  if (level.dark) tags.push('dark');
+  (TT.HABITAT || []).forEach(function (h) { if (h.tags.some(function (t) { return tags.indexOf(t) >= 0; })) add(h.id); });
+  return ids;
+};
+
 // ---------- Units ----------
 // Card text is written in metric. TT.Units.text() rewrites every measurement for the player's choice:
 // 'metric', 'imperial', or 'both' (metric first, imperial in brackets). The default follows the device:

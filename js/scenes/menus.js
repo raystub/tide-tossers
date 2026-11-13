@@ -198,22 +198,41 @@ TT.trashTexture = function (scene, k) {
   return 'mat_' + k;
 };
 
+// The picture for a habitat card: the coral, plant or prop as drawn in the levels.
+TT.habitatTexture = function (scene, card) {
+  var im = card.img;
+  if (im === 'coral') return TT.Art.coralTexture(scene, 120, 76, 0);
+  if (im === 'seagrass') return 'seagrass';
+  if (im.indexOf('prop:') === 0) return TT.Scenery.propTexture(scene, im.slice(5));
+  if (im.indexOf('static:') === 0) { var look = im.slice(7); return TT.Art.staticTexture(scene, look === 'root' ? { look: 'root', w: 46, h: 260 } : { look: look, w: 160, h: 140 }, 900); }
+  if (!scene.textures.exists('hab_snow')) {
+    // drifting flakes of marine snow
+    var g = scene.make.graphics({ x: 0, y: 0, add: false }), r = 0;
+    for (var i = 0; i < 70; i++) { r = (r * 9301 + 49297) % 233280; var x = r / 233280 * 150; r = (r * 9301 + 49297) % 233280; var y = r / 233280 * 110;
+      g.fillStyle(0xe8f4f6, 0.5 + (i % 5) * 0.1); g.fillCircle(x + 5, y + 5, 1 + (i % 3)); }
+    g.generateTexture('hab_snow', 160, 120); g.destroy();
+  }
+  return 'hab_snow';
+};
+
 TT.FieldGuideScene = new Phaser.Class({
   Extends: Phaser.Scene,
   initialize: function FieldGuideScene() { Phaser.Scene.call(this, { key: 'FieldGuide' }); },
   create: function (data) {
     var C = TT.CFG, W = C.WIDTH, self = this;
     TT.menuBackdrop(this, 0.62);
-    var D = 30, tab = (data && data.tab) || 'wildlife', from = (data && data.from) || 'Title', CARDS = tab === 'trash' ? TT.TRASH : TT.GUIDE;
+    var D = 30, tab = (data && data.tab) || 'wildlife', from = (data && data.from) || 'Title', CARDS = tab === 'trash' ? TT.TRASH : tab === 'habitat' ? TT.HABITAT : TT.GUIDE;
+    // cards for levels cleared before these tabs existed
+    TT.LEVELS.forEach(function (l) { if (TT.Save.cleared(l.id)) TT.Save.unlockCards(TT.cardsForLevel(l)); });
     var unlocked = CARDS.filter(function (c) { return TT.Save.cardUnlocked(c.id); }).length;
     TT.UI.title(this, W / 2, 46, 'Field guide', 36).setDepth(D);
     // two tabs: the wildlife and places you meet, and the trash you clear up
-    [['wildlife', 'Wildlife & places'], ['trash', 'Trash']].forEach(function (t, i) {
+    [['wildlife', 'Wildlife & places'], ['habitat', 'Habitat'], ['trash', 'Trash']].forEach(function (t, i) {
       var on = t[0] === tab;
-      TT.UI.button(self, W / 2 + (i ? 130 : -130), 140, 240, 46, t[1], function () { if (!on) self.scene.restart({ tab: t[0], from: from }); },
+      TT.UI.button(self, W / 2 + (i - 1) * 250, 140, 236, 46, t[1], function () { if (!on) self.scene.restart({ tab: t[0], from: from }); },
         { size: 15, fill: on ? 0x16806a : 0x0a3d55, stroke: on ? 0xbff7d2 : 0x7fb7c6, radius: 20 }).setDepth(D);
     });
-    this.add.text(W / 2, 86, unlocked + ' of ' + CARDS.length + ' cards · ' + (tab === 'trash' ? 'clear levels to learn about the trash in them' : 'clear levels to unlock species and places'), { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(13), color: '#bdf3ff' }).setOrigin(0.5).setDepth(D);
+    this.add.text(W / 2, 86, unlocked + ' of ' + CARDS.length + ' cards · ' + (tab === 'trash' ? 'clear levels to learn about the trash in them' : tab === 'habitat' ? 'clear levels to learn about the corals, plants and life around you' : 'clear levels to unlock species and places'), { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(13), color: '#bdf3ff' }).setOrigin(0.5).setDepth(D);
     TT.UI.button(this, 90, 46, 130, 44, '‹ Back', function () { self.scene.start(from); }, { size: 15 }).setDepth(D);
     // measurement units: cycles Metric -> Imperial -> Both
     var um = TT.Units.mode();
@@ -221,7 +240,7 @@ TT.FieldGuideScene = new Phaser.Class({
       var o = TT.Units.ORDER; TT.Save.setUnits(o[(o.indexOf(um) + 1) % o.length]); self.scene.restart({ tab: tab, from: from });
     }, { size: 14 }).setDepth(D);
     // a scrolling grid of cards (drag or use the mouse wheel when there are more than fit)
-    var grid = this.add.container(0, 0).setDepth(D - 1), cols = tab === 'trash' ? 4 : 6, top = 260, rowH = 165, dragged = false;
+    var grid = this.add.container(0, 0).setDepth(D - 1), cols = tab === 'trash' ? 4 : tab === 'habitat' ? 5 : 6, top = 260, rowH = 165, dragged = false;
     var rows = Math.ceil(CARDS.length / cols), minY = Math.min(0, C.HEIGHT - 40 - (top + (rows - 1) * rowH + 75));
     CARDS.forEach(function (card, i) {
       var col = i % cols, row = Math.floor(i / cols), x = W / 2 + (col - (cols - 1) / 2) * 200, y = top + row * rowH;
@@ -229,8 +248,8 @@ TT.FieldGuideScene = new Phaser.Class({
       var tile = TT.UI.button(self, x, y, 188, 150, '', function () { var p = self.input.activePointer; if (on && !(dragged && p.downTime === gesture)) self.showCard(card); }, { fill: on ? 0x0f5a78 : 0x16262e, stroke: on ? 0xbdf3ff : 0x3f5a66 });
       grid.add(tile);
       var isPlace = card.id.indexOf('place_') === 0;
-      if (card.trash) {
-        var timg = self.add.image(0, -20, TT.trashTexture(self, card.k));
+      if (card.trash || card.habitat) {
+        var timg = self.add.image(0, -20, card.habitat ? TT.habitatTexture(self, card) : TT.trashTexture(self, card.k));
         var tsc = Math.min(130 / timg.width, 84 / timg.height); timg.setScale(tsc);
         if (!on) timg.setTint(0x000000).setAlpha(game_isCanvas(self) ? 0.18 : 0.5);
         tile.add(timg);
@@ -270,8 +289,8 @@ TT.FieldGuideScene = new Phaser.Class({
     var g = this.add.graphics(); TT.UI.panel(g, px, py, pw, ph, 22, 0x0a3d55, 0.98);
     layer.add([shade, g]);
     // left column: the animal (or the place marker) with the close hint right under it
-    if (card.trash) {
-      var ti = this.add.image(leftX, py + 210, TT.trashTexture(this, card.k));
+    if (card.trash || card.habitat) {
+      var ti = this.add.image(leftX, py + 210, card.habitat ? TT.habitatTexture(this, card) : TT.trashTexture(this, card.k));
       ti.setScale(Math.min(300 / ti.width, 240 / ti.height)); layer.add(ti);
     } else if (!isPlace) {
       var key = TT.Art.speciesKey(this, card.id);
