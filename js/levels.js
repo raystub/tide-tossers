@@ -23,7 +23,7 @@ TT.WORLDS = [
     plan: ['Mangrove Edge', 'Lagoon Bommies', 'Cleaning Station', 'Starfish Outbreak', 'Spawning Night', 'Osprey Reef Wall'] },
   { n: 3, name: 'Galápagos Islands', depth: '0–300 m', card: 'place_galapagos', background: 'galapagos',
     plan: ['Rising Tide', 'Lava Shore', 'Penguin Rocks', 'Longline', 'Lava Tube', 'Darwin\'s Pillars'] },
-  { n: 4, name: 'Monterey Bay Kelp', depth: '0–300 m', card: 'place_monterey', background: 'keys',
+  { n: 4, name: 'Monterey Bay Kelp', depth: '0–300 m', card: 'place_monterey', background: 'kelp',
     plan: ['Kelp Canopy', 'Elkhorn Slough', 'Harbor Breakwater', 'Urchin Barren', 'Sand Channel', 'Canyon Head'] },
   { n: 5, name: 'Twilight Zone', depth: '200–1,000 m', card: 'place_twilight', background: 'cave',
     plan: ['Dusk at the Rim', 'Scattering Layer', 'The Night Rise', 'Mirror Halls', 'Barreleye Window', 'Oxygen Minimum Zone'] }
@@ -448,6 +448,125 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       ],
       coral: [], invasives: [], startHealth: 30,
       hint: 'Darwin\'s Arch fell into the sea in 2021, leaving two pillars. A whale shark is trailing a lost net! Tear it three times to set it free. Hammerheads RAM, bullheads CRUSH concrete, swordfish slice lines.'
+    },
+    // ---------- World 4: Monterey Bay ----------
+    {
+      id: '4-1', name: 'Kelp Canopy', world: 4, place: 'Monterey Bay', background: 'kelp',
+      width: 3000, waterline: 180, start: { x: 170, y: 40 }, team: ['otter'], time: 130, exit: { x: 2880, y: 420 },
+      kelp: [{ x: 800, w: 260 }, { x: 1700, w: 320 }, { x: 2450, w: 220 }],
+      statics: [{ x: 1250, y: 620, w: 160, h: 120, look: 'rock' }],
+      objects: [
+        { k: 'plastic', x: 1050, y: 185, w: 56, h: 38 }, { k: 'glass', x: 1450, y: 640, w: 18, h: 60 },
+        { k: 'tin', x: 2100, y: 640, w: 44, h: 80 }, { k: 'plastic', x: 2650, y: 185, w: 56, h: 38 }
+      ],
+      containers: [
+        { k: 'trap', x: 600, y: 645, w: 100, h: 70, holds: [{ k: 'rockfish', n: 2 }] },
+        { k: 'net', x: 1250, y: 330, w: 74, h: 130, hang: true, holds: [{ k: 'otter', n: 1 }] },
+        { k: 'trap', x: 2000, y: 645, w: 100, h: 70, holds: [{ k: 'rockfish', n: 2 }] },
+        { k: 'net', x: 2650, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] }
+      ],
+      coral: [], invasives: [], startHealth: 30,
+      hint: 'Giant kelp grows in tall forests here. The sea otter slips through the kelp and bangs crab pots open with a ROCK. Otters breathe air, so come up when the ring runs low.'
+    },
+    {
+      id: '4-2', name: 'Elkhorn Slough', world: 4, place: 'Monterey Bay', background: 'kelp',
+      width: 3200, waterline: 240, tide: { min: 180, max: 300 }, start: { x: 170, y: 60 }, team: ['leopardshark', 'otter'], time: 140, exit: { x: 3080, y: 470 },
+      objects: [
+        { k: 'plastic', x: 900, y: 245, w: 56, h: 38 }, { k: 'tin', x: 1500, y: 640, w: 44, h: 80, buried: true },
+        { k: 'glass', x: 2300, y: 650, w: 18, h: 60 }, { k: 'plastic', x: 2700, y: 245, w: 56, h: 38 }
+      ],
+      containers: [
+        { k: 'trap', x: 750, y: 645, w: 100, h: 70, holds: [{ k: 'rockfish', n: 1 }] },
+        { k: 'trap', x: 1350, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'rockfish', n: 2 }] },
+        { k: 'net', x: 1950, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'trap', x: 2550, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'otter', n: 1 }] }
+      ],
+      coral: [], startHealth: 30,
+      invasives: [{ k: 'greencrab', x: 1100, y: 662, patrol: 60, size: 56 }, { k: 'greencrab', x: 2250, y: 662, patrol: 60, size: 56 }],
+      hint: 'Leopard sharks gather in this shallow slough. Their SENSE finds traps buried in the mud. Invasive green crabs pinch: the sea otter eats crabs, so its ROCK sends them scuttling.'
+    },
+    {
+      id: '4-3', name: 'Harbor Breakwater', world: 4, place: 'Monterey Bay', background: 'kelp',
+      width: 3400, waterline: 190, start: { x: 170, y: 50 }, team: ['octopus', 'leopardshark', 'otter'], time: 150, exit: { x: 3280, y: 430 },
+      statics: [
+        { x: 1000, y: 600, w: 220, h: 160, look: 'rock' }, { x: 1180, y: 640, w: 140, h: 80, look: 'rock' },
+        { x: 2300, y: 600, w: 240, h: 160, look: 'rock' }
+      ],
+      kelp: [{ x: 1700, w: 240 }],
+      objects: [
+        { k: 'tin', x: 700, y: 640, w: 44, h: 80 }, { k: 'plastic', x: 1400, y: 195, w: 56, h: 38 },
+        { k: 'wood', x: 2000, y: 195, w: 110, h: 24 }, { k: 'glass', x: 2800, y: 650, w: 18, h: 60, buried: true }
+      ],
+      containers: [
+        { k: 'trap', x: 1450, y: 645, w: 100, h: 70, holds: [{ k: 'rockfish', n: 2 }] },
+        { k: 'net', x: 2000, y: 340, w: 74, h: 130, hang: true, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'trap', x: 2650, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'rockfish', n: 2 }] },
+        { k: 'net', x: 3000, y: 605, w: 84, h: 150, holds: [{ k: 'otter', n: 1 }] }
+      ],
+      coral: [], startHealth: 30,
+      invasives: [{ k: 'greencrab', x: 1600, y: 662, patrol: 50, size: 56 }, { k: 'greencrab', x: 2850, y: 662, patrol: 50, size: 56 }, { k: 'greencrab', x: 3150, y: 662, patrol: 40, size: 56 }],
+      hint: 'Octopuses hide in the rocks of the breakwater. The octopus squirts INK to send crabs away and pries traps open with its arms.'
+    },
+    {
+      id: '4-4', name: 'Urchin Barren', world: 4, place: 'Monterey Bay', background: 'kelp',
+      width: 3400, waterline: 190, start: { x: 170, y: 50 }, team: ['sunstar', 'octopus', 'leopardshark'], time: 160, exit: { x: 3280, y: 430 },
+      kelp: [{ x: 3000, w: 260 }],
+      statics: [{ x: 1900, y: 620, w: 180, h: 120, look: 'rock' }],
+      objects: [
+        { k: 'plastic', x: 1000, y: 195, w: 56, h: 38 }, { k: 'tin', x: 1600, y: 640, w: 44, h: 80 },
+        { k: 'glass', x: 2500, y: 650, w: 18, h: 60 }
+      ],
+      containers: [
+        { k: 'trap', x: 900, y: 645, w: 100, h: 70, holds: [{ k: 'rockfish', n: 2 }] },
+        { k: 'net', x: 1500, y: 340, w: 74, h: 130, hang: true, holds: [{ k: 'otter', n: 1 }] },
+        { k: 'trap', x: 2250, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'rockfish', n: 1 }] },
+        { k: 'net', x: 2750, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] }
+      ],
+      coral: [], startHealth: 15,
+      invasives: [
+        { k: 'purpleurchin', x: 650, y: 660, patrol: 20, size: 50 }, { k: 'purpleurchin', x: 1200, y: 660, patrol: 20, size: 50 },
+        { k: 'purpleurchin', x: 1700, y: 660, patrol: 20, size: 50 }, { k: 'purpleurchin', x: 2450, y: 660, patrol: 20, size: 50 },
+        { k: 'greencrab', x: 2050, y: 662, patrol: 50, size: 56 }
+      ],
+      hint: 'Too many purple urchins have eaten this kelp forest down to bare rock. Sunflower sea stars eat urchins: its GRIP pries them off and the kelp starts to come back.'
+    },
+    {
+      id: '4-5', name: 'Sand Channel', world: 4, place: 'Monterey Bay', background: 'kelp',
+      width: 3500, waterline: 190, start: { x: 170, y: 50 }, team: ['batray', 'sunstar', 'octopus'], time: 160, exit: { x: 3380, y: 430 },
+      kelp: [{ x: 600, w: 220 }, { x: 3100, w: 220 }],
+      currents: [{ x: 1800, y: 560, w: 1400, h: 240, fx: 0.2, fy: 0 }],
+      objects: [
+        { k: 'tin', x: 1100, y: 640, w: 44, h: 80, buried: true }, { k: 'glass', x: 1600, y: 650, w: 18, h: 60, buried: true },
+        { k: 'plastic', x: 2000, y: 195, w: 56, h: 38 }, { k: 'concrete', x: 2500, y: 650, w: 70, h: 40, buried: true }
+      ],
+      containers: [
+        { k: 'trap', x: 950, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'rockfish', n: 2 }] },
+        { k: 'net', x: 1450, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'trap', x: 2000, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'rockfish', n: 1 }] },
+        { k: 'trap', x: 2700, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'otter', n: 1 }] }
+      ],
+      coral: [], startHealth: 25,
+      invasives: [{ k: 'purpleurchin', x: 3150, y: 660, patrol: 20, size: 50 }, { k: 'greencrab', x: 1750, y: 662, patrol: 60, size: 56 }],
+      hint: 'Bat rays flap their wings to dig up clams from the sand. Its DIG uncovers buried traps and junk, and breaks them open.'
+    },
+    {
+      id: '4-6', name: 'Canyon Head', world: 4, place: 'Monterey Bay', background: 'kelp',
+      width: 3900, waterline: 190, start: { x: 170, y: 50 }, team: ['eseal', 'batray', 'octopus'], time: 180, exit: { x: 3780, y: 430 },
+      kelp: [{ x: 700, w: 240 }],
+      statics: [{ x: 1300, y: 610, w: 200, h: 140, look: 'rock' }],
+      objects: [
+        { k: 'tin', x: 1050, y: 640, w: 44, h: 80 }, { k: 'plastic', x: 1700, y: 195, w: 56, h: 38 },
+        { k: 'concrete', x: 2000, y: 650, w: 70, h: 40, buried: true }, { k: 'wood', x: 3000, y: 195, w: 110, h: 24 }
+      ],
+      containers: [
+        { k: 'trap', x: 950, y: 645, w: 100, h: 70, holds: [{ k: 'rockfish', n: 2 }] },
+        { k: 'trap', x: 1800, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'otter', n: 1 }] },
+        { k: 'net', x: 2300, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 3250, y: 400, w: 340, h: 160, stages: 3, hang: true, holds: [{ k: 'humpback', n: 1 }] }
+      ],
+      coral: [], startHealth: 30,
+      invasives: [{ k: 'greencrab', x: 1550, y: 662, patrol: 50, size: 56 }, { k: 'greencrab', x: 2650, y: 662, patrol: 60, size: 56 }],
+      hint: 'A humpback whale is caught in crab-pot lines! Tear the lines three times to free it. Elephant seals are deep divers: the seal\'s PLUNGE hits like a battering ram.'
     }
   ];
 

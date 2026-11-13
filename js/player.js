@@ -105,6 +105,7 @@ TT.Player.prototype.step = function () {
       vx *= d; vy *= d;
     }
     vx += cur.x * k; vy += cur.y * k;
+    if (g.inKelp(b.position.x, b.position.y) && e.id !== 'otter') { var kd2 = Math.pow(1 - C.KELP_DRAG, k); vx *= kd2; vy *= kd2; }
   } else {
     // airborne: gravity does the work, the stick only nudges sideways
     if (push > 0) vx += ix * push * C.SWIM_AIR_CONTROL * k;
@@ -201,7 +202,7 @@ TT.Player.prototype.update = function (dt) {
     this.wasUnder = under;
     if (now - this.lastSplash > 0.15) {
       this.lastSplash = now;
-      var heavy = e.id === 'loggerhead' || e.id === 'hammerhead' || e.id === 'manatee' || e.id === 'sealion';
+      var heavy = e.id === 'loggerhead' || e.id === 'hammerhead' || e.id === 'manatee' || e.id === 'sealion' || e.id === 'eseal';
       g.fx.splash(b.position.x, g.water.y, heavy || sp > 9);
       g.sfx.play(under ? 'splash' : 'breach'); TT.Haptics.buzz(under ? 12 : 6);
     }
@@ -328,6 +329,35 @@ TT.Player.prototype.useAbility = function () {
       this.boost(A.pushSpeed, A.pushTime); e.shoving = true; e.pushing = true; M.Body.setMass(b, e.baseMass * A.pushMassMult);
       g.fx.bubbles(x, y, 16); g.fx.ring(x + hx * 30, y + hy * 30, 50, 0xbff3ff); g.sfx.play('whoosh');
       break;
+    case 'otter':
+      // pounds with a stone: cracks crab pots and shells; crabs and urchins nearby are its food, so they scatter
+      this.boost(8, 0.14);
+      var ox = x + hx * (e.radius + 20), oy = y + hy * (e.radius + 20);
+      g.crunch(ox, oy, A.rockRadius, e, A.rockTrap, A.rockOther); g.lionfishNear(ox, oy, A.rockRadius + 30, ['greencrab', 'purpleurchin']); g.sfx.play('crack');
+      break;
+    case 'leopardshark':
+      this.boost(9, 0.16); g.reveal(x, y, A.senseRadius); g.fx.ring(x, y, A.senseRadius * 0.6, 0xf2e2b0); g.sfx.play('ready');
+      break;
+    case 'octopus':
+      // ink cloud: crabs and lionfish back off; its arms pry at whatever is in front
+      this.boost(10, 0.2);
+      for (var ik = 0; ik < 3; ik++) g.fx.ring(x - hx * 30, y - hy * 30, A.inkRadius * (0.4 + ik * 0.3), 0x1a1424);
+      g.lionfishNear(x, y, A.inkRadius, ['greencrab', 'lionfish']);
+      g.crunch(x + hx * (e.radius + 16), y + hy * (e.radius + 16), A.rockRadius, e, A.rockOther, A.rockOther * 0.6); g.sfx.play('puff');
+      break;
+    case 'sunstar':
+      e.gripUntil = g.clock + A.sunGripTime;
+      g.crunch(x + hx * (e.radius + 10), y + hy * (e.radius + 10), A.gripRadius, e, A.sunGripDamage, A.sunGripDamage * 0.5);
+      g.lionfishNear(x, y, A.sunGripRadius, ['purpleurchin']); g.fx.ring(x, y, A.sunGripRadius, 0xf0a060); g.sfx.play('snap');
+      break;
+    case 'batray':
+      this.boost(8, 0.16); g.reveal(x, y + 30, A.digRadius); g.crunch(x, y + 20, A.digRadius * 0.6, e, A.digDamage, A.digDamage * 0.5);
+      g.fx.silt(x, Math.min(TT.CFG.FLOOR_Y, y + 40)); g.sfx.play('whoosh');
+      break;
+    case 'eseal':
+      this.boost(A.plungeSpeed, A.plungeTime); e.shoving = true; M.Body.setMass(b, e.baseMass * A.plungeMassMult);
+      g.fx.bubbles(x, y, 14); g.sfx.play('whoosh');
+      break;
   }
   m.cdLeft = m.cdMax;
   g.onAbilityUsed();
@@ -353,7 +383,7 @@ TT.Player.prototype.inflate = function () {
     var d = Phaser.Math.Distance.Between(x, y, o.body.position.x, o.body.position.y);
     if (d < A.inflateRadius && (o.material === 'plastic' || o.material === 'glass')) TT.Entities.damage(g, o, A.inflateDamage, e);
   });
-  g.lionfishNear(x, y, A.inflateRadius);
+  g.lionfishNear(x, y, A.inflateRadius, ['lionfish']);
   g.fx.ring(x, y, A.inflateRadius, 0xf2e6b8); g.sfx.play('puff');
 };
 

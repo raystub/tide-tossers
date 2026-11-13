@@ -20,6 +20,11 @@ window.TT = window.TT || {};
       far: 'rgba(96,180,214,0.55)', far2: 'rgba(46,128,172,0.78)', mid: '#124f78', mid2: '#0c3d62',
       sand: ['#b9ad90', '#8f856d', '#6a6252'], ray: 'rgba(235,250,255,', glow: '#bfeaff'
     },
+    kelp: {   // Monterey Bay: cool, green water under a foggy sky
+      sky: ['#8fb2c6', '#c7d9e2', '#eef3f5'], water: ['#62b3a4', '#2f8a84', '#1a5f66', '#0d3846'],
+      far: 'rgba(108,168,150,0.55)', far2: 'rgba(58,118,112,0.8)', mid: '#1d5850', mid2: '#14453e',
+      sand: ['#c7b98f', '#a5966c', '#7a6f52'], ray: 'rgba(240,255,235,', glow: '#c8ffe8'
+    },
     cave: {
       sky: ['#05121c', '#07202e', '#0a2c3e'], water: ['#135a78', '#0c3f5c', '#07263f', '#030f1c'],
       far: 'rgba(30,96,124,0.6)', far2: 'rgba(16,64,90,0.85)', mid: '#0a2a40', mid2: '#071d2e',
@@ -131,7 +136,7 @@ window.TT = window.TT || {};
       ctx.globalAlpha = near ? 0.96 : 0.8; ctx.lineCap = 'round';
       (function (px, gy, s, kind) {
         wrap(ctx, px, 130 * s, function (x) {
-          if (fam === 'cave' || (fam === 'galapagos' && kind < 2)) {   // basalt spires and stacks
+          if (fam === 'cave' || ((fam === 'galapagos' || fam === 'kelp') && kind < 2)) {   // rock spires and stacks
             var bw = (40 + r() * 50) * s, bh = (90 + r() * 150) * s;
             ctx.beginPath(); ctx.moveTo(x - bw, gy + 20);
             ctx.lineTo(x - bw * 0.7, gy - bh * 0.5); ctx.lineTo(x - bw * 0.25, gy - bh * 0.92); ctx.lineTo(x + bw * 0.1, gy - bh);
@@ -140,8 +145,8 @@ window.TT = window.TT || {};
             branchy(ctx, x, gy, 50 * s, -Math.PI / 2, 11 * s, r, 0.45, 0.74);
           } else if (kind === 1) {          // sea fan
             ctx.beginPath(); ctx.moveTo(x, gy); ctx.ellipse(x, gy - 70 * s, 60 * s, 70 * s, 0, Math.PI * 0.5, Math.PI * 2.5); ctx.fill();
-          } else if (kind === 2) {          // kelp / sea-grass fronds
-            for (var f = 0; f < 5; f++) frond(ctx, x + (f - 2) * 14 * s, gy + 8, (110 + r() * 110) * s, (r() - 0.5) * 60 * s, 7 * s, r);
+          } else if (kind === 2 || fam === 'kelp') {          // kelp / sea-grass fronds (tall kelp in Monterey)
+            for (var f = 0; f < 5; f++) frond(ctx, x + (f - 2) * 14 * s, gy + 8, (fam === 'kelp' ? 220 + r() * 160 : 110 + r() * 110) * s, (r() - 0.5) * 60 * s, 7 * s, r);
           } else {                          // rounded coral heads
             for (var b = 0; b < 3; b++) { ctx.beginPath(); ctx.ellipse(x + (b - 1) * 40 * s, gy + 4, (36 + r() * 20) * s, (40 + r() * 30) * s, 0, Math.PI, 0); ctx.fill(); }
           }
@@ -316,6 +321,7 @@ window.TT = window.TT || {};
   var PROP_SETS = {
     keys: ['brain', 'tubes', 'fan', 'staghorn', 'anemone', 'grass', 'grass', 'star', 'boulder', 'fan', 'tubes'],
     galapagos: ['boulder', 'kelp', 'cups', 'urchin', 'kelp', 'star', 'boulder', 'cups'],   // no seagrass: the Galápagos have almost none
+    kelp: ['kelp', 'boulder', 'kelp', 'urchin', 'star', 'anemone', 'kelp', 'boulder', 'cups'],
     cave: ['boulder', 'glowtube', 'urchin', 'boulder', 'glowtube', 'cups']
   };
   function propTexture(scene, name, hue, fam, dark) {
@@ -422,7 +428,7 @@ window.TT = window.TT || {};
     if (!opts.noForeground) {
       var fx = 300 + r() * 400;
       while (fx < worldW * 1.25) {
-        var fname = fam === 'keys' ? ['grass', 'staghorn', 'grass', 'fan'][Math.floor(r() * 4)] : (r() < 0.5 ? 'grass' : 'boulder');
+        var fname = fam === 'keys' ? ['grass', 'staghorn', 'grass', 'fan'][Math.floor(r() * 4)] : fam === 'kelp' ? (r() < 0.6 ? 'kelp' : 'boulder') : (r() < 0.5 ? 'grass' : 'boulder');
         var fdef = PROPS[fname], fs = 1.6 + r() * 0.5, show = 90 + r() * 70;   // how many px poke up into view
         var fimg = scene.add.image(fx, C.HEIGHT + fdef.h * fs - show, propTexture(scene, fname, 0, fam, true)).setOrigin(0.5, 1).setScale(fs / PS).setDepth(14).setAlpha(0.5).setScrollFactor(1.25, 1);
         if (fdef.sway) { fimg.ttSway = fdef.sway * 0.5; fimg.ttPh = r() * 6.28; }

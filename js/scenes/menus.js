@@ -203,6 +203,7 @@ TT.habitatTexture = function (scene, card) {
   var im = card.img;
   if (im === 'coral') return TT.Art.coralTexture(scene, 120, 76, 0);
   if (im === 'seagrass') return 'seagrass';
+  if (im === 'giantkelp') return 'giantkelp';
   if (im.indexOf('prop:') === 0) return TT.Scenery.propTexture(scene, im.slice(5));
   if (im.indexOf('static:') === 0) { var look = im.slice(7); return TT.Art.staticTexture(scene, look === 'root' ? { look: 'root', w: 46, h: 260 } : { look: look, w: 160, h: 140 }, 900); }
   if (!scene.textures.exists('hab_snow')) {

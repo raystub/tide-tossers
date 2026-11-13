@@ -2,7 +2,7 @@
 // Units: positions in px, velocities in px per 1/60 s (independent of the physics rate), times in seconds.
 window.TT = window.TT || {};
 
-TT.VERSION = 'v0.6.8';
+TT.VERSION = 'v0.7.0';
 
 // Phones and tablets (coarse pointer) get the touch controls, bigger HUD and a closer camera.
 // Force it on a desktop with ?mobile=1 to preview the phone layout.
@@ -67,7 +67,9 @@ TT.CFG = {
   CORAL_PENALTY: 5,          // reef health % lost per coral hit
   CORAL_COOLDOWN: 1.0,
   LIONFISH_FLEE_SPEED: 4,    // junk hitting a lionfish faster than this drives it off
-  COTS_DRAIN: 0.1,           // reef health % per second eaten by each crown-of-thorns starfish still on the reef
+  COTS_DRAIN: 0.1, 
+  KELP_DRAG: 0.035,          // extra drag inside a kelp forest (fraction of speed per 1/60 s)
+  URCHIN_DRAIN: 0.08,        // reef health % per second while purple urchins graze the kelp          // reef health % per second eaten by each crown-of-thorns starfish still on the reef
   LIONFISH_HUNT_RANGE: 300,  // Arcade lionfish drift toward a rescuer this close...
   LIONFISH_HUNT_SPEED: 48,   // ...at this many px per second
 
@@ -134,6 +136,12 @@ TT.CFG = {
     triton:       { name: 'Giant triton',          radius: 22, density: 0.008,  speed: 3.8, accel: 0.1,  cd: 2.4, ability: 'Scent',  len: 3.4, spineproof: true },
     mantis:       { name: 'Peacock mantis shrimp', radius: 17, density: 0.006,  speed: 5.2, accel: 0.18, cd: 1.5, ability: 'Punch',  len: 3.8 },
     nautilus:     { name: 'Chambered nautilus',    radius: 20, density: 0.004,  speed: 4.6, accel: 0.1,  cd: 1.3, ability: 'Buoy',   len: 3.2 },
+    otter:        { name: 'Sea otter',             radius: 19, density: 0.003,  speed: 5.6, accel: 0.17, cd: 1.3, ability: 'Rock',   len: 3.4, air: 34 },
+    leopardshark: { name: 'Leopard shark',         radius: 19, density: 0.005,  speed: 7.0, accel: 0.14, cd: 1.6, ability: 'Sense',  len: 4.4 },
+    octopus:      { name: 'Giant Pacific octopus', radius: 20, density: 0.004,  speed: 5.4, accel: 0.18, cd: 1.6, ability: 'Ink',    len: 3.4, squeeze: true },
+    sunstar:      { name: 'Sunflower sea star',    radius: 24, density: 0.006,  speed: 3.8, accel: 0.12, cd: 1.6, ability: 'Grip',   len: 2.4, spineproof: true },
+    batray:       { name: 'Bat ray',               radius: 22, density: 0.005,  speed: 6.2, accel: 0.12, cd: 1.4, ability: 'Dig',    len: 3.4 },
+    eseal:        { name: 'Northern elephant seal', radius: 27, density: 0.007, speed: 6.0, accel: 0.09, cd: 2.4, ability: 'Plunge', len: 3.8, air: 90 },
     manatee:      { name: 'Florida manatee',       radius: 30, density: 0.008,  speed: 4.3, accel: 0.07, cd: 3.0, ability: 'Push',   len: 3.7, air: 55 }
   },
   // air: seconds of breath for air-breathing rescuers (see AIR_* below).
@@ -187,6 +195,12 @@ TT.CFG = {
     scentRadius: 240,                                      // giant triton: crown-of-thorns starfish move away from its scent
     punchRadius: 62, punchDamage: 460,                     // mantis shrimp: one very hard strike
     buoySpeed: 9, buoyTime: 0.7,                           // nautilus: rises or sinks straight up or down
+    rockRadius: 66, rockTrap: 190, rockOther: 70,          // sea otter: bangs a rock on traps and hard junk
+    senseRadius: 360,                                      // leopard shark: finds buried junk and traps nearby
+    inkRadius: 210,                                        // octopus: an ink cloud that drives off green crabs
+    sunGripRadius: 200, sunGripDamage: 70, sunGripTime: 0.35,                 // sunflower sea star: urchins move away; it pries at junk it holds
+    digRadius: 150, digDamage: 60,                         // bat ray: flaps sand off buried things and loosens them
+    plungeSpeed: 14, plungeTime: 0.6, plungeMassMult: 3,   // elephant seal: a heavy power dive
     crunchRadius: 70, crunchHard: 130, crunchOther: 50, crunchDash: 9   // sheepshead: a lunge and a bite that cracks shells, metal, wood and traps
   },
 

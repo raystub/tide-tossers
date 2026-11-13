@@ -31,7 +31,7 @@ TT.Entities = (function () {
     if (d.angle) go.setRotation(Phaser.Math.DegToRad(d.angle));
     if (d.pinned) go.setStatic(true);   // snagged on a branch above the water until knocked down
     go.body.ttWater = { buoy: mat.buoy };
-    return tag(go, { kind: 'object', material: d.k, hp: mat.hp * hpMult, maxHp: mat.hp * hpMult, alive: true, w: d.w, h: d.h, pinned: !!d.pinned });
+    return bury(go, tag(go, { kind: 'object', material: d.k, hp: mat.hp * hpMult, maxHp: mat.hp * hpMult, alive: true, w: d.w, h: d.h, pinned: !!d.pinned }), d);
   }
 
   function container(scene, d, hpMult) {
@@ -72,7 +72,36 @@ TT.Entities = (function () {
       if (d.k === 'line') ox = 14;
       ent.animals.push({ k: k, sprite: spr, ox: ox, oy: (d.k === 'line' ? (i - (n - 1) / 2) * 30 : 6), phase: Math.random() * 6, baseScale: scale });
     });
+    return bury(go, ent, d);
+  }
+  // Buried under sand: faint and solid to nothing until a leopard shark senses it or a bat ray digs it out.
+  function bury(go, ent, d) {
+    if (!d.buried) return ent;
+    ent.buried = true; go.setAlpha(0.16);
+    if (!go.body.isStatic) { ent.wasDynamic = true; go.setStatic(true); }
+    go.body.isSensor = true;
+    (ent.animals || []).forEach(function (a) { a.sprite.setAlpha(0.16); });
     return ent;
+  }
+  function unbury(scene, ent) {
+    if (!ent.buried) return false;
+    ent.buried = false; ent.body.isSensor = false;
+    if (ent.wasDynamic) ent.sprite.setStatic(false);
+    var targets = [ent.sprite].concat((ent.animals || []).map(function (a) { return a.sprite; }));
+    scene.tweens.add({ targets: targets, alpha: ent.kind === 'container' && ent.ctype === 'net' ? 0.95 : 1, duration: 400 });
+    return true;
+  }
+  // Giant kelp: tall plants from floor to surface. Swimming through a stand is slower (KELP_DRAG).
+  function kelp(scene, d, idx) {
+    var n = Math.max(2, Math.round(d.w / 70)), plants = [];
+    for (var i = 0; i < n; i++) {
+      var x = d.x - d.w / 2 + (i + 0.5) * d.w / n + (Math.random() - 0.5) * 20, front = i % 2 === 1;
+      var p = scene.add.image(x, C.FLOOR_Y + 6, 'giantkelp').setOrigin(0.5, 1).setDepth(front ? 9.4 : 5.4).setAlpha(front ? 0.7 : 1).setFlipX(Math.random() < 0.5);
+      p.setDisplaySize(80 * (0.9 + Math.random() * 0.3), C.FLOOR_Y + 6 - scene.water.y + 10);
+      scene.tweens.add({ targets: p, rotation: 0.04, duration: 2200 + Math.random() * 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: Math.random() * 1500 });
+      plants.push(p);
+    }
+    return { kind: 'kelp', x: d.x, w: d.w, plants: plants };
   }
   function drawLine(ent, t) {
     var g = ent.lineGfx; g.clear();
@@ -129,15 +158,16 @@ TT.Entities = (function () {
   }
 
   function lionfish(scene, d) {
-    // d.k: 'lionfish' (patrols) or 'cots' (crown-of-thorns starfish: crawls slowly over coral and eats it)
-    var sp = d.k || 'lionfish', key = TT.Art.speciesKey(scene, sp), size = d.size || (sp === 'cots' ? 62 : 70);
+    // d.k: 'lionfish' (patrols) or a crawler (CRAWLERS: crown-of-thorns, green crab, purple urchin) that creeps along the bottom
+    var sp = d.k || 'lionfish', key = TT.Art.speciesKey(scene, sp), crawl = CRAWLERS.indexOf(sp) >= 0, size = d.size || (crawl ? 62 : 70);
     var s = TT.Art.scaleFor(scene, key, size);
     var go = scene.matter.add.sprite(d.x, d.y, key, 0, { isStatic: true, isSensor: true, shape: { type: 'circle', radius: 26 * size / 70 / s } });
-    go.setScale(s).setDepth(sp === 'cots' ? 6.5 : 10);
+    go.setScale(s).setDepth(crawl ? 6.5 : 10);
     TT.Art.playSwim(go, sp);
-    return tag(go, { kind: 'lionfish', species: sp, alive: true, home: { x: d.x, y: d.y }, patrol: d.patrol || (sp === 'cots' ? 22 : 80), phase: Math.random() * 6, fleeing: false, dir: 1, hunt: !!d.hunt });
+    return tag(go, { kind: 'lionfish', species: sp, alive: true, home: { x: d.x, y: d.y }, patrol: d.patrol || (crawl ? 22 : 80), crawler: crawl, phase: Math.random() * 6, fleeing: false, dir: 1, hunt: !!d.hunt });
   }
 
+  var CRAWLERS = ['cots', 'greencrab', 'purpleurchin'];
   function staticBody(scene, d, idx) {
     var go = scene.matter.add.image(d.x, d.y, TT.Art.staticTexture(scene, d, idx), null, { isStatic: true, friction: 0.9 });
     go.setScale(1 / TT.Art.PS).setDepth(5);
@@ -167,12 +197,12 @@ TT.Entities = (function () {
     side(game, a, b, rel); side(game, b, a, rel);
   }
   function side(game, t, o, rel) {
-    if (!t.alive) return;
+    if (!t.alive || t.buried || o.buried) return;
     if (t.kind === 'lionfish') {
       if (t.fleeing) return;
       if (o.kind === 'rescuer') {
-        if (t.species !== 'cots' && (o.id === 'puffer' || o.inflated)) game.lionfishFlee(t); else if (!o.def.spineproof) game.sting(o, t);
-      } else if (o.kind === 'object' && rel > C.LIONFISH_FLEE_SPEED && t.species !== 'cots') game.lionfishFlee(t);
+        if (!t.crawler && (o.id === 'puffer' || o.inflated)) game.lionfishFlee(t); else if (!o.def.spineproof && t.species !== 'purpleurchin') game.sting(o, t);
+      } else if (o.kind === 'object' && rel > C.LIONFISH_FLEE_SPEED && !t.crawler) game.lionfishFlee(t);
       return;
     }
     if (t.kind === 'coral') {
@@ -221,7 +251,7 @@ TT.Entities = (function () {
     }
   }
   function damage(game, t, amount, source) {
-    if (!t.alive || amount <= 0) return;
+    if (!t.alive || amount <= 0 || t.buried) return;
     if (t.gentle) { game.gentleWarn(t); return; }   // only a cleaner wrasse can free a tangled gentle animal
     t.hp -= amount;
     if (t.hp <= 0) {
@@ -238,6 +268,6 @@ TT.Entities = (function () {
     }
   }
 
-  return { rescuer: rescuer, junk: junk, container: container, coral: coral, seagrass: seagrass, lionfish: lionfish, gentle: gentle, staticBody: staticBody,
+  return { rescuer: rescuer, junk: junk, container: container, coral: coral, seagrass: seagrass, kelp: kelp, unbury: unbury, CRAWLERS: CRAWLERS, lionfish: lionfish, gentle: gentle, staticBody: staticBody,
     impact: impact, damage: damage, drawLine: drawLine };
 })();

@@ -58,6 +58,12 @@ TT.UI = {
     triton: 'Scent: crown-of-thorns starfish nearby move away. Slow, armoured and not hurt by their spines.',
     mantis: 'Punch: one very hard strike that cracks concrete, traps and shells.',
     nautilus: 'Buoy: rises or sinks straight up or down, shoving junk aside.',
+    otter: 'Rock: bangs a stone on crab pots and shells. Crabs and urchins nearby scatter. Slips through kelp at full speed. Breathes air.',
+    leopardshark: 'Sense: finds nets, traps and junk buried under the sand nearby.',
+    octopus: 'Ink: an ink cloud sends crabs and lionfish away, and its arms pry at what is in front.',
+    sunstar: 'Grip: holds on and pries at traps. Purple urchins nearby let go of the kelp. Not hurt by spines.',
+    batray: 'Dig: flaps the sand away below it, uncovering buried traps and junk and breaking them.',
+    eseal: 'Plunge: a fast, heavy charge that keeps going through nets and junk. Breathes air: come up before the ring runs out.',
     manatee: 'Push: a slow, unstoppable charge that ploughs through several nets and junk in a row. Breathes air: come up before the ring runs out.'
   }
 };

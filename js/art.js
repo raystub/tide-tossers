@@ -852,6 +852,195 @@ TT.Art = (function () {
     eye(ctx, w * 0.82, cy - h * 0.1, h * 0.07);
   };
 
+
+  // ---------- Monterey Bay ----------
+  // Sea otter: dense brown fur, pale grizzled head, small round ears, whiskers, webbed hind feet; swims on its back at the surface.
+  species.otter = function (ctx, w, h) {
+    var cy = h * 0.54;
+    ctx.fillStyle = '#4a3322'; ctx.beginPath(); ctx.ellipse(w * 0.08, cy + h * 0.04, w * 0.08, h * 0.12, 0.3, 0, 7); ctx.fill();   // flat tail
+    ctx.beginPath(); ctx.ellipse(w * 0.2, cy + h * 0.18, w * 0.09, h * 0.1, 0.5, 0, 7); ctx.fill();                             // webbed hind foot
+    ctx.beginPath(); ctx.moveTo(w * 0.12, cy);
+    ctx.bezierCurveTo(w * 0.24, cy - h * 0.32, w * 0.62, cy - h * 0.34, w * 0.76, cy - h * 0.2);
+    ctx.quadraticCurveTo(w * 0.84, cy - h * 0.3, w * 0.94, cy - h * 0.16);
+    ctx.quadraticCurveTo(w * 1.0, cy - h * 0.02, w * 0.92, cy + h * 0.08);
+    ctx.bezierCurveTo(w * 0.7, cy + h * 0.3, w * 0.28, cy + h * 0.3, w * 0.12, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.34, 0, cy + h * 0.3, [[0, '#5a3d27'], [0.6, '#7a5638'], [1, '#93704e']]); ctx.fill();
+    ctx.save(); ctx.clip();
+    ctx.fillStyle = rad(ctx, w * 0.86, cy - h * 0.1, 2, w * 0.18, [[0, 'rgba(236,222,196,0.95)'], [1, 'rgba(236,222,196,0)']]); ctx.fillRect(0, 0, w, h);   // grizzled pale head
+    var r = rng(8); ctx.strokeStyle = 'rgba(40,26,16,0.35)'; ctx.lineWidth = 1;
+    for (var i = 0; i < 40; i++) { var x = w * (0.15 + r() * 0.6), y = cy + h * (r() - 0.5) * 0.5; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 4, y + 2); ctx.stroke(); }
+    ctx.restore();
+    ctx.fillStyle = '#5a3d27'; ctx.beginPath(); ctx.arc(w * 0.8, cy - h * 0.22, h * 0.05, 0, 7); ctx.fill();   // ear
+    ctx.fillStyle = '#2a1b12'; ctx.beginPath(); ctx.ellipse(w * 0.97, cy - h * 0.05, w * 0.02, h * 0.04, 0, 0, 7); ctx.fill();   // nose
+    ctx.strokeStyle = 'rgba(250,245,230,0.75)'; ctx.lineWidth = 0.8;
+    for (var k = 0; k < 4; k++) { ctx.beginPath(); ctx.moveTo(w * 0.94, cy + k * h * 0.02); ctx.lineTo(w * (0.99 + k * 0.004), cy + h * (0.03 + k * 0.05)); ctx.stroke(); }
+    ctx.fillStyle = '#4a3322'; ctx.beginPath(); ctx.ellipse(w * 0.66, cy + h * 0.16, w * 0.05, h * 0.07, -0.4, 0, 7); ctx.fill();   // forepaw
+    eye(ctx, w * 0.88, cy - h * 0.13, h * 0.05);
+  };
+
+  // Leopard shark: slim grey-bronze shark with bold dark saddles and spots along the back.
+  species.leopardshark = function (ctx, w, h) {
+    var cy = h * 0.55;
+    ctx.beginPath(); ctx.moveTo(w * 0.14, cy); ctx.quadraticCurveTo(w * 0.06, cy - h * 0.28, w * 0.0, cy - h * 0.36); ctx.quadraticCurveTo(w * 0.05, cy - h * 0.04, w * 0.04, cy + h * 0.12); ctx.quadraticCurveTo(w * 0.09, cy + h * 0.12, w * 0.14, cy + h * 0.05); finFill(ctx, '#8a8070', 0.95);
+    [[0.58, 0.34], [0.32, 0.24]].forEach(function (d) { ctx.beginPath(); ctx.moveTo(w * (d[0] + 0.05), cy - h * 0.12); ctx.quadraticCurveTo(w * (d[0] + 0.01), cy - h * (0.12 + d[1]), w * (d[0] - 0.03), cy - h * (0.12 + d[1])); ctx.quadraticCurveTo(w * (d[0] - 0.01), cy - h * 0.18, w * (d[0] - 0.03), cy - h * 0.1); finFill(ctx, '#857b6b', 0.96); });
+    ctx.beginPath(); ctx.moveTo(w * 0.12, cy + h * 0.02);
+    ctx.bezierCurveTo(w * 0.32, cy - h * 0.2, w * 0.7, cy - h * 0.22, w * 0.9, cy - h * 0.12);
+    ctx.quadraticCurveTo(w * 1.0, cy - h * 0.04, w * 0.98, cy + h * 0.04);
+    ctx.quadraticCurveTo(w * 0.9, cy + h * 0.14, w * 0.78, cy + h * 0.14);
+    ctx.bezierCurveTo(w * 0.56, cy + h * 0.2, w * 0.3, cy + h * 0.16, w * 0.12, cy + h * 0.04);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.22, 0, cy + h * 0.18, [[0, '#7d7464'], [0.55, '#a89c84'], [0.7, '#ece4d2'], [1, '#f6f1e6']]); ctx.fill();
+    ctx.save(); ctx.clip(); ctx.fillStyle = 'rgba(30,24,18,0.85)';
+    for (var i = 0; i < 9; i++) { var x = w * (0.18 + i * 0.085); ctx.beginPath(); ctx.ellipse(x, cy - h * 0.14, w * 0.022, h * 0.1, 0, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(x + w * 0.04, cy - h * 0.02, h * 0.035, 0, 7); ctx.fill(); }
+    ctx.restore();
+    ctx.beginPath(); ctx.moveTo(w * 0.68, cy + h * 0.1); ctx.quadraticCurveTo(w * 0.6, cy + h * 0.36, w * 0.52, cy + h * 0.38); ctx.quadraticCurveTo(w * 0.58, cy + h * 0.2, w * 0.62, cy + h * 0.1); finFill(ctx, '#8f8573', 0.95);
+    eye(ctx, w * 0.88, cy - h * 0.06, h * 0.04);
+  };
+
+  // Giant Pacific octopus: reddish-brown, wrinkled mantle, big eye, eight arms trailing with pale suckers.
+  species.octopus = function (ctx, w, h) {
+    var cy = h * 0.5;
+    ctx.lineCap = 'round';
+    for (var a = 0; a < 6; a++) {
+      var y0 = cy + (a - 2.5) * h * 0.05;
+      ctx.strokeStyle = a % 2 ? '#a8462e' : '#bb5636'; ctx.lineWidth = h * (0.13 - a * 0.008);
+      ctx.beginPath(); ctx.moveTo(w * 0.42, y0); ctx.bezierCurveTo(w * 0.28, y0 + h * 0.2 * Math.sin(a), w * 0.14, y0 - h * 0.15 * Math.cos(a), w * 0.02, y0 + (a - 2.5) * h * 0.06); ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(250,215,190,0.75)';
+    for (var sck = 0; sck < 14; sck++) { ctx.beginPath(); ctx.arc(w * (0.06 + sck * 0.025), cy + h * (0.12 + Math.sin(sck) * 0.04), 1.4, 0, 7); ctx.fill(); }
+    // mantle (head sac) pointing forward-up
+    ctx.beginPath(); ctx.ellipse(w * 0.66, cy - h * 0.06, w * 0.3, h * 0.32, -0.15, 0, 7);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.4, 0, cy + h * 0.3, [[0, '#9e3a26'], [0.6, '#c45a3a'], [1, '#d98a62']]); ctx.fill();
+    ctx.save(); ctx.clip(); var r = rng(4); ctx.fillStyle = 'rgba(120,40,24,0.4)';
+    for (var i = 0; i < 26; i++) { ctx.beginPath(); ctx.ellipse(w * (0.4 + r() * 0.55), cy - h * (0.3 - r() * 0.5), 3, 2, r() * 3, 0, 7); ctx.fill(); }
+    ctx.restore();
+    ctx.fillStyle = '#c25838'; ctx.beginPath(); ctx.ellipse(w * 0.46, cy + h * 0.08, w * 0.08, h * 0.12, 0, 0, 7); ctx.fill();
+    eye(ctx, w * 0.5, cy - h * 0.02, h * 0.07);
+  };
+
+  // Sunflower sea star: a big, soft, many-armed star (up to about 24 arms) in orange, purple or red.
+  species.sunstar = function (ctx, w, h) {
+    var cx = w / 2, cy = h * 0.52, R = Math.min(w, h) * 0.46, n = 20;
+    for (var i = 0; i < n; i++) {
+      var a = i / n * Math.PI * 2, len = R * (0.85 + (i % 3) * 0.06);
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(a);
+      ctx.fillStyle = i % 2 ? '#e8743a' : '#d9622e'; ctx.beginPath(); ctx.ellipse(len * 0.55, 0, len * 0.5, R * 0.1, 0, 0, 7); ctx.fill();
+      ctx.restore();
+    }
+    ctx.fillStyle = rad(ctx, cx, cy, 2, R * 0.55, [[0, '#a8579a'], [0.6, '#c9603a'], [1, '#e8743a']]); ctx.beginPath(); ctx.arc(cx, cy, R * 0.45, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(255,220,180,0.7)'; var r = rng(6);
+    for (var k = 0; k < 40; k++) { var b = r() * 7, rr = r() * R * 0.85; ctx.beginPath(); ctx.arc(cx + Math.cos(b) * rr, cy + Math.sin(b) * rr, 1.1, 0, 7); ctx.fill(); }
+  };
+
+  // Bat ray: wide dark wings, a raised head with big eyes, and a long thin tail.
+  species.batray = function (ctx, w, h) {
+    var cy = h * 0.52;
+    ctx.strokeStyle = '#2a2a2e'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(w * 0.28, cy); ctx.lineTo(w * 0.0, cy + h * 0.06); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w * 0.26, cy);
+    ctx.bezierCurveTo(w * 0.36, cy - h * 0.1, w * 0.48, cy - h * 0.48, w * 0.58, cy - h * 0.46);
+    ctx.bezierCurveTo(w * 0.66, cy - h * 0.3, w * 0.78, cy - h * 0.14, w * 0.86, cy - h * 0.08);
+    ctx.quadraticCurveTo(w * 0.99, cy - h * 0.06, w * 0.99, cy + h * 0.04);
+    ctx.quadraticCurveTo(w * 0.94, cy + h * 0.12, w * 0.84, cy + h * 0.1);
+    ctx.bezierCurveTo(w * 0.7, cy + h * 0.2, w * 0.58, cy + h * 0.32, w * 0.5, cy + h * 0.36);
+    ctx.bezierCurveTo(w * 0.42, cy + h * 0.24, w * 0.34, cy + h * 0.08, w * 0.26, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.46, 0, cy + h * 0.36, [[0, '#2b2b30'], [0.55, '#45444a'], [0.62, '#e9e6e0'], [1, '#d4d0c8']]); ctx.fill();
+    ctx.fillStyle = '#3a393f'; ctx.beginPath(); ctx.ellipse(w * 0.9, cy - h * 0.05, w * 0.08, h * 0.08, 0, 0, 7); ctx.fill();   // raised head
+    eye(ctx, w * 0.9, cy - h * 0.1, h * 0.045);
+  };
+
+  // Northern elephant seal: huge grey-brown seal; adult males have a large drooping nose (proboscis).
+  species.eseal = function (ctx, w, h) {
+    var cy = h * 0.55;
+    ctx.fillStyle = '#5a4e44'; ctx.beginPath(); ctx.moveTo(w * 0.14, cy); ctx.lineTo(w * 0.0, cy - h * 0.18); ctx.quadraticCurveTo(w * 0.04, cy + h * 0.02, w * 0.0, cy + h * 0.2); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(w * 0.1, cy);
+    ctx.bezierCurveTo(w * 0.22, cy - h * 0.4, w * 0.64, cy - h * 0.44, w * 0.82, cy - h * 0.2);
+    ctx.quadraticCurveTo(w * 0.94, cy - h * 0.12, w * 0.98, cy + h * 0.02);
+    ctx.quadraticCurveTo(w * 0.94, cy + h * 0.14, w * 0.84, cy + h * 0.12);
+    ctx.bezierCurveTo(w * 0.62, cy + h * 0.36, w * 0.24, cy + h * 0.3, w * 0.1, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.44, 0, cy + h * 0.3, [[0, '#55493f'], [0.5, '#7a6c5e'], [1, '#a8988a']]); ctx.fill();
+    ctx.save(); ctx.clip(); ctx.strokeStyle = 'rgba(60,48,40,0.35)'; ctx.lineWidth = 1.4;
+    for (var i = 0; i < 5; i++) { ctx.beginPath(); ctx.moveTo(w * (0.66 + i * 0.03), cy - h * 0.3); ctx.quadraticCurveTo(w * (0.64 + i * 0.03), cy, w * (0.66 + i * 0.03), cy + h * 0.2); ctx.stroke(); }
+    ctx.restore();
+    ctx.fillStyle = '#6a5c50'; ctx.beginPath(); ctx.moveTo(w * 0.93, cy - h * 0.06); ctx.quadraticCurveTo(w * 1.0, cy + h * 0.02, w * 0.97, cy + h * 0.16); ctx.quadraticCurveTo(w * 0.92, cy + h * 0.12, w * 0.92, cy + h * 0.02); ctx.fill();   // proboscis
+    ctx.fillStyle = '#4e4339'; ctx.beginPath(); ctx.moveTo(w * 0.6, cy + h * 0.1); ctx.bezierCurveTo(w * 0.56, cy + h * 0.34, w * 0.46, cy + h * 0.44, w * 0.4, cy + h * 0.42); ctx.bezierCurveTo(w * 0.46, cy + h * 0.3, w * 0.52, cy + h * 0.18, w * 0.54, cy + h * 0.1); ctx.fill();
+    eye(ctx, w * 0.86, cy - h * 0.12, h * 0.055);
+  };
+
+  // Humpback whale: dark grey-black back, very long white-edged flippers, knobbly head, ridged throat.
+  species.humpback = function (ctx, w, h) {
+    var cy = h * 0.5;
+    ctx.beginPath(); ctx.moveTo(w * 0.1, cy); ctx.quadraticCurveTo(w * 0.04, cy - h * 0.34, w * 0.0, cy - h * 0.3); ctx.quadraticCurveTo(w * 0.06, cy, w * 0.0, cy + h * 0.3); ctx.quadraticCurveTo(w * 0.04, cy + h * 0.34, w * 0.1, cy); finFill(ctx, '#2a2f36', 0.98);
+    ctx.beginPath(); ctx.moveTo(w * 0.08, cy);
+    ctx.bezierCurveTo(w * 0.3, cy - h * 0.28, w * 0.72, cy - h * 0.36, w * 0.96, cy - h * 0.12);
+    ctx.quadraticCurveTo(w * 1.0, cy + h * 0.02, w * 0.94, cy + h * 0.14);
+    ctx.bezierCurveTo(w * 0.72, cy + h * 0.32, w * 0.3, cy + h * 0.22, w * 0.08, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.36, 0, cy + h * 0.28, [[0, '#262b33'], [0.55, '#3b424c'], [0.7, '#c9cfd4'], [1, '#e8ecef']]); ctx.fill();
+    ctx.save(); ctx.clip(); ctx.strokeStyle = 'rgba(40,46,56,0.45)'; ctx.lineWidth = 1.2;
+    for (var i = 0; i < 7; i++) { ctx.beginPath(); ctx.moveTo(w * 0.55, cy + h * (0.06 + i * 0.03)); ctx.lineTo(w * 0.95, cy + h * (0.04 + i * 0.025)); ctx.stroke(); }
+    ctx.fillStyle = 'rgba(30,34,40,0.8)'; for (var k = 0; k < 6; k++) { ctx.beginPath(); ctx.arc(w * (0.82 + k * 0.025), cy - h * (0.16 - k * 0.012), 2, 0, 7); ctx.fill(); }
+    ctx.restore();
+    ctx.beginPath(); ctx.moveTo(w * 0.36, cy - h * 0.18); ctx.lineTo(w * 0.32, cy - h * 0.3); ctx.lineTo(w * 0.28, cy - h * 0.2); ctx.closePath(); ctx.fillStyle = '#2a2f36'; ctx.fill();   // small dorsal fin
+    ctx.beginPath(); ctx.moveTo(w * 0.72, cy + h * 0.1); ctx.bezierCurveTo(w * 0.6, cy + h * 0.3, w * 0.42, cy + h * 0.46, w * 0.34, cy + h * 0.48);   // long flipper
+    ctx.bezierCurveTo(w * 0.44, cy + h * 0.34, w * 0.58, cy + h * 0.2, w * 0.64, cy + h * 0.08); ctx.fillStyle = '#e7ebee'; ctx.fill(); ctx.strokeStyle = '#2a2f36'; ctx.lineWidth = 1.5; ctx.stroke();
+    eye(ctx, w * 0.8, cy + h * 0.02, h * 0.03);
+  };
+
+  // European green crab (invasive on the US West Coast): mottled green shell with five teeth on each side of the eyes.
+  species.greencrab = function (ctx, w, h) {
+    var cx = w / 2, cy = h * 0.58;
+    ctx.strokeStyle = '#3f5a2a'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    for (var l = 0; l < 4; l++) { [-1, 1].forEach(function (sd) { ctx.beginPath(); ctx.moveTo(cx + sd * w * 0.18, cy + h * 0.02 + l * h * 0.04); ctx.lineTo(cx + sd * w * (0.34 + l * 0.03), cy + h * (0.12 + l * 0.08)); ctx.lineTo(cx + sd * w * (0.4 + l * 0.03), cy + h * (0.3 + l * 0.04)); ctx.stroke(); }); }
+    [-1, 1].forEach(function (sd) { ctx.fillStyle = '#56763a'; ctx.beginPath(); ctx.ellipse(cx + sd * w * 0.36, cy - h * 0.2, w * 0.09, h * 0.12, sd * 0.6, 0, 7); ctx.fill(); });
+    ctx.beginPath(); ctx.moveTo(cx - w * 0.3, cy - h * 0.04);
+    for (var t = 0; t <= 10; t++) { var x = cx - w * 0.3 + t * w * 0.06; ctx.lineTo(x, cy - h * (0.26 + (t % 2 ? 0.04 : 0) - Math.abs(t - 5) * 0.012)); }
+    ctx.lineTo(cx + w * 0.3, cy - h * 0.04); ctx.quadraticCurveTo(cx, cy + h * 0.2, cx - w * 0.3, cy - h * 0.04);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.3, 0, cy + h * 0.15, [[0, '#6f8f42'], [1, '#43602c']]); ctx.fill();
+    ctx.fillStyle = 'rgba(30,40,20,0.35)'; var r = rng(12); for (var k = 0; k < 12; k++) { ctx.beginPath(); ctx.arc(cx + (r() - 0.5) * w * 0.4, cy - h * (0.12 - r() * 0.12), 2, 0, 7); ctx.fill(); }
+    eye(ctx, cx - w * 0.05, cy - h * 0.3, h * 0.05); eye(ctx, cx + w * 0.05, cy - h * 0.3, h * 0.05);
+  };
+
+  // Purple sea urchin: a round purple test covered in short spines.
+  species.purpleurchin = function (ctx, w, h) {
+    var cx = w / 2, cy = h * 0.58, R = Math.min(w, h) * 0.26;
+    ctx.strokeStyle = '#6a2c8a'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+    for (var i = 0; i < 48; i++) { var a = i / 48 * Math.PI * 2, l = R * (1.6 + (i % 3) * 0.12); ctx.beginPath(); ctx.moveTo(cx + Math.cos(a) * R * 0.8, cy + Math.sin(a) * R * 0.7); ctx.lineTo(cx + Math.cos(a) * l, cy + Math.sin(a) * l * 0.85); ctx.stroke(); }
+    ctx.fillStyle = rad(ctx, cx - R * 0.3, cy - R * 0.3, 2, R * 1.2, [[0, '#b46ad0'], [1, '#4e1f6a']]); ctx.beginPath(); ctx.ellipse(cx, cy, R, R * 0.85, 0, 0, 7); ctx.fill();
+  };
+
+  // Rockfish (e.g. blue rockfish): a stout, spiny-finned kelp-forest fish, blue-grey with darker mottling.
+  species.rockfish = function (ctx, w, h) {
+    var cy = h * 0.54;
+    ctx.beginPath(); ctx.moveTo(w * 0.17, cy); ctx.lineTo(w * 0.03, cy - h * 0.24); ctx.lineTo(w * 0.03, cy + h * 0.24); ctx.closePath(); finFill(ctx, '#3e5a7a', 0.92);
+    ctx.beginPath(); ctx.moveTo(w * 0.26, cy - h * 0.24); for (var k = 0; k <= 8; k++) { ctx.lineTo(w * (0.28 + k * 0.05), cy - h * (0.44 - (k % 2) * 0.06)); } ctx.lineTo(w * 0.7, cy - h * 0.26); ctx.closePath(); finFill(ctx, '#33506e', 0.95);
+    ctx.beginPath(); ctx.moveTo(w * 0.16, cy);
+    ctx.bezierCurveTo(w * 0.24, cy - h * 0.36, w * 0.7, cy - h * 0.38, w * 0.9, cy - h * 0.1);
+    ctx.quadraticCurveTo(w * 0.96, cy + h * 0.04, w * 0.88, cy + h * 0.14);
+    ctx.bezierCurveTo(w * 0.7, cy + h * 0.36, w * 0.24, cy + h * 0.32, w * 0.16, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.38, 0, cy + h * 0.32, [[0, '#3c5878'], [0.6, '#6e8eac'], [1, '#c4d2de']]); ctx.fill();
+    ctx.save(); ctx.clip(); var r = rng(23); ctx.fillStyle = 'rgba(28,40,60,0.45)';
+    for (var i = 0; i < 16; i++) { ctx.beginPath(); ctx.ellipse(w * (0.25 + r() * 0.6), cy - h * (0.2 - r() * 0.3), w * 0.04, h * 0.06, r() * 3, 0, 7); ctx.fill(); }
+    ctx.restore();
+    eye(ctx, w * 0.8, cy - h * 0.08, h * 0.08);
+  };
+
+  // A full giant-kelp plant: holdfast, a long stipe up to the surface, blades with round gas floats.
+  function drawGiantKelp(ctx, w, h, r) {
+    ctx.fillStyle = '#6b5a2a'; ctx.beginPath(); ctx.ellipse(w / 2, h - 8, w * 0.3, 10, 0, 0, 7); ctx.fill();   // holdfast
+    for (var s = 0; s < 2; s++) {
+      var x0 = w * (0.4 + s * 0.2), ph = r() * 6;
+      ctx.strokeStyle = '#8a6e22'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x0, h - 10);
+      for (var y = h - 10; y > 6; y -= 10) ctx.lineTo(x0 + Math.sin(y * 0.012 + ph) * w * 0.16, y);
+      ctx.stroke();
+      for (var y2 = h - 40; y2 > 10; y2 -= 26 + r() * 10) {
+        var lx = x0 + Math.sin(y2 * 0.012 + ph) * w * 0.16, side = Math.round(y2 / 30) % 2 ? 1 : -1;
+        ctx.save(); ctx.translate(lx, y2); ctx.rotate(side * (1.0 + r() * 0.3));
+        ctx.fillStyle = ['#a8862a', '#b98f2c', '#9c7a26'][Math.floor(r() * 3)];
+        ctx.beginPath(); ctx.ellipse(0, -w * 0.3, w * 0.09, w * 0.3, 0, 0, 7); ctx.fill();
+        ctx.fillStyle = '#c9a246'; ctx.beginPath(); ctx.arc(0, -2, 3.2, 0, 7); ctx.fill();   // gas float
+        ctx.restore();
+      }
+    }
+  }
+
   // A clump of turtle grass, the main seagrass of Florida Bay: flat ribbon blades.
   function drawSeagrass(ctx, w, h) {
     var r = rng(77);
@@ -1150,7 +1339,7 @@ TT.Art = (function () {
 
   // Swim animation: how far the tail end bends, as a share of body height (0 = no animation).
   var WIGGLE = { tang: 0.08, flyingfish: 0.09, puffer: 0.06, puffer_inflated: 0, pistolshrimp: 0.05, loggerhead: 0.035, swordfish: 0.1,
-    hammerhead: 0.11, manatee: 0.04, sheepshead: 0.07, reddrum: 0.09, sealion: 0.05, iguana: 0.1, penguin: 0.03, bullhead: 0.09, whaleshark: 0.05, archerfish: 0.08, parrotfish: 0.07, wrasse: 0.12, triton: 0, mantis: 0.06, nautilus: 0, manta: 0.05, cots: 0, clownfish: 0.09, sawfish: 0.07, hatchling: 0.07, seahorse: 0.03, smallfish: 0.16, fishschool: 0, lionfish: 0.06 };
+    hammerhead: 0.11, manatee: 0.04, sheepshead: 0.07, reddrum: 0.09, sealion: 0.05, iguana: 0.1, penguin: 0.03, bullhead: 0.09, whaleshark: 0.05, archerfish: 0.08, parrotfish: 0.07, wrasse: 0.12, triton: 0, mantis: 0.06, nautilus: 0, manta: 0.05, cots: 0, clownfish: 0.09, otter: 0.05, leopardshark: 0.1, octopus: 0.04, sunstar: 0, batray: 0.05, eseal: 0.05, humpback: 0.04, greencrab: 0, purpleurchin: 0, rockfish: 0.08, sawfish: 0.07, hatchling: 0.07, seahorse: 0.03, smallfish: 0.16, fishschool: 0, lionfish: 0.06 };
   var SWIM_FRAMES = 8;
   // Bake a looping swim cycle from one picture: slice it into thin columns and bend them in a travelling wave
   // that is still at the head (right) and widest at the tail (left). Works in WebGL and Canvas alike.
@@ -1180,7 +1369,8 @@ TT.Art = (function () {
     smallfish: [26, 10], fishschool: [70, 50], lionfish: [72, 56],
     manatee: [100, 52], sawfish: [170, 40], sheepshead: [66, 48], reddrum: [84, 32],
     sealion: [96, 44], iguana: [100, 36], penguin: [62, 38], bullhead: [86, 36], whaleshark: [260, 76],
-    archerfish: [64, 40], parrotfish: [70, 48], wrasse: [56, 22], triton: [74, 50], mantis: [70, 36], nautilus: [64, 46], manta: [210, 120], cots: [76, 50], clownfish: [40, 26]
+    archerfish: [64, 40], parrotfish: [70, 48], wrasse: [56, 22], triton: [74, 50], mantis: [70, 36], nautilus: [64, 46], manta: [210, 120], cots: [76, 50], clownfish: [40, 26],
+    otter: [96, 44], leopardshark: [104, 34], octopus: [92, 56], sunstar: [80, 80], batray: [96, 60], eseal: [110, 52], humpback: [300, 100], greencrab: [56, 40], purpleurchin: [44, 40], rockfish: [52, 34]
   };
 
   return {
@@ -1217,6 +1407,7 @@ TT.Art = (function () {
         ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.beginPath(); ctx.arc(w / 2, w / 2, 22, 0, 7); ctx.fill();
         ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(w / 2, w / 2, 38, 0, 7); ctx.stroke();
       });
+      canvas(scene, 'giantkelp', 80, 520, function (ctx, w, h) { drawGiantKelp(ctx, w, h, rng(5)); stylize(ctx, w, h, { sat: 1.2, outline: 1.5 }); });
       canvas(scene, 'seagrass', 60, 96, function (ctx, w, h) { drawSeagrass(ctx, w, h); stylize(ctx, w, h, { sat: 1.3, outline: 1.5 }); });
       canvas(scene, 'caustics', 256, 256, drawCaustics);
       canvas(scene, 'light_brush', 256, 256, radialBrush);

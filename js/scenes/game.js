@@ -55,6 +55,7 @@ TT.GameScene = new Phaser.Class({
     this.containers = (level.containers || []).map(function (c) { return TT.Entities.container(self, c, hpMult); });
     this.invasives = (level.invasives || []).map(function (l) { return TT.Entities.lionfish(self, l); });
     this.gentles = (level.gentle || []).map(function (gd) { return TT.Entities.gentle(self, gd); });
+    this.kelp = (level.kelp || []).map(function (k, i) { return TT.Entities.kelp(self, k, i); });
     if (level.bleached) this.corals.forEach(function (c) { c.sprite.setTint(0xb8b8b0); });
 
     this.trapped = 0;
@@ -173,10 +174,12 @@ TT.GameScene = new Phaser.Class({
           l.home.x += hx * step; l.home.y = Phaser.Math.Clamp(l.home.y + hy * step, this.water.y + 50, TT.CFG.FLOOR_Y - 40);
         }
       }
-      if (l.species === 'cots') {
-        // crown-of-thorns: crawls slowly back and forth over its coral, eating it
-        l.sprite.setPosition(l.home.x + Math.sin(t * 0.25 + l.phase) * l.patrol, l.home.y); l.sprite.rotation = Math.sin(t * 0.4 + l.phase) * 0.15;
-        if (this.state === 'play') this.addHealth(-TT.CFG.COTS_DRAIN * dt);
+      if (l.crawler) {
+        // crawlers creep back and forth along the bottom; starfish eat coral and urchins eat kelp (reef health drains)
+        var crab = l.species === 'greencrab';
+        l.sprite.setPosition(l.home.x + Math.sin(t * (crab ? 0.7 : 0.25) + l.phase) * l.patrol, l.home.y); l.sprite.rotation = Math.sin(t * (crab ? 3 : 0.4) + l.phase) * (crab ? 0.08 : 0.15);
+        var drain = l.species === 'cots' ? TT.CFG.COTS_DRAIN : l.species === 'purpleurchin' ? TT.CFG.URCHIN_DRAIN : 0;
+        if (drain && this.state === 'play') this.addHealth(-drain * dt);
         continue;
       }
       var nx = l.home.x + Math.sin(t * 0.5 + l.phase) * l.patrol, ny = l.home.y + Math.sin(t * 1.3 + l.phase) * 10;
@@ -367,17 +370,19 @@ TT.GameScene = new Phaser.Class({
     if (l.fleeing || !l.alive) return;
     l.fleeing = true; l.alive = false;
     this.removeQueue.push(l.body);
-    var spr = l.sprite, dir = spr.x < this.player.pos().x ? -1 : 1, cots = l.species === 'cots';
+    var spr = l.sprite, dir = spr.x < this.player.pos().x ? -1 : 1, cots = l.crawler;
     if (!cots) spr.setFlipX(dir < 0);
     this.tweens.add({ targets: spr, x: spr.x + dir * (cots ? 260 : 900), y: spr.y + (cots ? 120 : -80), alpha: 0, angle: cots ? dir * 90 : 0, duration: cots ? 2600 : 1800, ease: 'Sine.easeIn', onComplete: function () { spr.destroy(); } });
     this.addHealth(this.gain.invasive);
     this.score += TT.CFG.SCORE.invasive * this.chain();
     this.sfx.play('flee');
-    this.flash(spr.x, spr.y - 40, cots ? 'Crown-of-thorns moved off the reef' : 'Lionfish driven off', '#ffe0a8');
+    var msg = { cots: 'Crown-of-thorns moved off the reef', greencrab: 'Green crab scuttled off', purpleurchin: 'Urchin pried off the kelp' }[l.species] || 'Lionfish driven off';
+    this.flash(spr.x, spr.y - 40, msg, '#ffe0a8');
   },
-  lionfishNear: function (x, y, R) {
+  // only: which species this drives off (default: every species)
+  lionfishNear: function (x, y, R, only) {
     var self = this;
-    this.invasives.forEach(function (l) { if (l.alive && Phaser.Math.Distance.Between(x, y, l.sprite.x, l.sprite.y) < R + 30) self.lionfishFlee(l); });
+    this.invasives.forEach(function (l) { if (l.alive && (!only || only.indexOf(l.species) >= 0) && Phaser.Math.Distance.Between(x, y, l.sprite.x, l.sprite.y) < R + 30) self.lionfishFlee(l); });
   },
   radialPush: function (x, y, R, force, src) {
     var M = Phaser.Physics.Matter.Matter;
@@ -405,7 +410,7 @@ TT.GameScene = new Phaser.Class({
       var d = Phaser.Math.Distance.Between(x, y, c.sprite.x, c.sprite.y) - Math.max(c.w, c.h) / 2;
       if (d <= R) TT.Entities.damage(self, c, A.snapDamageOther * (c.ctype === 'line' ? 3 : 1), src);
     });
-    this.lionfishNear(x, y, R);
+    this.lionfishNear(x, y, R, ['lionfish']);
     this.radialPush(x, y, R, 0.05, src);
   },
   // Sheepshead bite: a short-range crunch that cracks hard junk and traps and cuts nets and lines.
@@ -497,7 +502,26 @@ TT.GameScene = new Phaser.Class({
   scent: function (x, y, R) {
     this.fx.ring(x, y, R, 0xc8f0a8); this.fx.ring(x, y, R * 0.6, 0xc8f0a8);
     for (var k = 0; k < 10; k++) this.fx.bubbles(x + (Math.random() - 0.5) * R, y + (Math.random() - 0.5) * R * 0.6, 1);
-    this.lionfishNear(x, y, R);
+    this.lionfishNear(x, y, R, ['cots', 'lionfish']);
+  },
+  // Leopard shark Sense / bat ray Dig: buried nets, traps and junk within R come out of the sand.
+  reveal: function (x, y, R) {
+    var self = this, n = 0;
+    this.fx.ring(x, y, R, 0xf2e2b0);
+    this.objects.concat(this.containers).forEach(function (o) {
+      if (!o.alive || !o.buried) return;
+      if (Phaser.Math.Distance.Between(x, y, o.sprite.x, o.sprite.y) > R) return;
+      TT.Entities.unbury(self, o); n++;
+      self.fx.silt(o.sprite.x, Math.min(TT.CFG.FLOOR_Y, o.sprite.y + 20));
+      self.flash(o.sprite.x, o.sprite.y - 40, o.kind === 'container' ? 'Found it under the sand!' : 'Buried junk!', '#f2e2b0');
+    });
+    return n;
+  },
+  // Is (x, y) inside a giant-kelp stand?
+  inKelp: function (x, y) {
+    if (!this.kelp || !this.kelp.length || !this.water.isUnder(y)) return false;
+    for (var i = 0; i < this.kelp.length; i++) if (Math.abs(x - this.kelp[i].x) < this.kelp[i].w / 2) return true;
+    return false;
   },
   punchStars: function (x, y) {
     this.fx.ring(x, y, 50, 0xffe08a); this.cameras.main.shake(110, 0.005); this.hitStop = Math.max(this.hitStop, 0.04);
