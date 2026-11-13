@@ -188,38 +188,59 @@ TT.FieldGuideScene = new Phaser.Class({
     TT.UI.title(this, W / 2, 46, 'Field guide', 36).setDepth(D);
     this.add.text(W / 2, 86, unlocked + ' of ' + TT.GUIDE.length + ' cards · clear levels to unlock species and places', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(13), color: '#bdf3ff' }).setOrigin(0.5).setDepth(D);
     TT.UI.button(this, 90, 46, 130, 44, '‹ Back', function () { self.scene.start('LevelSelect'); }, { size: 15 }).setDepth(D);
+    // a scrolling grid of cards (drag or use the mouse wheel when there are more than fit)
+    var grid = this.add.container(0, 0).setDepth(D - 1), cols = 6, top = 190, rowH = 165, dragged = false;
+    var rows = Math.ceil(TT.GUIDE.length / cols), minY = Math.min(0, C.HEIGHT - 40 - (top + (rows - 1) * rowH + 75));
     TT.GUIDE.forEach(function (card, i) {
-      var col = i % 5, row = Math.floor(i / 5), x = (W - 1280) / 2 + 170 + col * 235, y = 190 + row * 170;
+      var col = i % cols, row = Math.floor(i / cols), x = W / 2 + (col - (cols - 1) / 2) * 200, y = top + row * rowH;
       var on = TT.Save.cardUnlocked(card.id);
-      var tile = TT.UI.button(self, x, y, 215, 150, '', function () { if (on) self.showCard(card); }, { fill: on ? 0x0f5a78 : 0x16262e, stroke: on ? 0xbdf3ff : 0x3f5a66 }).setDepth(D);
+      var tile = TT.UI.button(self, x, y, 188, 150, '', function () { if (on && !dragged) self.showCard(card); }, { fill: on ? 0x0f5a78 : 0x16262e, stroke: on ? 0xbdf3ff : 0x3f5a66 });
+      grid.add(tile);
       var isPlace = card.id.indexOf('place_') === 0;
       if (!isPlace) {
         var key = TT.Art.speciesKey(self, card.id), sz = TT.Art.SPECIES_SIZE[card.id];
-        var img = self.add.image(0, -18, key).setScale(TT.Art.scaleFor(self, key, Math.min(150, sz[0] * 1.6)));
+        var img = self.add.image(0, -18, key).setScale(TT.Art.scaleFor(self, key, Math.min(140, sz[0] * 1.6)));
         if (!on) img.setTint(0x000000).setAlpha(game_isCanvas(self) ? 0.18 : 0.5);
         tile.add(img);
       } else {
         tile.add(self.add.text(0, -20, on ? '⌖' : '?', { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(40), color: on ? '#9fd8e0' : '#3d5258' }).setOrigin(0.5));
       }
-      tile.add(self.add.text(0, 48, on ? card.name : '???', { fontFamily: TT.UI.font, fontSize: TT.UI.fs(16), color: on ? '#ffffff' : '#56707a', align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5));
+      tile.add(self.add.text(0, 48, on ? card.name : '???', { fontFamily: TT.UI.font, fontSize: TT.UI.fs(15), color: on ? '#ffffff' : '#56707a', align: 'center', wordWrap: { width: 176 } }).setOrigin(0.5));
     });
+    if (minY < 0) {
+      var startY = 0, startP = 0;
+      this.input.on('pointerdown', function (p) { startY = p.y; startP = grid.y; dragged = false; });
+      this.input.on('pointermove', function (p) { if (!p.isDown) return; if (Math.abs(p.y - startY) > 10) dragged = true; if (dragged) grid.y = Phaser.Math.Clamp(startP + p.y - startY, minY, 0); });
+      this.input.on('wheel', function (p, o, dx, dy) { grid.y = Phaser.Math.Clamp(grid.y - dy, minY, 0); });
+      this.add.text(W - 24, 86, 'Drag to see more', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(12), color: '#ffe7a8' }).setOrigin(1, 0.5).setDepth(D);
+    }
+    // header strip stays on top of scrolled cards
+    this.add.rectangle(0, 0, W, 108, 0x04202c, 0.92).setOrigin(0, 0).setDepth(D - 0.5);
   },
   showCard: function (card) {
-    var C = TT.CFG, W = C.WIDTH, H = C.HEIGHT, self = this;
+    var C = TT.CFG, W = C.WIDTH, H = C.HEIGHT, self = this, isPlace = card.id.indexOf('place_') === 0;
     var layer = this.add.container(0, 0).setDepth(40);
     var shade = this.add.rectangle(0, 0, W, H, 0x020b10, 0.7).setOrigin(0, 0).setInteractive();
     shade.on('pointerup', function () { layer.destroy(); });
-    var g = this.add.graphics(); TT.UI.panel(g, W / 2 - 380, 120, 760, 470, 22, 0x0a3d55, 0.98);
+    var pw = 940, ph = 590, px = W / 2 - pw / 2, py = H / 2 - ph / 2, leftX = px + 220;
+    var g = this.add.graphics(); TT.UI.panel(g, px, py, pw, ph, 22, 0x0a3d55, 0.98);
     layer.add([shade, g]);
-    if (card.id.indexOf('place_') !== 0) {
+    // left column: the animal (or the place marker) with the close hint right under it
+    if (!isPlace) {
       var key = TT.Art.speciesKey(this, card.id);
-      layer.add(this.add.image(W / 2 - 200, 300, key).setScale(TT.Art.scaleFor(this, key, 260)));
-    }
-    var tx = card.id.indexOf('place_') === 0 ? W / 2 - 330 : W / 2 - 20;
-    layer.add(this.add.text(tx, 160, card.name, { fontFamily: TT.UI.display, fontStyle: '800', fontSize: TT.UI.fs(30), color: '#ffffff', wordWrap: { width: 380 } }));
-    layer.add(this.add.text(tx, 204, card.sci, { fontFamily: TT.UI.font, fontSize: TT.UI.fs(17), color: '#9fd8e0', fontStyle: 'italic' }));
+      layer.add(this.add.image(leftX, py + 210, key).setScale(TT.Art.scaleFor(this, key, Math.min(330, TT.Art.SPECIES_SIZE[card.id][0] * 3))));
+    } else layer.add(this.add.text(leftX, py + 210, '⌖', { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(110), color: '#9fd8e0' }).setOrigin(0.5));
+    layer.add(TT.UI.button(this, leftX, py + ph - 64, 220, 52, 'Close', function () { layer.destroy(); }, { size: 16 }));
+    // right column: name, scientific name and facts, stacked by their real heights so nothing runs off the card
+    var tx = px + 430, tw = pw - 430 - 36, y = py + 34;
+    var name = this.add.text(tx, y, card.name, { fontFamily: TT.UI.display, fontStyle: '800', fontSize: TT.UI.fs(28), color: '#ffffff', wordWrap: { width: tw } });
+    y += name.height + 4;
+    var sci = this.add.text(tx, y, card.sci, { fontFamily: TT.UI.font, fontSize: TT.UI.fs(16), color: '#9fd8e0', fontStyle: 'italic', wordWrap: { width: tw } });
+    y += sci.height + 16;
     var body = 'Where: ' + card.where + '\n\nSize: ' + card.size + '\n\nDid you know? ' + card.fact + '\n\nThreats: ' + card.threat;
-    layer.add(this.add.text(tx, 246, body, { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(16), color: '#d8f1f4', wordWrap: { width: card.id.indexOf('place_') === 0 ? 660 : 380 }, lineSpacing: 4 }));
-    layer.add(this.add.text(W / 2, 560, 'Tap anywhere to close', { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(12), color: '#9fd8e0' }).setOrigin(0.5));
+    var size = 16, bt;
+    do { if (bt) bt.destroy(); bt = this.add.text(tx, y, body, { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(size), color: '#d8f1f4', wordWrap: { width: tw }, lineSpacing: 4 }); size--; }
+    while (y + bt.height > py + ph - 28 && size > 11);
+    layer.add([name, sci, bt]);
   }
 });

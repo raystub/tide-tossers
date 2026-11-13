@@ -484,6 +484,61 @@ TT.Art = (function () {
     eye(ctx, w * 0.64, cy - h * 0.07, h * 0.035);
   };
 
+
+  // Sheepshead: deep, flat body, silver-grey with bold black bars, spiny dorsal fin, and human-like front teeth
+  // it uses to crush barnacles, oysters and crabs on mangrove roots and pilings.
+  species.sheepshead = function (ctx, w, h) {
+    var cy = h * 0.52;
+    // forked tail
+    ctx.beginPath(); ctx.moveTo(w * 0.19, cy); ctx.lineTo(w * 0.04, cy - h * 0.3); ctx.quadraticCurveTo(w * 0.1, cy, w * 0.04, cy + h * 0.3); ctx.closePath();
+    finFill(ctx, '#5e6670', 0.92);
+    // spiny dorsal and anal fins
+    ctx.beginPath(); ctx.moveTo(w * 0.24, cy - h * 0.2);
+    for (var k = 0; k <= 10; k++) { var fx = w * (0.26 + k * 0.042), top = cy - h * (0.36 + (k < 5 ? k * 0.03 : (10 - k) * 0.025)); ctx.lineTo(fx, top - h * 0.06); ctx.lineTo(fx + w * 0.02, top); }
+    ctx.lineTo(w * 0.72, cy - h * 0.22); ctx.closePath(); finFill(ctx, '#3d434b', 0.95);
+    ctx.beginPath(); ctx.moveTo(w * 0.3, cy + h * 0.24); ctx.quadraticCurveTo(w * 0.36, cy + h * 0.44, w * 0.5, cy + h * 0.42); ctx.lineTo(w * 0.52, cy + h * 0.28); ctx.closePath(); finFill(ctx, '#3d434b', 0.9);
+    // body: tall and oval
+    ctx.beginPath(); ctx.moveTo(w * 0.18, cy);
+    ctx.bezierCurveTo(w * 0.24, cy - h * 0.4, w * 0.66, cy - h * 0.46, w * 0.84, cy - h * 0.16);
+    ctx.quadraticCurveTo(w * 0.93, cy - h * 0.02, w * 0.9, cy + h * 0.1);
+    ctx.bezierCurveTo(w * 0.72, cy + h * 0.38, w * 0.26, cy + h * 0.34, w * 0.18, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.44, 0, cy + h * 0.36, [[0, '#8a939c'], [0.5, '#c9cfd4'], [1, '#eef0f0']]); ctx.fill();
+    ctx.save(); ctx.clip();
+    // five or six bold black bars
+    ctx.fillStyle = 'rgba(18,20,24,0.88)';
+    for (var b = 0; b < 6; b++) { var bx = w * (0.26 + b * 0.1); ctx.beginPath(); ctx.moveTo(bx, cy - h * 0.5); ctx.lineTo(bx + w * 0.045, cy - h * 0.5); ctx.lineTo(bx + w * 0.03, cy + h * 0.5); ctx.lineTo(bx - w * 0.015, cy + h * 0.5); ctx.fill(); }
+    ctx.fillStyle = rad(ctx, w * 0.55, cy - h * 0.15, 2, w * 0.4, [[0, 'rgba(255,255,255,0.3)'], [1, 'rgba(255,255,255,0)']]); ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+    // pectoral fin
+    ctx.beginPath(); ctx.moveTo(w * 0.66, cy + h * 0.02); ctx.quadraticCurveTo(w * 0.56, cy + h * 0.1, w * 0.52, cy + h * 0.2); ctx.quadraticCurveTo(w * 0.62, cy + h * 0.14, w * 0.68, cy + h * 0.06); finFill(ctx, '#9aa3ab', 0.7);
+    // closed lips with the front teeth just showing
+    ctx.strokeStyle = 'rgba(30,32,36,0.6)'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(w * 0.86, cy + h * 0.1); ctx.lineTo(w * 0.905, cy + h * 0.085); ctx.stroke();
+    ctx.fillStyle = '#f3efe2';
+    for (var t = 0; t < 3; t++) { ctx.fillRect(w * (0.88 + t * 0.008), cy + h * 0.065, w * 0.007, h * 0.035); }
+    eye(ctx, w * 0.78, cy - h * 0.12, h * 0.05);
+  };
+
+  // Red drum (redfish): long copper-bronze body, white belly, a black eyespot at the base of the tail.
+  species.reddrum = function (ctx, w, h) {
+    var cy = h * 0.54;
+    ctx.beginPath(); ctx.moveTo(w * 0.15, cy); ctx.lineTo(w * 0.03, cy - h * 0.26); ctx.lineTo(w * 0.02, cy + h * 0.26); ctx.closePath(); finFill(ctx, '#a86a3a', 0.92);
+    ctx.beginPath(); ctx.moveTo(w * 0.36, cy - h * 0.2); ctx.quadraticCurveTo(w * 0.44, cy - h * 0.48, w * 0.54, cy - h * 0.26); ctx.quadraticCurveTo(w * 0.62, cy - h * 0.4, w * 0.7, cy - h * 0.22); ctx.closePath(); finFill(ctx, '#8f5a32', 0.92);
+    ctx.beginPath(); ctx.moveTo(w * 0.14, cy);
+    ctx.bezierCurveTo(w * 0.3, cy - h * 0.3, w * 0.72, cy - h * 0.34, w * 0.9, cy - h * 0.08);
+    ctx.quadraticCurveTo(w * 0.97, cy + h * 0.04, w * 0.92, cy + h * 0.14);
+    ctx.bezierCurveTo(w * 0.72, cy + h * 0.32, w * 0.3, cy + h * 0.26, w * 0.14, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.32, 0, cy + h * 0.28, [[0, '#7a4a26'], [0.4, '#c98348'], [0.7, '#ecc9a2'], [1, '#faf3ea']]); ctx.fill();
+    ctx.save(); ctx.clip();
+    ctx.strokeStyle = 'rgba(110,60,25,0.25)'; ctx.lineWidth = 1;
+    for (var i = -3; i <= 3; i++) { ctx.beginPath(); ctx.moveTo(w * 0.16, cy + i * h * 0.06); ctx.lineTo(w * 0.9, cy + i * h * 0.05 - h * 0.04); ctx.stroke(); }
+    ctx.restore();
+    // the eyespot
+    ctx.fillStyle = '#121010'; ctx.beginPath(); ctx.arc(w * 0.2, cy - h * 0.06, h * 0.085, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,230,190,0.6)'; ctx.lineWidth = 1.2; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w * 0.68, cy + h * 0.04); ctx.quadraticCurveTo(w * 0.6, cy + h * 0.14, w * 0.58, cy + h * 0.22); ctx.quadraticCurveTo(w * 0.66, cy + h * 0.14, w * 0.7, cy + h * 0.08); finFill(ctx, '#d79a62', 0.75);
+    eye(ctx, w * 0.84, cy - h * 0.06, h * 0.05);
+  };
+
   // A clump of turtle grass, the main seagrass of Florida Bay: flat ribbon blades.
   function drawSeagrass(ctx, w, h) {
     var r = rng(77);
@@ -782,7 +837,7 @@ TT.Art = (function () {
 
   // Swim animation: how far the tail end bends, as a share of body height (0 = no animation).
   var WIGGLE = { tang: 0.08, flyingfish: 0.09, puffer: 0.06, puffer_inflated: 0, pistolshrimp: 0.05, loggerhead: 0.035, swordfish: 0.1,
-    hammerhead: 0.11, manatee: 0.04, sawfish: 0.07, hatchling: 0.07, seahorse: 0.03, smallfish: 0.16, fishschool: 0, lionfish: 0.06 };
+    hammerhead: 0.11, manatee: 0.04, sheepshead: 0.07, reddrum: 0.09, sawfish: 0.07, hatchling: 0.07, seahorse: 0.03, smallfish: 0.16, fishschool: 0, lionfish: 0.06 };
   var SWIM_FRAMES = 8;
   // Bake a looping swim cycle from one picture: slice it into thin columns and bend them in a travelling wave
   // that is still at the head (right) and widest at the tail (left). Works in WebGL and Canvas alike.
@@ -810,7 +865,7 @@ TT.Art = (function () {
     tang: [64, 52], flyingfish: [72, 46], puffer: [62, 44], puffer_inflated: [120, 120], pistolshrimp: [58, 40],
     loggerhead: [84, 62], swordfish: [110, 40], hammerhead: [100, 46], hatchling: [34, 22], seahorse: [24, 44],
     smallfish: [26, 10], fishschool: [70, 50], lionfish: [72, 56],
-    manatee: [100, 52], sawfish: [170, 40]
+    manatee: [100, 52], sawfish: [170, 40], sheepshead: [66, 48], reddrum: [84, 32]
   };
 
   return {

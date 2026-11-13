@@ -47,6 +47,7 @@ TT.UI = {
     loggerhead: 'Shove: a slow, heavy charge that bashes traps and moves heavy junk. Breathes air: come up before the ring runs out.',
     swordfish: 'Pierce: darts straight through wood, plastic and metal. Slices nets and lines on contact. Concrete stops it.',
     hammerhead: 'Ram: a hard charge. The best way to crack concrete.',
+    sheepshead: 'Crunch: a short lunge and bite. Its strong teeth crack traps, cans, wood and nets up close.',
     manatee: 'Push: a slow, unstoppable charge that ploughs through several nets and junk in a row. Breathes air: come up before the ring runs out.'
   }
 };
@@ -332,7 +333,7 @@ TT.UIScene = new Phaser.Class({
     // gadgets
     var any = playing && !g.gadgetUsed && Object.keys(C.GADGETS).some(function (k) { return g.gadgetAvailable(k); });
     this.gadgetBtn.setVisible(any);
-    this.gadgetLabel.setText(g.gadgetUsed ? g.gadgetName + (pl.shield ? ' on' : '') : '');
+    this.gadgetLabel.setText(g.cutterUntil ? 'Net Cutter ready: touch a net  ' + Math.ceil(g.cutterUntil - g.clock) + 's' : g.gadgetUsed ? g.gadgetName + (pl.shield ? ' on' : '') : '');
   },
 
   // ---------- results ----------

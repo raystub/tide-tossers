@@ -23,9 +23,9 @@ TT.GameScene = new Phaser.Class({
     this.removeQueue = []; this.lastSilt = 0; this.lights = []; this.botInput = null;
     this.allFreeAt = 0; this.exitOpen = false; this.lit = false;
     this.timed = !this.puzzle && D.time > 0; this.timeMax = this.timeLeft = this.timed ? Math.round(level.time * D.time) : 0; this.lastTick = 99;
-    this.movesLeft = this.puzzle ? level.moves : 0; this.movesUsed = 0; this.stillFor = 0;
+    this.movesLeft = this.puzzle ? level.moves : 0; this.movesUsed = 0; this.stillFor = 0; this.lastMoveAt = 0;
     this.wave = 0; this.waveClearAt = 0;
-    this.gadgetUsed = false; this.gadgetName = '';
+    this.gadgetUsed = false; this.gadgetName = ''; this.cutterUntil = 0;
 
     var W = this.worldW = level.width, H = C.HEIGHT;
     var cam = this.cameras.main;
@@ -162,6 +162,14 @@ TT.GameScene = new Phaser.Class({
     for (i = 0; i < this.invasives.length; i++) {
       var l = this.invasives[i];
       if (!l.alive || l.fleeing) continue;
+      if (l.hunt) {
+        // hunting lionfish drift toward a rescuer that comes close (the pufferfish is ignored: it's immune)
+        var hx = pb.position.x - l.home.x, hy = pb.position.y - l.home.y, hd = Math.sqrt(hx * hx + hy * hy);
+        if (hd < TT.CFG.LIONFISH_HUNT_RANGE && hd > 20 && pl.id() !== 'puffer') {
+          var step = TT.CFG.LIONFISH_HUNT_SPEED * dt / hd;
+          l.home.x += hx * step; l.home.y = Phaser.Math.Clamp(l.home.y + hy * step, this.water.y + 50, TT.CFG.FLOOR_Y - 40);
+        }
+      }
       var nx = l.home.x + Math.sin(t * 0.5 + l.phase) * l.patrol, ny = l.home.y + Math.sin(t * 1.3 + l.phase) * 10;
       l.sprite.setFlipX(nx < l.sprite.x); l.sprite.setPosition(nx, ny);
       if (dark) lights.push({ x: nx, y: ny, r: 46, a: 0.45 });
@@ -185,6 +193,10 @@ TT.GameScene = new Phaser.Class({
       for (i = 0; i < this.objects.length; i++) { var o = this.objects[i]; if (o.alive && Math.random() < 0.3 && TT.speed(o.body) > 1) this.fx.plankton(o.body.position.x, o.body.position.y); }
     }
 
+    if (this.cutterUntil) {
+      if (t > this.cutterUntil) { this.cutterUntil = 0; this.message('The Net Cutter wore off.', 2000); }
+      else if (Math.random() < 0.35) this.fx.sparkle(pb.position.x + (Math.random() - 0.5) * 40, pb.position.y + (Math.random() - 0.5) * 40);
+    }
     if (this.state === 'play') {
       this.elapsed += dt;
       if (this.combo && t > this.comboUntil) this.combo = 0;
@@ -380,6 +392,21 @@ TT.GameScene = new Phaser.Class({
     this.lionfishNear(x, y, R);
     this.radialPush(x, y, R, 0.05, src);
   },
+  // Sheepshead bite: a short-range crunch that cracks hard junk and traps and cuts nets and lines.
+  crunch: function (x, y, R, src) {
+    var A = TT.CFG.ABILITY, self = this;
+    this.fx.ring(x, y, R, 0xf3efe2); this.fx.bubbles(x, y, 8);
+    this.objects.forEach(function (o) {
+      if (!o.alive) return;
+      var d = Phaser.Math.Distance.Between(x, y, o.body.position.x, o.body.position.y) - Math.max(o.w, o.h) / 2;
+      if (d <= R) TT.Entities.damage(self, o, o.material === 'concrete' ? A.crunchOther : A.crunchHard, src);
+    });
+    this.containers.forEach(function (c) {
+      if (!c.alive) return;
+      var d = Phaser.Math.Distance.Between(x, y, c.sprite.x, c.sprite.y) - Math.max(c.w, c.h) / 2;
+      if (d <= R) TT.Entities.damage(self, c, A.crunchHard, src);
+    });
+  },
   sediment: function (x, y) {
     if (this.time.now - this.lastSilt < 250) return;
     this.lastSilt = this.time.now;
@@ -407,27 +434,22 @@ TT.GameScene = new Phaser.Class({
     if (k === 'bubble') { this.player.shield = true; this.sfx.play('shield'); }
     if (k === 'kelp') { this.timeLeft += TT.CFG.GADGETS.kelp.time; this.player.recharge(); }
     if (k === 'glow') this.lit = true;
-    if (k === 'netcutter') this.cutNearestNet();
+    if (k === 'netcutter') { this.cutterUntil = this.clock + TT.CFG.GADGETS.netcutter.time; this.sfx.play('ready'); }
     return true;
   },
-  // Net Cutter: snips the nearest net or fishing line, wherever it is, and frees what's inside.
-  cutNearestNet: function () {
-    var pos = this.player.pos(), best = null, bd = Infinity;
-    this.containers.forEach(function (c) {
-      if (!c.alive || c.ctype === 'trap') return;
-      var d = Phaser.Math.Distance.Between(pos.x, pos.y, c.sprite.x, c.sprite.y);
-      if (d < bd) { bd = d; best = c; }
-    });
-    if (!best) return;
-    this.fx.ring(best.sprite.x, best.sprite.y, 120, 0xffe7a8);
-    this.breakContainer(best, null);
+  // Net Cutter: while armed, the first net or line the rescuer touches is cut (one stage of a big net).
+  useCutter: function (c) {
+    this.cutterUntil = 0;
+    this.fx.ring(c.sprite.x, c.sprite.y, 110, 0xffe7a8);
+    this.flash(c.sprite.x, c.sprite.y - c.h / 2 - 40, 'Snip!', '#ffe7a8', 24);
+    TT.Entities.damage(this, c, c.stagesLeft > 1 ? c.hp : 9999, this.player.ent);
   },
 
   // ---------- modes ----------
   onAbilityUsed: function () {
     if (!this.puzzle) return;
-    this.movesUsed++; this.movesLeft = Math.max(0, this.movesLeft - 1);
-    if (this.movesLeft === 0 && this.trapped > 0) this.message('Out of moves! Waiting to see where everything lands…', 2500);
+    this.movesUsed++; this.movesLeft = Math.max(0, this.movesLeft - 1); this.lastMoveAt = this.clock;
+    if (this.movesLeft === 0 && this.trapped > 0) this.message('Out of moves!', 1500);
   },
   // Puzzle: out of moves and everything has settled, with animals still trapped = try again.
   puzzleCheck: function (dt) {
@@ -435,7 +457,7 @@ TT.GameScene = new Phaser.Class({
     var moving = this.player.charging() || TT.speed(this.player.ent.body) > 1.5;
     for (var i = 0; i < this.objects.length && !moving; i++) { var o = this.objects[i]; if (o.alive && TT.speed(o.body) > 0.4) moving = true; }
     this.stillFor = moving ? 0 : this.stillFor + dt;
-    if (this.stillFor > TT.CFG.PUZZLE_SETTLE) this.finish(false, 'moves');
+    if (this.stillFor > TT.CFG.PUZZLE_SETTLE || this.clock - this.lastMoveAt > TT.CFG.PUZZLE_MAX_WAIT) this.finish(false, 'moves');
   },
   // Arcade: spawn the next wave of trapped animals, junk and lionfish into the same arena.
   nextWave: function () {

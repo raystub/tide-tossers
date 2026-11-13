@@ -2,7 +2,7 @@
 // Units: positions in px, velocities in px per 1/60 s (independent of the physics rate), times in seconds.
 window.TT = window.TT || {};
 
-TT.VERSION = 'v0.6.0';
+TT.VERSION = 'v0.6.1';
 
 // Phones and tablets (coarse pointer) get the touch controls, bigger HUD and a closer camera.
 // Force it on a desktop with ?mobile=1 to preview the phone layout.
@@ -66,6 +66,8 @@ TT.CFG = {
   CORAL_PENALTY: 5,          // reef health % lost per coral hit
   CORAL_COOLDOWN: 1.0,
   LIONFISH_FLEE_SPEED: 4,    // junk hitting a lionfish faster than this drives it off
+  LIONFISH_HUNT_RANGE: 300,  // Arcade lionfish drift toward a rescuer this close...
+  LIONFISH_HUNT_SPEED: 48,   // ...at this many px per second
 
   // ---- Level flow ----
   RESCUE_TIME_BONUS: 6,      // seconds of tide won back per animal freed
@@ -116,6 +118,7 @@ TT.CFG = {
     swordfish:    { name: 'Swordfish',             radius: 19, density: 0.005,  speed: 8.0, accel: 0.11, cd: 2.0, ability: 'Pierce', len: 5.6, nick: 'Spike' },
     hammerhead:   { name: 'Scalloped hammerhead',  radius: 24, density: 0.006,  speed: 7.0, accel: 0.10, cd: 2.6, ability: 'Ram',    len: 4.4,
                     bonusVs: { concrete: 1.5 } },
+    sheepshead:   { name: 'Sheepshead',            radius: 21, density: 0.0045, speed: 5.8, accel: 0.15, cd: 1.6, ability: 'Crunch', len: 3.1 },
     manatee:      { name: 'Florida manatee',       radius: 30, density: 0.008,  speed: 4.3, accel: 0.07, cd: 3.0, ability: 'Push',   len: 3.7, air: 55 }
   },
   // air: seconds of breath for air-breathing rescuers (see AIR_* below).
@@ -137,7 +140,8 @@ TT.CFG = {
   STAGE_TIME_BONUS: 4,       // seconds of tide won back per stage torn
 
   // ---- Puzzle mode ----
-  PUZZLE_SETTLE: 2.5,        // seconds to let junk settle after the last move before calling it
+  PUZZLE_SETTLE: 0.8,        // out of moves: end once everything has been still this long...
+  PUZZLE_MAX_WAIT: 2.5,      // ...or this long after the last move, whichever comes first
 
   // ---- Arcade mode ----
   ARCADE_START_TIME: 75,     // seconds on the clock for wave 1
@@ -145,6 +149,8 @@ TT.CFG = {
   ARCADE_WAVE_TIME_MIN: 16,  // ...down to this. Rescues add no time in Arcade.
   ARCADE_HP_GROWTH: 0.08,    // nets and junk get this much tougher per wave
   ARCADE_LEVEL_WIDTH: 2600,
+  ARCADE_SCHOOL_TIME: 14,    // seconds a rescued animal follows you in Arcade before swimming off
+  SCHOOL_MAX: 16,            // campaign: the oldest followers swim off past this many
 
   // ---- Abilities ----
   ABILITY: {
@@ -155,7 +161,8 @@ TT.CFG = {
     shoveSpeed: 10.5, shoveTime: 0.7, shoveMassMult: 2,
     pierceSpeed: 18, pierceTime: 0.5,
     ramSpeed: 15, ramTime: 0.55, ramVsConcrete: 3, ramVsContainer: 1.5,
-    pushSpeed: 8.5, pushTime: 1.0, pushMassMult: 4      // manatee: slow, but nothing stops it
+    pushSpeed: 8.5, pushTime: 1.0, pushMassMult: 4,     // manatee: slow, but nothing stops it
+    crunchRadius: 70, crunchHard: 130, crunchOther: 50, crunchDash: 9   // sheepshead: a lunge and a bite that cracks shells, metal, wood and traps
   },
 
   // ---- Difficulty ----
@@ -173,7 +180,7 @@ TT.CFG = {
     bubble:    { name: 'Bubble Shield', desc: 'Blocks the next sting or coral hit' },
     kelp:      { name: 'Extra Kelp',    desc: '+15 seconds of tide and a fresh ability', time: 15 },
     glow:      { name: 'Glow Lure',     desc: 'Lights up a dark level', darkOnly: true },
-    netcutter: { name: 'Net Cutter',    desc: 'Cuts the nearest net or fishing line' }
+    netcutter: { name: 'Net Cutter',    desc: 'For 12 seconds, the next net or line you touch is cut', time: 12 }
   },
   GADGET_START_COUNT: 3,
 

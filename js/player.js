@@ -276,6 +276,10 @@ TT.Player.prototype.useAbility = function () {
     case 'hammerhead':
       this.boost(A.ramSpeed, A.ramTime); e.ramming = true; g.fx.bubbles(x, y, 8); g.sfx.play('dash');
       break;
+    case 'sheepshead':
+      this.boost(A.crunchDash, 0.14);
+      g.crunch(x + hx * (e.radius + 22), y + hy * (e.radius + 22), A.crunchRadius, e); g.sfx.play('snap');
+      break;
     case 'manatee':
       this.boost(A.pushSpeed, A.pushTime); e.shoving = true; e.pushing = true; M.Body.setMass(b, e.baseMass * A.pushMassMult);
       g.fx.bubbles(x, y, 16); g.fx.ring(x + hx * 30, y + hy * 30, 50, 0xbff3ff); g.sfx.play('whoosh');

@@ -17,6 +17,10 @@ TT.GUIDE = [
     fact: 'Swordfish slash at prey with their flat bill rather than spearing it.', threat: 'Overfishing and being caught on longlines.' },
   { id: 'hammerhead', name: 'Scalloped hammerhead', sci: 'Sphyrna lewini', where: 'Warm coastal waters worldwide; large schools gather around the Galápagos', size: 'Up to about 3–4 m',
     fact: 'The wide head spreads out sensors that pick up the tiny electric fields of hidden prey.', threat: 'Overfishing and shark finning; listed as critically endangered.' },
+  { id: 'sheepshead', name: 'Sheepshead', sci: 'Archosargus probatocephalus', where: 'Mangroves, oyster reefs, jetties and pilings of the western Atlantic and Gulf of Mexico', size: 'Commonly 30–50 cm',
+    fact: 'Sheepshead have rows of human-like teeth that crush barnacles, oysters and crabs.', threat: 'Loss of oyster reefs and mangroves.' },
+  { id: 'reddrum', name: 'Red drum (redfish)', sci: 'Sciaenops ocellatus', where: 'Coastal bays, mangroves and seagrass of the western Atlantic and Gulf of Mexico', size: 'Commonly 50–90 cm',
+    fact: 'The black spot near the tail may trick predators into attacking the tail instead of the head.', threat: 'Loss of the mangrove and seagrass nurseries where young red drum grow up.' },
   { id: 'manatee', name: 'Florida manatee', sci: 'Trichechus manatus latirostris', where: 'Warm, shallow coastal waters, rivers and springs of Florida', size: 'About 3 m; often 400–550 kg',
     fact: 'Manatees are plant-eaters that graze on seagrass for hours a day, and must come up to breathe air.', threat: 'Boat strikes, loss of seagrass, cold snaps and fishing line.' },
   { id: 'sawfish', name: 'Smalltooth sawfish', sci: 'Pristis pectinata', where: 'Shallow coastal waters of southern Florida', size: 'Up to about 5–7 m',
@@ -43,6 +47,7 @@ TT.INFO = {
     puffer: 'Tap to puff up and push junk apart. Immune to lionfish spines.',
     pistolshrimp: 'Tap underwater: its snap sends out a shockwave that shatters glass and plastic.',
     loggerhead: 'Heavy. Tap to dive and shove sunken junk. Breathes air: surface before the ring runs out.',
+    sheepshead: 'Tap to crunch: a short lunge and bite that cracks traps, cans, wood and nets up close.',
     manatee: 'The slowest and heaviest. Its push keeps going through nets and junk. Breathes air.',
     swordfish: 'Slices nets and fishing lines on contact. Tap to dart straight through wood, plastic and metal. Concrete stops it.',
     hammerhead: 'Tap to ram forward. The best way to crack concrete.'

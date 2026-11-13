@@ -71,6 +71,16 @@ Check each against a trusted source (e.g. NOAA, FWC, IUCN Red List, a university
 | Smalltooth sawfish | Size | Up to about 5–7 m | ☐ | |
 | Smalltooth sawfish | Fact | A sawfish is a ray, not a shark; it sweeps its toothed saw to stun small fish | ☐ | |
 | Smalltooth sawfish | Threat | Tangling in fishing nets; listed as endangered in the United States | ☐ | |
+| Sheepshead | Scientific name | *Archosargus probatocephalus* | ☐ | |
+| Sheepshead | Where | Mangroves, oyster reefs, jetties and pilings of the western Atlantic and Gulf of Mexico | ☐ | |
+| Sheepshead | Size | Commonly 30–50 cm | ☐ | |
+| Sheepshead | Fact | Rows of human-like teeth that crush barnacles, oysters and crabs | ☐ | |
+| Sheepshead | Threat | Loss of oyster reefs and mangroves | ☐ | |
+| Red drum | Scientific name | *Sciaenops ocellatus* | ☐ | |
+| Red drum | Where | Coastal bays, mangroves and seagrass of the western Atlantic and Gulf of Mexico | ☐ | |
+| Red drum | Size | Commonly 50–90 cm | ☐ | |
+| Red drum | Fact | The black tail spot may trick predators into attacking the tail instead of the head | ☐ | |
+| Red drum | Threat | Loss of mangrove and seagrass nurseries | ☐ | |
 
 ## Art-accuracy notes
 

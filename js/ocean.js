@@ -76,14 +76,31 @@ TT.School.prototype.join = function (container) {
   g.time.delayedCall(2500, function () { g.ocean.addSwimmer('smallfish'); });
 };
 TT.School.prototype.add = function (sprite, kind) {
-  var n = this.members.length;
+  var n = this.live().length;
   this.members.push({ s: sprite, kind: kind, back: 9 + n * 4 + Math.floor(Math.random() * 3), ox: (Math.random() - 0.5) * 34, oy: (Math.random() - 0.5) * 40,
-    ph: Math.random() * 6, vx: 0, vy: 0, gone: false });
+    ph: Math.random() * 6, vx: 0, vy: 0, gone: false, joined: this.game.clock });
+  // keep the school from cluttering the screen: the oldest swim off once there are too many
+  var live = this.live(), max = TT.CFG.SCHOOL_MAX;
+  for (var i = 0; i < live.length - max; i++) this.leave(live[i]);
+};
+TT.School.prototype.live = function () { return this.members.filter(function (m) { return !m.gone; }); };
+// One follower heads off to open water on its own.
+TT.School.prototype.leave = function (m) {
+  var g = this.game, self = this;
+  if (m.gone) return;
+  m.gone = true;
+  var dir = Math.random() < 0.5 ? -1 : 1;
+  if (m.kind !== 'seahorse') m.s.setRotation(dir > 0 ? -0.2 : Math.PI + 0.2).setFlipY(dir < 0); else m.s.setFlipX(dir < 0);
+  g.tweens.add({ targets: m.s, x: m.s.x + dir * (600 + Math.random() * 200), y: Math.max(g.water.y + 30, m.s.y - 60 - Math.random() * 60), alpha: 0,
+    duration: 2400 + Math.random() * 600, ease: 'Sine.easeIn', onComplete: function () { m.s.destroy(); self.members.splice(self.members.indexOf(m), 1); } });
+  // close the gap so the rest of the school keeps following tightly
+  this.live().forEach(function (o, i) { o.back = 9 + i * 4 + (o.back % 4); });
 };
 TT.School.prototype.update = function (dt, t) {
   var g = this.game, trail = g.player.trail, W = Phaser.Math.Angle.Wrap, wy = g.water.y + 14, k = Math.min(1, dt * 4.5);
   for (var i = 0; i < this.members.length; i++) {
     var m = this.members[i]; if (m.gone) continue;
+    if (g.arcade && g.state === 'play' && g.clock - m.joined > TT.CFG.ARCADE_SCHOOL_TIME) { this.leave(m); continue; }
     var idx = trail.length - 1 - m.back, tp = trail[Math.max(0, idx)] || g.player.pos();
     var tx = tp.x + m.ox + Math.sin(t * 1.7 + m.ph) * 7, ty = Math.max(wy, tp.y + m.oy + Math.cos(t * 1.3 + m.ph) * 6);
     var nx = m.s.x + (tx - m.s.x) * k, ny = m.s.y + (ty - m.s.y) * k;
@@ -100,6 +117,7 @@ TT.School.prototype.update = function (dt, t) {
 TT.School.prototype.swimOff = function () {
   var g = this.game;
   this.members.forEach(function (m, i) {
+    if (m.gone) return;
     m.gone = true;
     if (m.kind !== 'seahorse') { m.s.setRotation(-0.25).setFlipY(false); } else m.s.setFlipX(false);
     g.tweens.add({ targets: m.s, x: m.s.x + 700 + Math.random() * 200, y: Math.max(g.water.y + 20, m.s.y - 120 - Math.random() * 80), alpha: 0,

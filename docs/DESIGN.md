@@ -62,7 +62,7 @@ Lead rescuer in bold; *(built)* = exists in v0.5 under its old number.
 | World 1 · Florida Keys | World 2 · Great Barrier Reef |
 | --- | --- |
 | 1-1 Tide Pool Tangle · **blue tang** *(built)* | 2-1 Mangrove Edge · **archerfish** |
-| 1-2 Mangrove Maze · **flying fish** *(built)* | 2-2 Lagoon Bommies · **parrotfish** |
+| 1-2 Mangrove Maze · **sheepshead** *(built; flying fish moved to open-water levels, v0.6.1)* | 2-2 Lagoon Bommies · **parrotfish** |
 | 1-3 Bottle Graveyard · **pistol shrimp** *(built)* | 2-3 Cleaning Station · **cleaner wrasse** |
 | 1-4 Spines · **pufferfish** *(built)* | 2-4 Starfish Outbreak · **giant triton** |
 | 1-5 Stone-Crab Traps · **loggerhead** *(built)* | 2-5 Spawning Night · **peacock mantis shrimp** |

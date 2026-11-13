@@ -58,30 +58,31 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
     },
     {
       id: '1-2', name: 'Mangrove Maze', world: 1, place: 'Florida Keys', background: 'keys',
-      width: 3200, waterline: 200, start: { x: 170, y: 50 }, team: ['tang', 'flyingfish'], time: 110, exit: { x: 3080, y: 430 },
+      width: 3200, waterline: 200, start: { x: 170, y: 50 }, team: ['sheepshead', 'tang'], time: 110, exit: { x: 3080, y: 430 },
       statics: [
         { x: 700, y: 290, w: 46, h: 460, look: 'root' },
         { x: 980, y: 310, w: 46, h: 500, look: 'root' },
         { x: 840, y: 650, w: 200, h: 60, look: 'rock' },
-        { x: 1900, y: 395, w: 130, h: 590, look: 'rock' }     // sandbar wall: top is 100 px above the water
+        { x: 1900, y: 520, w: 130, h: 340, look: 'rock' },    // oyster bar: swim over it
+        { x: 2150, y: 300, w: 46, h: 480, look: 'root' }
       ],
       objects: [
         { k: 'plastic', x: 840, y: 205, w: 60, h: 40 },
         { k: 'glass', x: 1180, y: 520, w: 18, h: 60 },
-        { k: 'plastic', x: 1500, y: 205, w: 54, h: 36 },
-        { k: 'plastic', x: 2200, y: 205, w: 60, h: 40 },
-        { k: 'glass', x: 2500, y: 560, w: 18, h: 60 },
-        { k: 'plastic', x: 2700, y: 205, w: 60, h: 40 }, { k: 'plastic', x: 2770, y: 205, w: 50, h: 36 }
+        { k: 'tin', x: 1480, y: 640, w: 44, h: 80 },
+        { k: 'plastic', x: 2300, y: 205, w: 60, h: 40 },
+        { k: 'wood', x: 2500, y: 205, w: 120, h: 24 },
+        { k: 'tin', x: 2760, y: 640, w: 44, h: 80 }
       ],
       containers: [
-        { k: 'net', x: 1330, y: 610, w: 80, h: 140, holds: [{ k: 'seahorse', n: 1 }] },
-        { k: 'net', x: 1600, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'fishschool', n: 1 }] },
-        { k: 'net', x: 2350, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] },
-        { k: 'net', x: 2880, y: 390, w: 74, h: 130, hang: true, holds: [{ k: 'seahorse', n: 1 }] }
+        { k: 'net', x: 1330, y: 610, w: 80, h: 140, holds: [{ k: 'reddrum', n: 1 }] },
+        { k: 'net', x: 1600, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'seahorse', n: 1 }] },
+        { k: 'trap', x: 2350, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 2880, y: 390, w: 74, h: 130, hang: true, holds: [{ k: 'reddrum', n: 1 }] }
       ],
       coral: [{ x: 1150, y: 640, w: 130, h: 80 }, { x: 2620, y: 640, w: 130, h: 80 }],
       invasives: [], startHealth: 30,
-      hint: 'Switch to the flying fish and leap over the sandbar to reach the lagoon.'
+      hint: 'Sheepshead have strong, human-like teeth: CRUNCH cracks traps, cans and nets up close. Switch to the tang for speed.'
     },
     {
       id: '1-3', name: 'Bottle Graveyard', world: 1, place: 'Florida Keys', background: 'keys',

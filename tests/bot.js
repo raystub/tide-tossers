@@ -49,9 +49,10 @@ window.__bot = function (maxGameSeconds, opts) {
         var brittle = G.objects.filter(function (o) { return o.alive && (o.material === 'glass' || o.material === 'plastic') && dist(o.body.position, cp) < 150; });
         if (brittle.length >= 2 && has('pistolshrimp') >= 0) return { x: cp.x, y: cp.y - 30, kind: 'brittle', who: 'pistolshrimp', range: 120 };
         var who = c.ctype === 'trap' ? (has('loggerhead') >= 0 ? 'loggerhead' : has('hammerhead') >= 0 ? 'hammerhead' : 'tang') : (has('swordfish') >= 0 ? 'swordfish' : 'tang');
+        if (has('sheepshead') >= 0 && c.ctype !== 'line') who = 'sheepshead';
         if (has(who) < 0) who = P.team[0].id === 'pistolshrimp' || P.team[0].id === 'puffer' ? (has('tang') >= 0 ? 'tang' : P.team[0].id) : P.team[0].id;
         var ty = c.ctype === 'line' ? Math.min(C.FLOOR_Y - 60, Math.max(G.water.y + 60, pos.y)) : cp.y;
-        return { x: cp.x, y: ty, kind: c.ctype, who: who, range: 250, r: Math.max(c.w, c.h) / 2 };
+        return { x: cp.x, y: ty, kind: c.ctype, who: who, range: who === 'sheepshead' ? Math.max(c.w, c.h) / 2 + 70 : 250, r: Math.max(c.w, c.h) / 2 };
       }
       if (!opts.noClean) {
         // only junk on this side of any full-height wall (the bot crosses walls left to right only)

@@ -59,12 +59,14 @@ TT.Arcade = (function () {
         if (k === 'plastic' || k === 'wood') out.objects.push({ k: k, x: x, y: level.waterline + 5, w: k === 'wood' ? 110 : 56, h: k === 'wood' ? 24 : 38 });
         else out.objects.push({ k: k, x: x, y: 520, w: k === 'tin' ? 44 : 18, h: k === 'tin' ? 80 : 60 });
       }
-      var lions = n >= 3 ? Math.min(3, Math.floor((n - 1) / 2)) : 0;
-      for (var l = 0; l < lions && l < out.containers.length; l++) {
-        var c = out.containers[l];
-        out.invasives.push({ k: 'lionfish', x: c.x + 60, y: 500, patrol: 70 });
+      // lionfish from wave 2, more every other wave; from wave 4 they hunt rescuers that come close
+      var lions = n >= 2 ? Math.min(6, 1 + Math.floor((n - 1) / 2)) : 0;
+      for (var l = 0; l < lions; l++) {
+        var c = out.containers[l % out.containers.length], side = l % 2 ? -1 : 1;
+        out.invasives.push({ k: 'lionfish', x: c.x + side * (70 + 30 * Math.floor(l / out.containers.length)), y: c.k === 'trap' || c.y > 560 ? 500 : c.y + 40,
+          patrol: 60 + Math.round(Math.random() * 40), size: 84, hunt: n >= 4 });
       }
-      if (!out.blurb) out.blurb = lions ? 'Watch out for lionfish.' : traps && n >= 3 ? 'Concrete is weighing down the traps.' : out.containers.length + ' rescues to make.';
+      if (!out.blurb) out.blurb = lions && n >= 4 ? 'Hunting lionfish! Switch to the pufferfish to drive them off.' : lions ? 'Watch out for lionfish.' : traps && n >= 3 ? 'Concrete is weighing down the traps.' : out.containers.length + ' rescues to make.';
       return out;
     }
   };

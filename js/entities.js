@@ -118,12 +118,12 @@ TT.Entities = (function () {
   }
 
   function lionfish(scene, d) {
-    var key = TT.Art.speciesKey(scene, 'lionfish');
-    var s = TT.Art.scaleFor(scene, key, 70);
-    var go = scene.matter.add.sprite(d.x, d.y, key, 0, { isStatic: true, isSensor: true, shape: { type: 'circle', radius: 26 / s } });
+    var key = TT.Art.speciesKey(scene, 'lionfish'), size = d.size || 70;
+    var s = TT.Art.scaleFor(scene, key, size);
+    var go = scene.matter.add.sprite(d.x, d.y, key, 0, { isStatic: true, isSensor: true, shape: { type: 'circle', radius: 26 * size / 70 / s } });
     go.setScale(s).setDepth(10);
     TT.Art.playSwim(go, 'lionfish');
-    return tag(go, { kind: 'lionfish', alive: true, home: { x: d.x, y: d.y }, patrol: d.patrol || 80, phase: Math.random() * 6, fleeing: false, dir: 1 });
+    return tag(go, { kind: 'lionfish', alive: true, home: { x: d.x, y: d.y }, patrol: d.patrol || 80, phase: Math.random() * 6, fleeing: false, dir: 1, hunt: !!d.hunt });
   }
 
   function staticBody(scene, d, idx) {
@@ -192,6 +192,7 @@ TT.Entities = (function () {
     if (t.kind === 'container') {
       var cd = C.CONTAINERS[t.ctype];
       if (o.kind === 'static' || o.kind === 'floor' || o.kind === 'coral') return;
+      if (o.kind === 'rescuer' && game.cutterUntil > game.clock && t.ctype !== 'trap') { game.useCutter(t); return; }
       if (o.kind === 'rescuer' && game.puzzle && !game.player.charging()) return;
       if (o.kind === 'rescuer' && o.id === 'swordfish' && t.ctype !== 'trap' && rel > 2) { damage(game, t, t.stagesLeft > 1 ? t.maxHp : 9999, o); return; }
       if (cd.minSpeed && rel < cd.minSpeed) return;
