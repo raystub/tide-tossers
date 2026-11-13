@@ -18,6 +18,7 @@ History: v0.1–v0.4 were a kelp-sling launcher (kept playable at `/v0.4/`). v0.
 - `UNLOCK_ALL` in config.js opens every level for testing; set it false before a store release.
 - Rescuer roster (all 42 rescuers, abilities, handling) and the level plan are in the Claude doc linked from `docs/DESIGN.md`.
 - Commits: no Claude co-author lines.
+- After changing any field-guide card or a level hint with a real-world claim, run `node tools/facts.js` to refresh `docs/FACTS_TO_VERIFY.md`.
 
 ## File layout
 
