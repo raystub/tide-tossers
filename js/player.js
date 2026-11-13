@@ -42,6 +42,13 @@ TT.Player.prototype.step = function () {
   var e = this.ent, b = e.body, def = e.def, now = g.clock;
   var v = TT.vel(b), vx = v.x, vy = v.y, inp = this.input;
   var under = g.water.isUnder(b.position.y);
+  // leaving the water: boosts end and speed is capped, so a dash near the surface is a hop, not a launch
+  if (e.wasUnderStep && !under) {
+    var leap = e.leaping, cap = leap ? C.LEAP_EXIT_MAX : C.BREACH_MAX_SPEED, sp0 = Math.sqrt(vx * vx + vy * vy);
+    if (!leap) { this.endBoost(); e.boostUntil = 0; }
+    if (sp0 > cap) { vx *= cap / sp0; vy *= cap / sp0; }
+  }
+  e.wasUnderStep = under;
   e.submerged = under;
 
   // glide (flying fish): starts when a leap clears the surface

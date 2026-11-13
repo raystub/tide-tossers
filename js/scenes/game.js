@@ -21,7 +21,7 @@ TT.GameScene = new Phaser.Class({
     this.removeQueue = []; this.lastSilt = 0; this.lights = []; this.botInput = null;
     this.allFreeAt = 0; this.exitOpen = false; this.lit = false;
     this.timed = D.time > 0; this.timeMax = this.timeLeft = this.timed ? Math.round(level.time * D.time) : 0; this.lastTick = 99;
-    this.gadgetUsed = false; this.gadgetName = ''; this.netCutterArmed = false;
+    this.gadgetUsed = false; this.gadgetName = '';
 
     var W = this.worldW = level.width, H = C.HEIGHT;
     var cam = this.cameras.main;
@@ -367,16 +367,20 @@ TT.GameScene = new Phaser.Class({
     if (k === 'bubble') { this.player.shield = true; this.sfx.play('shield'); }
     if (k === 'kelp') { this.timeLeft += TT.CFG.GADGETS.kelp.time; this.player.recharge(); }
     if (k === 'glow') this.lit = true;
-    if (k === 'netcutter') { this.netCutterArmed = true; this.message('Net Cutter ready: tap a net or fishing line.', 3500); }
+    if (k === 'netcutter') this.cutNearestNet();
     return true;
   },
-  tryNetCut: function (wp) {
-    var hit = null;
+  // Net Cutter: snips the nearest net or fishing line, wherever it is, and frees what's inside.
+  cutNearestNet: function () {
+    var pos = this.player.pos(), best = null, bd = Infinity;
     this.containers.forEach(function (c) {
       if (!c.alive || c.ctype === 'trap') return;
-      if (Math.abs(wp.x - c.x) < Math.max(40, c.w / 2 + 20) && Math.abs(wp.y - c.y) < c.h / 2 + 20) hit = c;
+      var d = Phaser.Math.Distance.Between(pos.x, pos.y, c.sprite.x, c.sprite.y);
+      if (d < bd) { bd = d; best = c; }
     });
-    if (hit) { this.netCutterArmed = false; this.breakContainer(hit, null); }
+    if (!best) return;
+    this.fx.ring(best.sprite.x, best.sprite.y, 120, 0xffe7a8);
+    this.breakContainer(best, null);
   },
 
   // ---------- pause / end ----------

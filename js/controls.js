@@ -20,7 +20,6 @@ TT.Controls = function (ui, game) {
   this.onDown = function (p) {
     TT.Sfx.unlock();
     if (game.uiBlocking || game.state !== 'play') return;
-    if (game.netCutterArmed) { game.tryNetCut(game.cameras.main.getWorldPoint(p.x, p.y)); return; }
     if (p.wasTouch) {
       if (p.x < C.WIDTH * C.STICK_ZONE && !self.stick) { self.stick = { p: p, bx: p.x, by: p.y }; self.dir = null; }
       else game.player.useAbility();

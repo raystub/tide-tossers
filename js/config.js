@@ -2,7 +2,7 @@
 // Units: positions in px, velocities in px per 1/60 s (independent of the physics rate), times in seconds.
 window.TT = window.TT || {};
 
-TT.VERSION = 'v0.5';
+TT.VERSION = 'v0.5.1';
 
 // Phones and tablets (coarse pointer) get the touch controls, bigger HUD and a closer camera.
 // Force it on a desktop with ?mobile=1 to preview the phone layout.
@@ -38,7 +38,8 @@ TT.CFG = {
   // ---- Swimming ----
   SWIM_IDLE_DRAG: 0.045,     // how quickly you coast to a stop with the stick released
   SWIM_AIR_CONTROL: 0.05,    // sideways push per 1/60 s while airborne
-  SWIM_BREACH_KEEP: 0.9,     // speed kept when leaping out of the water
+  BREACH_MAX_SPEED: 7.5,     // top speed when a creature leaves the water (dashes don't fling it skyward)
+  LEAP_EXIT_MAX: 11,         // the flying fish's leap is allowed a bit more, so it can clear walls
   FLOP_HOP: 5.5,             // hop speed when stranded out of the water
   SWIM_TURN_EASE: 12,        // how fast the sprite turns to face its heading
   STUN_TIME: 0.9,            // seconds without control after a lionfish sting
@@ -143,7 +144,7 @@ TT.CFG = {
     bubble:    { name: 'Bubble Shield', desc: 'Blocks the next sting or coral hit' },
     kelp:      { name: 'Extra Kelp',    desc: '+15 seconds of tide and a fresh ability', time: 15 },
     glow:      { name: 'Glow Lure',     desc: 'Lights up a dark level', darkOnly: true },
-    netcutter: { name: 'Net Cutter',    desc: 'Tap a net or fishing line to cut it' }
+    netcutter: { name: 'Net Cutter',    desc: 'Cuts the nearest net or fishing line' }
   },
   GADGET_START_COUNT: 3
 };

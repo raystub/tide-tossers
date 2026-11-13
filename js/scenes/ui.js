@@ -318,7 +318,7 @@ TT.UIScene = new Phaser.Class({
     // gadgets
     var any = playing && !g.gadgetUsed && Object.keys(C.GADGETS).some(function (k) { return g.gadgetAvailable(k); });
     this.gadgetBtn.setVisible(any);
-    this.gadgetLabel.setText(g.gadgetUsed ? g.gadgetName + (g.netCutterArmed ? ': tap a net' : pl.shield ? ' on' : '') : '');
+    this.gadgetLabel.setText(g.gadgetUsed ? g.gadgetName + (pl.shield ? ' on' : '') : '');
   },
 
   // ---------- results ----------
