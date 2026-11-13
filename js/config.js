@@ -2,7 +2,7 @@
 // Units: positions in px, velocities in px per 1/60 s (independent of the physics rate), times in seconds.
 window.TT = window.TT || {};
 
-TT.VERSION = 'v0.6.4';
+TT.VERSION = 'v0.6.5';
 
 // Phones and tablets (coarse pointer) get the touch controls, bigger HUD and a closer camera.
 // Force it on a desktop with ?mobile=1 to preview the phone layout.

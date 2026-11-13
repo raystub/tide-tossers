@@ -49,7 +49,7 @@ The tide tosses you in → swim to the trapped animals (edge arrows point the wa
 | --- | --- | --- | --- | --- | --- |
 | 1 | Florida Keys | 0–20 m | Swimming, abilities, switching, lionfish | Smalltooth sawfish in a gillnet | Bottlenose dolphins |
 | 2 | Great Barrier Reef and Coral Sea | 0–300 m | Gentle animals, reef recovery, currents, night | Turtles in a ghost net sinking down Osprey Reef wall | Clownfish, numbfish (electric ray) |
-| 3 | Galápagos Islands | 0–300 m | Air, the first dark cave | Whale shark trailing a lost net at Darwin's Arch | Sardine bait balls |
+| 3 | Galápagos Islands | 0–300 m | Air, the first dark cave | Whale shark trailing a lost net at Darwin's Pillars (the arch fell in 2021) | Sardine bait balls |
 | 4 | Monterey Bay kelp coast | 0–300 m | Kelp regrowth, wall-crawling, drifting hulls and buoys, vertical levels | Humpback whale in crab-pot lines | Bottlenose dolphins, Pacific torpedo ray |
 | 5 | Monterey Canyon twilight zone | 200–1,000 m | Light meter, daily migration, marine snow | Cuvier's beaked whale in a drift gillnet | Lanternfish, siphonophores |
 | 6 | Midnight zone, whale fall, vents | 1,000–3,000 m | Heat, dive budget, escorting | Buried tube-worm garden brought back | Bioluminescent jellies |
@@ -75,7 +75,7 @@ Lead rescuer in bold; *(built)* = exists in v0.5 under its old number.
 | 3-3 Penguin Rocks · **Galápagos penguin** *(built, v0.6.2)* | 4-3 Harbor Breakwater · **giant Pacific octopus** |
 | 3-4 Longline · **swordfish** *(built; renumbered from 2-5)* | 4-4 Urchin Barren · **sunflower sea star** |
 | 3-5 Lava Tube · **Galápagos bullhead shark** *(built, v0.6.2)* | 4-5 Sand Channel · **bat ray** |
-| 3-6 Darwin's Arch · **scalloped hammerhead** *(built, v0.6.2: whale shark big rescue)* | 4-6 Canyon Head · **northern elephant seal** |
+| 3-6 Darwin's Pillars · **scalloped hammerhead** *(built, v0.6.2: whale shark big rescue; renamed in v0.6.5 because the arch collapsed in 2021)* | 4-6 Canyon Head · **northern elephant seal** |
 
 | World 5 · Twilight zone | World 6 · Midnight zone | World 7 · Abyss and trench |
 | --- | --- | --- |

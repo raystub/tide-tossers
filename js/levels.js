@@ -10,6 +10,7 @@
 //   coral:      protected living coral.   invasives: lionfish patrolling around (x, y).
 //   currents:   zones that push everything inside: fx, fy in px per (1/60 s)^2.
 //   tide:       { min, max } waterline range; the water rises and falls continuously.
+//   decor:      [{ x, y, w, h, look }] rock shapes drawn behind the action (no collision)
 //   seagrass:   [{ x, w }] living seagrass meadows on the floor. Junk crashing into them, or a charge through them, costs reef health.
 //   containers may have stages: n (a big rescue: the net must be torn n times) and holds big animals.
 window.TT = window.TT || {};
@@ -21,7 +22,7 @@ TT.WORLDS = [
   { n: 2, name: 'Great Barrier Reef', depth: '0–300 m', card: 'place_gbr', background: 'keys',
     plan: ['Mangrove Edge', 'Lagoon Bommies', 'Cleaning Station', 'Starfish Outbreak', 'Spawning Night', 'Osprey Reef Wall'] },
   { n: 3, name: 'Galápagos Islands', depth: '0–300 m', card: 'place_galapagos', background: 'galapagos',
-    plan: ['Rising Tide', 'Lava Shore', 'Penguin Rocks', 'Longline', 'Lava Tube', 'Darwin\'s Arch'] },
+    plan: ['Rising Tide', 'Lava Shore', 'Penguin Rocks', 'Longline', 'Lava Tube', 'Darwin\'s Pillars'] },
   { n: 4, name: 'Monterey Bay Kelp', depth: '0–300 m', card: 'place_monterey', background: 'keys',
     plan: ['Kelp Canopy', 'Elkhorn Slough', 'Harbor Breakwater', 'Urchin Barren', 'Sand Channel', 'Canyon Head'] },
   { n: 5, name: 'Twilight Zone', depth: '200–1,000 m', card: 'place_twilight', background: 'cave',
@@ -82,7 +83,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       ],
       coral: [{ x: 1150, y: 640, w: 130, h: 80 }, { x: 2620, y: 640, w: 130, h: 80 }],
       invasives: [], startHealth: 30,
-      hint: 'Sheepshead have strong, human-like teeth: CRUNCH cracks traps, cans and nets up close. Switch to the tang for speed.'
+      hint: 'Sheepshead have strong teeth that look surprisingly human: CRUNCH cracks traps, cans and nets up close. Switch to the tang for speed.'
     },
     {
       id: '1-3', name: 'Bottle Graveyard', world: 1, place: 'Florida Keys', background: 'keys',
@@ -239,7 +240,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'net', x: 3150, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'hatchling', n: 1 }] }
       ],
       coral: [{ x: 650, y: 640, w: 120, h: 76 }, { x: 2650, y: 640, w: 120, h: 76 }], invasives: [], startHealth: 30,
-      hint: 'Mantas wait at cleaning stations. They are too big to push, so the cleaner wrasse CLEANS them and they glide aside. Only the wrasse can free the tangled manta.'
+      hint: 'Mantas visit cleaning stations. They are too big to push, so the cleaner wrasse CLEANS them and they glide aside. Only the wrasse can free the tangled manta.'
     },
     {
       id: '2-4', name: 'Starfish Outbreak', world: 2, place: 'Great Barrier Reef', background: 'keys',
@@ -255,7 +256,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       coral: [{ x: 700, y: 640, w: 130, h: 80 }, { x: 1300, y: 640, w: 130, h: 80 }, { x: 2200, y: 640, w: 130, h: 80 }, { x: 2800, y: 640, w: 130, h: 80 }],
       invasives: [{ k: 'cots', x: 700, y: 590 }, { k: 'cots', x: 1300, y: 590 }, { k: 'cots', x: 1340, y: 600 }, { k: 'cots', x: 2200, y: 590 }, { k: 'cots', x: 2800, y: 590 }, { k: 'cots', x: 2770, y: 600 }],
       startHealth: 35,
-      hint: 'Crown-of-thorns starfish are eating the coral and draining reef health. They flee the scent of the giant triton: swim close and tap. Their spines sting everything else.'
+      hint: 'Crown-of-thorns starfish are eating the coral and draining reef health. They move away from the scent of their predator, the giant triton: swim close and tap. Their spines sting everything else.'
     },
     {
       id: '2-5', name: 'Spawning Night', world: 2, place: 'Great Barrier Reef', background: 'keys', dark: true,
@@ -275,7 +276,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       coral: [{ x: 700, y: 640, w: 130, h: 80 }, { x: 1200, y: 640, w: 120, h: 76 }, { x: 2700, y: 640, w: 130, h: 80 }],
       invasives: [{ k: 'cots', x: 700, y: 590 }, { k: 'cots', x: 2700, y: 590 }],
       startHealth: 30,
-      hint: 'On spawning night the coral releases its eggs. The mantis shrimp PUNCHES: one strike cracks concrete and traps. Keep the starfish off the coral.'
+      hint: 'On spawning night the corals release their eggs and sperm together. The mantis shrimp PUNCHES: one strike cracks concrete and traps. Keep the starfish off the coral.'
     },
     {
       id: '2-6', name: 'Osprey Reef Wall', world: 2, place: 'Great Barrier Reef', background: 'keys',
@@ -422,15 +423,14 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'net', x: 2900, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] }
       ],
       coral: [], invasives: [], startHealth: 30, grantGlow: true,
-      hint: 'It\'s dark in the lava tube. Bullhead sharks rest in caves like this: their CRUSH cracks traps and concrete. Glowing plankton lights anything that moves.'
+      hint: 'It\'s dark in the lava tube. The bullhead shark hugs the bottom, and its CRUSH cracks traps and concrete. Glowing plankton lights anything that moves.'
     },
     {
-      id: '3-6', name: 'Darwin\'s Arch', world: 3, place: 'Galápagos Islands', background: 'galapagos',
+      id: '3-6', name: 'Darwin\'s Pillars', world: 3, place: 'Galápagos Islands', background: 'galapagos',
       width: 3900, waterline: 190, start: { x: 170, y: 50 }, team: ['hammerhead', 'bullhead', 'swordfish'], time: 170, exit: { x: 3780, y: 430 },
+      // Darwin's Arch fell in 2021; its two stone pillars still stand (in the background, so you swim past them)
+      decor: [{ x: 1320, y: 400, w: 120, h: 560, look: 'lava' }, { x: 1600, y: 410, w: 120, h: 540, look: 'lava' }],
       statics: [
-        { x: 1450, y: 120, w: 260, h: 260, look: 'lava' },       // the arch top (above the water)
-        { x: 1340, y: 520, w: 90, h: 320, look: 'lava' },        // its two legs
-        { x: 1560, y: 520, w: 90, h: 320, look: 'lava' },
         { x: 2500, y: 610, w: 200, h: 140, look: 'lava' }
       ],
       currents: [{ x: 900, y: 440, w: 700, h: 480, fx: -0.3, fy: 0 }, { x: 2200, y: 440, w: 900, h: 480, fx: 0.25, fy: 0.05 }],
@@ -447,7 +447,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'net', x: 3420, y: 470, w: 330, h: 170, stages: 3, hang: true, holds: [{ k: 'whaleshark', n: 1 }] }
       ],
       coral: [], invasives: [], startHealth: 30,
-      hint: 'A whale shark is trailing a lost net! Tear it three times to set it free. Hammerheads RAM, bullheads CRUSH concrete, swordfish slice lines.'
+      hint: 'Darwin\'s Arch fell into the sea in 2021, leaving two pillars. A whale shark is trailing a lost net! Tear it three times to set it free. Hammerheads RAM, bullheads CRUSH concrete, swordfish slice lines.'
     }
   ];
 

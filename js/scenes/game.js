@@ -48,6 +48,7 @@ TT.GameScene = new Phaser.Class({
 
     var hpMult = this.puzzle ? (level.hp || 0.8) : D.hp;   // puzzles: one good hit per net
     this.statics = (level.statics || []).map(function (s, i) { return TT.Entities.staticBody(self, s, i); });
+    (level.decor || []).forEach(function (d, i) { self.add.image(d.x, d.y, TT.Art.staticTexture(self, d, 100 + i)).setScale(1 / TT.Art.PS).setDepth(3.3).setTint(0x8496a6); });
     this.corals = (level.coral || []).map(function (c, i) { return TT.Entities.coral(self, c, i); });
     this.seagrass = (level.seagrass || []).map(function (sg, i) { return TT.Entities.seagrass(self, sg, i); });
     this.objects = (level.objects || []).map(function (o) { return TT.Entities.junk(self, o, hpMult); });

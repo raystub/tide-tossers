@@ -8,16 +8,15 @@ const out = path.join(__dirname, '..', 'docs', 'FACTS_TO_VERIFY.md');
 
 // Real-world claims made in level hints (gameplay instructions are left out).
 const HINTS = [
-  ['1-2 Mangrove Maze (hint)', 'Claim', 'Sheepshead have strong, human-like teeth'],
+  ['1-2 Mangrove Maze (hint)', 'Claim', 'Sheepshead have strong teeth that look surprisingly human'],
   ['1-5 Stone-Crab Traps (hint)', 'Claim', 'Turtles breathe air and must surface'],
   ['1-6 Seagrass Channel (hint)', 'Claim', 'Manatees breathe air and must come up for air'],
   ['2-1 Mangrove Edge (hint)', 'Claim', 'Archerfish knock things down with jets of water from below the surface'],
-  ['2-3 Cleaning Station (hint)', 'Claim', 'Manta rays wait at cleaning stations to be cleaned by cleaner wrasse'],
-  ['2-4 Starfish Outbreak (hint)', 'Claim', 'Crown-of-thorns starfish eat coral and move away from the giant triton'],
-  ['2-5 Spawning Night (hint)', 'Claim', 'On spawning nights, corals release their eggs into the water'],
+  ['2-3 Cleaning Station (hint)', 'Claim', 'Manta rays visit cleaning stations, where cleaner wrasse clean them'],
+  ['2-4 Starfish Outbreak (hint)', 'Claim', 'Crown-of-thorns starfish eat coral and move away from the scent of their predator, the giant triton'],
+  ['2-5 Spawning Night (hint)', 'Claim', 'On spawning nights, corals release their eggs and sperm together'],
   ['3-2 Lava Shore (hint)', 'Claim', 'Marine iguanas grip rocks against the waves, and breathe air'],
-  ['3-5 Lava Tube (hint)', 'Claim', 'Bullhead sharks rest in caves'],
-  ['3-6 Darwin\'s Arch (hint)', 'Claim', 'Whale sharks are found at Darwin\'s Arch in the Galápagos']
+  ['3-6 Darwin\'s Pillars (hint)', 'Claim', 'Darwin\'s Arch fell into the sea in 2021, leaving two pillars; whale sharks gather near Darwin Island']
 ];
 
 const strip = (s) => String(s).replace(/\.$/, '');
