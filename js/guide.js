@@ -69,6 +69,27 @@ TT.GUIDE = [
     fact: 'Many animals here, like the Galápagos sea lion, live nowhere else on Earth.', threat: 'Illegal fishing, longline gear, plastic and climate change.' }
 ];
 
+// Trash cards: what each kind of junk in the game is, where it comes from and how it harms wildlife.
+// Unlocked by clearing a level that has that kind of junk. Facts are listed in docs/FACTS_TO_VERIFY.md.
+TT.TRASH = [
+  { id: 'trash_plastic', k: 'plastic', trash: true, name: 'Plastic crates, bags and bottles', sci: 'Floating plastic', where: 'Litter carried from land by rivers, storm drains and wind, and things lost from boats', size: 'Hundreds of years. It never fully disappears: it breaks into tiny pieces called microplastics',
+    fact: 'Sea turtles can mistake floating bags for jellyfish, and seabirds and fish swallow small pieces. Animals also get tangled in it.', threat: 'Use less single-use plastic, recycle, and join beach and river cleanups.' },
+  { id: 'trash_glass', k: 'glass', trash: true, name: 'Glass bottles and jars', sci: 'Glass', where: 'Litter left on beaches and thrown from boats', size: 'Glass does not break down in nature, so it lasts for a very long time',
+    fact: 'Broken glass can cut animals, and small animals can get stuck inside bottles and jars.', threat: 'Recycle glass and never leave bottles on the beach.' },
+  { id: 'trash_tin', k: 'tin', trash: true, name: 'Metal cans and drums', sci: 'Metal', where: 'Drink cans, paint tins and old drums that are dumped or lost overboard', size: 'Steel slowly rusts away over many years; aluminium lasts even longer',
+    fact: 'Sharp edges can cut animals, and old drums can leak oil, paint or chemicals that poison the water.', threat: 'Recycle cans, and take old paint and chemicals to a proper disposal site.' },
+  { id: 'trash_wood', k: 'wood', trash: true, name: 'Pallets and lumber', sci: 'Wood debris', where: 'Shipping pallets, building scraps and storm wreckage', size: 'Untreated wood rots in a few years; painted or treated wood lasts longer and can leak chemicals',
+    fact: 'Storms and waves throw heavy floating debris onto coral and seagrass, breaking and smothering them.', threat: 'Tie down building materials before storms, and report large floating debris.' },
+  { id: 'trash_concrete', k: 'concrete', trash: true, name: 'Concrete blocks', sci: 'Concrete', where: 'Weights for traps and moorings, and dumped building waste', size: 'Decades or longer',
+    fact: 'Heavy blocks dropped or dragged across a reef crush coral and scar seagrass beds.', threat: 'Tie up to fixed moorings instead of anchoring on reefs, and remove dumped blocks.' },
+  { id: 'trash_net', k: 'net', trash: true, name: 'Ghost nets', sci: 'Lost fishing nets', where: 'Fishing nets lost in storms, snagged on reefs or abandoned at sea', size: 'Nylon and plastic nets can last for decades',
+    fact: 'Lost nets keep catching fish, turtles, seals and dolphins for years. This is called ghost fishing.', threat: 'Gear recovery and recycling programs, and marking fishing gear so lost nets can be found.' },
+  { id: 'trash_line', k: 'line', trash: true, name: 'Fishing line and longlines', sci: 'Monofilament line', where: 'Line snapped off or thrown away by anglers, and longlines lost by fishing boats', size: 'Monofilament fishing line can take hundreds of years to break down',
+    fact: 'Fine line wraps around flippers, fins, wings and beaks and cuts in as animals grow. Hooks get swallowed.', threat: 'Put old line in the recycling tubes at piers and boat ramps, and never leave it behind.' },
+  { id: 'trash_trap', k: 'trap', trash: true, name: 'Lost crab and lobster traps', sci: 'Derelict traps', where: 'Traps whose buoy lines are cut by boats or that storms carry away', size: 'Wire traps can last for years',
+    fact: 'A lost trap keeps catching animals, and animals that die inside can lure more in.', threat: 'Trap cleanup programs, escape panels that rot away in lost traps, and reporting lost traps.' },
+];
+
 // Long-press info cards (gameplay help, shown in-game).
 TT.INFO = {
   rescuers: {

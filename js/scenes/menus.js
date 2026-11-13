@@ -177,27 +177,59 @@ TT.PuzzleSelectScene = new Phaser.Class({
 
 function game_isCanvas(scene) { return scene.game.renderer.type === Phaser.CANVAS; }
 
+// The picture for a trash card: the same junk you break in the game.
+TT.trashTexture = function (scene, k) {
+  if (k === 'net') return TT.Art.netTexture(scene, 74, 110);
+  if (k === 'trap') return TT.Art.trapTexture(scene, 100, 70);
+  if (k === 'glass') return 'mat_glass_bottle';
+  if (k === 'line') {
+    if (!scene.textures.exists('trash_line')) {
+      // a tangle of monofilament with a hook and a sinker
+      var g = scene.make.graphics({ x: 0, y: 0, add: false });
+      g.lineStyle(2, 0xdff4ff, 0.95);
+      for (var i = 0; i < 7; i++) g.strokeEllipse(60 + Math.cos(i) * 10, 48 + Math.sin(i * 1.7) * 8, 70 - i * 5, 40 - i * 3);
+      g.lineBetween(95, 52, 112, 80);
+      g.lineStyle(3, 0x9aa7b0, 1); g.beginPath(); g.arc(108, 88, 7, 0, Math.PI, false); g.strokePath(); g.lineBetween(115, 88, 115, 78);
+      g.fillStyle(0x6f7a82, 1); g.fillEllipse(30, 82, 12, 16);
+      g.generateTexture('trash_line', 124, 104); g.destroy();
+    }
+    return 'trash_line';
+  }
+  return 'mat_' + k;
+};
+
 TT.FieldGuideScene = new Phaser.Class({
   Extends: Phaser.Scene,
   initialize: function FieldGuideScene() { Phaser.Scene.call(this, { key: 'FieldGuide' }); },
-  create: function () {
+  create: function (data) {
     var C = TT.CFG, W = C.WIDTH, self = this;
     TT.menuBackdrop(this, 0.62);
-    var D = 30;
-    var unlocked = TT.GUIDE.filter(function (c) { return TT.Save.cardUnlocked(c.id); }).length;
+    var D = 30, tab = (data && data.tab) || 'wildlife', CARDS = tab === 'trash' ? TT.TRASH : TT.GUIDE;
+    var unlocked = CARDS.filter(function (c) { return TT.Save.cardUnlocked(c.id); }).length;
     TT.UI.title(this, W / 2, 46, 'Field guide', 36).setDepth(D);
-    this.add.text(W / 2, 86, unlocked + ' of ' + TT.GUIDE.length + ' cards · clear levels to unlock species and places', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(13), color: '#bdf3ff' }).setOrigin(0.5).setDepth(D);
+    // two tabs: the wildlife and places you meet, and the trash you clear up
+    [['wildlife', 'Wildlife & places'], ['trash', 'Trash']].forEach(function (t, i) {
+      var on = t[0] === tab;
+      TT.UI.button(self, W / 2 + (i ? 130 : -130), 140, 240, 46, t[1], function () { if (!on) self.scene.restart({ tab: t[0] }); },
+        { size: 15, fill: on ? 0x16806a : 0x0a3d55, stroke: on ? 0xbff7d2 : 0x7fb7c6, radius: 20 }).setDepth(D);
+    });
+    this.add.text(W / 2, 86, unlocked + ' of ' + CARDS.length + ' cards · ' + (tab === 'trash' ? 'clear levels to learn about the trash in them' : 'clear levels to unlock species and places'), { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(13), color: '#bdf3ff' }).setOrigin(0.5).setDepth(D);
     TT.UI.button(this, 90, 46, 130, 44, '‹ Back', function () { self.scene.start('LevelSelect'); }, { size: 15 }).setDepth(D);
     // a scrolling grid of cards (drag or use the mouse wheel when there are more than fit)
-    var grid = this.add.container(0, 0).setDepth(D - 1), cols = 6, top = 190, rowH = 165, dragged = false;
-    var rows = Math.ceil(TT.GUIDE.length / cols), minY = Math.min(0, C.HEIGHT - 40 - (top + (rows - 1) * rowH + 75));
-    TT.GUIDE.forEach(function (card, i) {
+    var grid = this.add.container(0, 0).setDepth(D - 1), cols = tab === 'trash' ? 4 : 6, top = 260, rowH = 165, dragged = false;
+    var rows = Math.ceil(CARDS.length / cols), minY = Math.min(0, C.HEIGHT - 40 - (top + (rows - 1) * rowH + 75));
+    CARDS.forEach(function (card, i) {
       var col = i % cols, row = Math.floor(i / cols), x = W / 2 + (col - (cols - 1) / 2) * 200, y = top + row * rowH;
       var on = TT.Save.cardUnlocked(card.id);
       var tile = TT.UI.button(self, x, y, 188, 150, '', function () { if (on && !dragged) self.showCard(card); }, { fill: on ? 0x0f5a78 : 0x16262e, stroke: on ? 0xbdf3ff : 0x3f5a66 });
       grid.add(tile);
       var isPlace = card.id.indexOf('place_') === 0;
-      if (!isPlace) {
+      if (card.trash) {
+        var timg = self.add.image(0, -20, TT.trashTexture(self, card.k));
+        var tsc = Math.min(130 / timg.width, 84 / timg.height); timg.setScale(tsc);
+        if (!on) timg.setTint(0x000000).setAlpha(game_isCanvas(self) ? 0.18 : 0.5);
+        tile.add(timg);
+      } else if (!isPlace) {
         var key = TT.Art.speciesKey(self, card.id), sz = TT.Art.SPECIES_SIZE[card.id];
         var img = self.add.image(0, -18, key).setScale(TT.Art.scaleFor(self, key, Math.min(140, sz[0] * 1.6)));
         if (!on) img.setTint(0x000000).setAlpha(game_isCanvas(self) ? 0.18 : 0.5);
@@ -215,7 +247,7 @@ TT.FieldGuideScene = new Phaser.Class({
       this.add.text(W - 24, 86, 'Drag to see more', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(12), color: '#ffe7a8' }).setOrigin(1, 0.5).setDepth(D);
     }
     // header strip stays on top of scrolled cards
-    this.add.rectangle(0, 0, W, 108, 0x04202c, 0.92).setOrigin(0, 0).setDepth(D - 0.5);
+    this.add.rectangle(0, 0, W, 172, 0x04202c, 0.92).setOrigin(0, 0).setDepth(D - 0.5);
   },
   showCard: function (card) {
     var C = TT.CFG, W = C.WIDTH, H = C.HEIGHT, self = this, isPlace = card.id.indexOf('place_') === 0;
@@ -226,7 +258,10 @@ TT.FieldGuideScene = new Phaser.Class({
     var g = this.add.graphics(); TT.UI.panel(g, px, py, pw, ph, 22, 0x0a3d55, 0.98);
     layer.add([shade, g]);
     // left column: the animal (or the place marker) with the close hint right under it
-    if (!isPlace) {
+    if (card.trash) {
+      var ti = this.add.image(leftX, py + 210, TT.trashTexture(this, card.k));
+      ti.setScale(Math.min(300 / ti.width, 240 / ti.height)); layer.add(ti);
+    } else if (!isPlace) {
       var key = TT.Art.speciesKey(this, card.id);
       layer.add(this.add.image(leftX, py + 210, key).setScale(TT.Art.scaleFor(this, key, Math.min(330, TT.Art.SPECIES_SIZE[card.id][0] * 3))));
     } else layer.add(this.add.text(leftX, py + 210, '⌖', { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(110), color: '#9fd8e0' }).setOrigin(0.5));
@@ -237,7 +272,9 @@ TT.FieldGuideScene = new Phaser.Class({
     y += name.height + 4;
     var sci = this.add.text(tx, y, card.sci, { fontFamily: TT.UI.font, fontSize: TT.UI.fs(16), color: '#9fd8e0', fontStyle: 'italic', wordWrap: { width: tw } });
     y += sci.height + 16;
-    var body = 'Where: ' + card.where + '\n\nSize: ' + card.size + '\n\nDid you know? ' + card.fact + '\n\nThreats: ' + card.threat;
+    var body = card.trash ?
+      'Where it comes from: ' + card.where + '\n\nHow long it lasts: ' + card.size + '\n\nHow it harms wildlife: ' + card.fact + '\n\nHow to help: ' + card.threat :
+      'Where: ' + card.where + '\n\nSize: ' + card.size + '\n\nDid you know? ' + card.fact + '\n\nThreats: ' + card.threat;
     var size = 16, bt;
     do { if (bt) bt.destroy(); bt = this.add.text(tx, y, body, { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(size), color: '#d8f1f4', wordWrap: { width: tw }, lineSpacing: 4 }); size--; }
     while (y + bt.height > py + ph - 28 && size > 11);

@@ -606,6 +606,9 @@ TT.GameScene = new Phaser.Class({
       (this.level.invasives || []).forEach(function (l) { var sp = l.k || 'lionfish'; if (ids.indexOf(sp) < 0) ids.push(sp); });
       (this.level.gentle || []).forEach(function (gd) { if (ids.indexOf(gd.k) < 0) ids.push(gd.k); });
       if (!this.puzzle) ids.push(TT.worldByN(this.level.world).card);
+      // trash cards for every kind of junk in the level
+      (this.level.objects || []).forEach(function (o) { if (o.k !== 'rubble' && ids.indexOf('trash_' + o.k) < 0) ids.push('trash_' + o.k); });
+      (this.level.containers || []).forEach(function (c) { if (ids.indexOf('trash_' + c.k) < 0) ids.push('trash_' + c.k); });
       res.newCards = TT.Save.unlockCards(ids);
       this.sfx.play('win'); TT.Haptics.buzz([30, 60, 30, 60, 70]);
     } else this.sfx.play('lose');
@@ -617,6 +620,7 @@ TT.GameScene = new Phaser.Class({
     var C = TT.CFG, cleared = this.wave - (this.trapped > 0 ? 1 : 0);
     var finalScore = Math.max(0, Math.round(this.score));
     var best = TT.Save.recordArcade(cleared, finalScore);
+    if (cleared > 0) TT.Save.unlockCards(['trash_plastic', 'trash_net', 'trash_line', 'trash_trap', 'trash_glass']);
     var res = { win: cleared > 0, how: 'arcade', mode: 'arcade', wave: this.wave, cleared: cleared, stars: 0, health: Math.round(this.health), score: finalScore,
       freed: this.freed, total: this.totalAnimals, time: Math.round(this.elapsed), newBest: best, best: TT.Save.arcadeBest(), newCards: [], bonusGadget: null };
     this.sfx.play(cleared > 0 ? 'win' : 'lose');

@@ -156,6 +156,38 @@ Check each against a trusted source (e.g. NOAA, FWC, IUCN Red List, a university
 | Great Barrier Reef | Size | About 2,300 km long | ☐ | |
 | Great Barrier Reef | Fact | It is the largest coral reef system in the world and can be seen from space | ☐ | |
 | Great Barrier Reef | Threat | Warming water and coral bleaching, crown-of-thorns outbreaks and pollution | ☐ | |
+| Plastic crates, bags and bottles (trash) | Where it comes from | Litter carried from land by rivers, storm drains and wind, and things lost from boats | ☐ | |
+| Plastic crates, bags and bottles (trash) | How long it lasts | Hundreds of years. It never fully disappears: it breaks into tiny pieces called microplastics | ☐ | |
+| Plastic crates, bags and bottles (trash) | How it harms wildlife | Sea turtles can mistake floating bags for jellyfish, and seabirds and fish swallow small pieces. Animals also get tangled in it | ☐ | |
+| Plastic crates, bags and bottles (trash) | How to help | Use less single-use plastic, recycle, and join beach and river cleanups | ☐ | |
+| Glass bottles and jars (trash) | Where it comes from | Litter left on beaches and thrown from boats | ☐ | |
+| Glass bottles and jars (trash) | How long it lasts | Glass does not break down in nature, so it lasts for a very long time | ☐ | |
+| Glass bottles and jars (trash) | How it harms wildlife | Broken glass can cut animals, and small animals can get stuck inside bottles and jars | ☐ | |
+| Glass bottles and jars (trash) | How to help | Recycle glass and never leave bottles on the beach | ☐ | |
+| Metal cans and drums (trash) | Where it comes from | Drink cans, paint tins and old drums that are dumped or lost overboard | ☐ | |
+| Metal cans and drums (trash) | How long it lasts | Steel slowly rusts away over many years; aluminium lasts even longer | ☐ | |
+| Metal cans and drums (trash) | How it harms wildlife | Sharp edges can cut animals, and old drums can leak oil, paint or chemicals that poison the water | ☐ | |
+| Metal cans and drums (trash) | How to help | Recycle cans, and take old paint and chemicals to a proper disposal site | ☐ | |
+| Pallets and lumber (trash) | Where it comes from | Shipping pallets, building scraps and storm wreckage | ☐ | |
+| Pallets and lumber (trash) | How long it lasts | Untreated wood rots in a few years; painted or treated wood lasts longer and can leak chemicals | ☐ | |
+| Pallets and lumber (trash) | How it harms wildlife | Storms and waves throw heavy floating debris onto coral and seagrass, breaking and smothering them | ☐ | |
+| Pallets and lumber (trash) | How to help | Tie down building materials before storms, and report large floating debris | ☐ | |
+| Concrete blocks (trash) | Where it comes from | Weights for traps and moorings, and dumped building waste | ☐ | |
+| Concrete blocks (trash) | How long it lasts | Decades or longer | ☐ | |
+| Concrete blocks (trash) | How it harms wildlife | Heavy blocks dropped or dragged across a reef crush coral and scar seagrass beds | ☐ | |
+| Concrete blocks (trash) | How to help | Tie up to fixed moorings instead of anchoring on reefs, and remove dumped blocks | ☐ | |
+| Ghost nets (trash) | Where it comes from | Fishing nets lost in storms, snagged on reefs or abandoned at sea | ☐ | |
+| Ghost nets (trash) | How long it lasts | Nylon and plastic nets can last for decades | ☐ | |
+| Ghost nets (trash) | How it harms wildlife | Lost nets keep catching fish, turtles, seals and dolphins for years. This is called ghost fishing | ☐ | |
+| Ghost nets (trash) | How to help | Gear recovery and recycling programs, and marking fishing gear so lost nets can be found | ☐ | |
+| Fishing line and longlines (trash) | Where it comes from | Line snapped off or thrown away by anglers, and longlines lost by fishing boats | ☐ | |
+| Fishing line and longlines (trash) | How long it lasts | Monofilament fishing line can take hundreds of years to break down | ☐ | |
+| Fishing line and longlines (trash) | How it harms wildlife | Fine line wraps around flippers, fins, wings and beaks and cuts in as animals grow. Hooks get swallowed | ☐ | |
+| Fishing line and longlines (trash) | How to help | Put old line in the recycling tubes at piers and boat ramps, and never leave it behind | ☐ | |
+| Lost crab and lobster traps (trash) | Where it comes from | Traps whose buoy lines are cut by boats or that storms carry away | ☐ | |
+| Lost crab and lobster traps (trash) | How long it lasts | Wire traps can last for years | ☐ | |
+| Lost crab and lobster traps (trash) | How it harms wildlife | A lost trap keeps catching animals, and animals that die inside can lure more in | ☐ | |
+| Lost crab and lobster traps (trash) | How to help | Trap cleanup programs, escape panels that rot away in lost traps, and reporting lost traps | ☐ | |
 
 ## Art-accuracy notes
 

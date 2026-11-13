@@ -112,6 +112,10 @@ Abilities, real behaviours and handling for all 42 rescuers are in the Claude do
 - **Puzzle:** small rooms, no tide. Every ability use is a move and only abilities break things; stars come from moves used against par. Six rooms at launch, more with each world.
 - **Arcade:** one arena, endless waves. Each wave places more nets, lines and traps (then concrete and lionfish, and a sawfish big rescue every fifth wave); clearing a wave adds time, rescues don't. Best wave and score are saved.
 
+## Field guide: trash (v0.6.4)
+
+The field guide has a second tab, Trash, with a card for each kind of junk in the game: plastic, glass, metal, wood, concrete, ghost nets, fishing line and lost traps. Each card says where it comes from, how long it lasts, how it harms wildlife, and how people can help. A card unlocks when you clear a level that has that junk.
+
 ## World 2 notes (v0.6.3)
 
 New systems: snagged junk above the water (archerfish Jet knocks it down); coral rubble and bleached coral that regains colour as reef health rises (parrotfish Grind); gentle giants (mantas) that block a passage until a cleaner wrasse cleans them, and gentle animals tangled in line that only the wrasse can free; crown-of-thorns starfish that slowly eat coral and drain reef health until a giant triton's scent moves them off; a big ghost net that sinks while you tear it (2-6).
