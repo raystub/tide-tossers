@@ -539,6 +539,144 @@ TT.Art = (function () {
     eye(ctx, w * 0.84, cy - h * 0.06, h * 0.05);
   };
 
+
+  // Galápagos sea lion: sleek brown torpedo, small pointed head with a tiny ear flap, whiskers, big front flipper.
+  species.sealion = function (ctx, w, h) {
+    var cy = h * 0.55;
+    // rear flippers trailing
+    ctx.beginPath(); ctx.moveTo(w * 0.16, cy - h * 0.02); ctx.lineTo(w * 0.01, cy - h * 0.2); ctx.quadraticCurveTo(w * 0.04, cy + h * 0.02, w * 0.02, cy + h * 0.18); ctx.closePath();
+    finFill(ctx, '#4e3a28', 0.95);
+    // body
+    ctx.beginPath(); ctx.moveTo(w * 0.13, cy);
+    ctx.bezierCurveTo(w * 0.25, cy - h * 0.34, w * 0.6, cy - h * 0.38, w * 0.78, cy - h * 0.2);
+    ctx.quadraticCurveTo(w * 0.88, cy - h * 0.2, w * 0.97, cy - h * 0.06);
+    ctx.quadraticCurveTo(w * 0.94, cy + h * 0.04, w * 0.84, cy + h * 0.06);
+    ctx.bezierCurveTo(w * 0.62, cy + h * 0.34, w * 0.26, cy + h * 0.26, w * 0.13, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.38, 0, cy + h * 0.3, [[0, '#4a3524'], [0.45, '#7d5d40'], [0.8, '#b39470'], [1, '#c9ae88']]); ctx.fill();
+    ctx.save(); ctx.clip();
+    ctx.fillStyle = rad(ctx, w * 0.5, cy - h * 0.22, 2, w * 0.35, [[0, 'rgba(255,240,220,0.35)'], [1, 'rgba(255,240,220,0)']]); ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+    // front flipper
+    ctx.beginPath(); ctx.moveTo(w * 0.62, cy + h * 0.06); ctx.bezierCurveTo(w * 0.58, cy + h * 0.32, w * 0.46, cy + h * 0.46, w * 0.38, cy + h * 0.44);
+    ctx.bezierCurveTo(w * 0.46, cy + h * 0.32, w * 0.52, cy + h * 0.18, w * 0.54, cy + h * 0.06); ctx.fillStyle = '#5a422d'; ctx.fill();
+    // ear flap, nose, whiskers
+    ctx.fillStyle = '#3d2c1e'; ctx.beginPath(); ctx.ellipse(w * 0.78, cy - h * 0.16, w * 0.012, h * 0.05, -0.6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(w * 0.965, cy - h * 0.05, h * 0.035, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(245,240,225,0.7)'; ctx.lineWidth = 0.9;
+    for (var i = 0; i < 4; i++) { ctx.beginPath(); ctx.moveTo(w * 0.93, cy - h * 0.0 + i * h * 0.02); ctx.lineTo(w * (0.99 + i * 0.004), cy + h * (0.02 + i * 0.05)); ctx.stroke(); }
+    eye(ctx, w * 0.86, cy - h * 0.1, h * 0.055);
+  };
+
+  // Marine iguana: dark, rough-skinned, with a spiny crest, a short blunt salt-crusted snout and a long flattened tail.
+  species.iguana = function (ctx, w, h) {
+    var cy = h * 0.55;
+    // long flattened tail
+    ctx.beginPath(); ctx.moveTo(w * 0.42, cy - h * 0.1); ctx.bezierCurveTo(w * 0.28, cy - h * 0.1, w * 0.12, cy - h * 0.04, w * 0.0, cy + h * 0.02);
+    ctx.bezierCurveTo(w * 0.12, cy + h * 0.06, w * 0.28, cy + h * 0.1, w * 0.42, cy + h * 0.12);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.1, 0, cy + h * 0.12, [[0, '#2a2a2a'], [1, '#4a4440']]); ctx.fill();
+    // legs tucked along the body (they swim with the tail)
+    ctx.fillStyle = '#2e2b29';
+    [[0.47, 0.12, 0.55], [0.7, 0.14, 0.4]].forEach(function (l) { ctx.beginPath(); ctx.ellipse(w * l[0], cy + h * l[1], w * 0.06, h * 0.06, l[2], 0, Math.PI * 2); ctx.fill(); });
+    // body
+    ctx.beginPath(); ctx.moveTo(w * 0.38, cy - h * 0.08);
+    ctx.bezierCurveTo(w * 0.48, cy - h * 0.3, w * 0.76, cy - h * 0.3, w * 0.86, cy - h * 0.18);
+    ctx.quadraticCurveTo(w * 0.98, cy - h * 0.12, w * 0.98, cy + h * 0.02);
+    ctx.quadraticCurveTo(w * 0.96, cy + h * 0.14, w * 0.86, cy + h * 0.14);
+    ctx.bezierCurveTo(w * 0.7, cy + h * 0.24, w * 0.48, cy + h * 0.22, w * 0.38, cy + h * 0.12);
+    ctx.closePath();
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.3, 0, cy + h * 0.24, [[0, '#262422'], [0.5, '#3e3a36'], [1, '#5d5148']]); ctx.fill();
+    ctx.save(); ctx.clip();
+    var r = rng(33);
+    for (var i = 0; i < 26; i++) { ctx.fillStyle = r() < 0.5 ? 'rgba(170,60,40,0.35)' : 'rgba(80,130,70,0.3)'; ctx.beginPath(); ctx.ellipse(w * (0.4 + r() * 0.5), cy + h * (r() - 0.6) * 0.4, w * 0.02, h * 0.035, 0, 0, Math.PI * 2); ctx.fill(); }
+    ctx.fillStyle = 'rgba(235,232,220,0.55)'; ctx.beginPath(); ctx.ellipse(w * 0.93, cy - h * 0.1, w * 0.04, h * 0.06, 0, 0, Math.PI * 2); ctx.fill();   // salt crust
+    ctx.restore();
+    // spiny crest
+    ctx.fillStyle = '#3a3532';
+    for (var c = 0; c < 12; c++) { var cx = w * (0.44 + c * 0.034), top = cy - h * (0.26 - Math.abs(c - 6) * 0.006); ctx.beginPath(); ctx.moveTo(cx - w * 0.012, top + h * 0.04); ctx.lineTo(cx, top - h * 0.1); ctx.lineTo(cx + w * 0.012, top + h * 0.04); ctx.fill(); }
+    eye(ctx, w * 0.88, cy - h * 0.08, h * 0.05);
+  };
+
+  // Galápagos penguin: black back, white front, a thin white stripe curving round the head, black band across the chest.
+  species.penguin = function (ctx, w, h) {
+    var cy = h * 0.55;
+    ctx.beginPath(); ctx.moveTo(w * 0.1, cy); ctx.lineTo(w * 0.0, cy - h * 0.08); ctx.lineTo(w * 0.02, cy + h * 0.1); ctx.closePath(); ctx.fillStyle = '#1b1e22'; ctx.fill();
+    // feet
+    ctx.fillStyle = '#3a3633'; ctx.beginPath(); ctx.ellipse(w * 0.12, cy + h * 0.14, w * 0.05, h * 0.06, 0.4, 0, Math.PI * 2); ctx.fill();
+    // body
+    ctx.beginPath(); ctx.moveTo(w * 0.08, cy);
+    ctx.bezierCurveTo(w * 0.2, cy - h * 0.42, w * 0.66, cy - h * 0.44, w * 0.82, cy - h * 0.18);
+    ctx.quadraticCurveTo(w * 0.9, cy - h * 0.1, w * 0.99, cy - h * 0.06);
+    ctx.quadraticCurveTo(w * 0.92, cy + h * 0.04, w * 0.82, cy + h * 0.06);
+    ctx.bezierCurveTo(w * 0.64, cy + h * 0.38, w * 0.2, cy + h * 0.34, w * 0.08, cy);
+    ctx.fillStyle = '#f4f2ec'; ctx.fill();
+    ctx.save(); ctx.clip();
+    // black back
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.4, 0, cy, [[0, '#14171b'], [1, '#2a2f36']]);
+    ctx.beginPath(); ctx.moveTo(0, cy + h * 0.02); ctx.bezierCurveTo(w * 0.3, cy - h * 0.02, w * 0.62, cy - h * 0.02, w * 0.84, cy - h * 0.0); ctx.lineTo(w, cy - h * 0.0); ctx.lineTo(w, 0); ctx.lineTo(0, 0); ctx.fill();
+    // white stripe round the head and black chest band
+    ctx.strokeStyle = '#f4f2ec'; ctx.lineWidth = h * 0.05; ctx.beginPath(); ctx.moveTo(w * 0.9, cy - h * 0.14); ctx.quadraticCurveTo(w * 0.8, cy - h * 0.22, w * 0.72, cy - h * 0.06); ctx.quadraticCurveTo(w * 0.7, cy + h * 0.06, w * 0.76, cy + h * 0.1); ctx.stroke();
+    ctx.strokeStyle = '#1b1e22'; ctx.lineWidth = h * 0.06; ctx.beginPath(); ctx.moveTo(w * 0.66, cy + h * 0.02); ctx.quadraticCurveTo(w * 0.6, cy + h * 0.2, w * 0.66, cy + h * 0.36); ctx.stroke();
+    ctx.restore();
+    // flipper
+    ctx.beginPath(); ctx.moveTo(w * 0.6, cy - h * 0.02); ctx.quadraticCurveTo(w * 0.46, cy + h * 0.14, w * 0.32, cy + h * 0.2); ctx.quadraticCurveTo(w * 0.46, cy + h * 0.04, w * 0.54, cy - h * 0.06); ctx.fillStyle = '#1b1e22'; ctx.fill();
+    // bill
+    ctx.fillStyle = '#2b2a28'; ctx.beginPath(); ctx.moveTo(w * 0.94, cy - h * 0.1); ctx.lineTo(w * 1.0, cy - h * 0.06); ctx.lineTo(w * 0.94, cy - h * 0.02); ctx.fill();
+    eye(ctx, w * 0.86, cy - h * 0.12, h * 0.045);
+  };
+
+  // Galápagos bullhead shark: stout, brownish-grey with dark spots, a blunt high forehead with ridges over the eyes, spined dorsal fins.
+  species.bullhead = function (ctx, w, h) {
+    var cy = h * 0.56;
+    ctx.beginPath(); ctx.moveTo(w * 0.14, cy - h * 0.02); ctx.quadraticCurveTo(w * 0.07, cy - h * 0.26, w * 0.0, cy - h * 0.34); ctx.quadraticCurveTo(w * 0.04, cy - h * 0.06, w * 0.03, cy + h * 0.1);
+    ctx.quadraticCurveTo(w * 0.08, cy + h * 0.14, w * 0.14, cy + h * 0.06); finFill(ctx, '#6d6150', 0.95);
+    [[0.62, 0.4], [0.34, 0.3]].forEach(function (d) {
+      ctx.beginPath(); ctx.moveTo(w * (d[0] + 0.06), cy - h * 0.16); ctx.quadraticCurveTo(w * (d[0] + 0.02), cy - h * (0.16 + d[1]), w * (d[0] - 0.02), cy - h * (0.16 + d[1]));
+      ctx.quadraticCurveTo(w * (d[0] - 0.01), cy - h * 0.26, w * (d[0] - 0.03), cy - h * 0.14); finFill(ctx, '#665a4a', 0.97);
+      ctx.strokeStyle = '#e8dcc0'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(w * (d[0] + 0.03), cy - h * 0.2); ctx.lineTo(w * (d[0] - 0.01), cy - h * (0.12 + d[1])); ctx.stroke();
+    });
+    ctx.beginPath(); ctx.moveTo(w * 0.1, cy + h * 0.02);
+    ctx.bezierCurveTo(w * 0.3, cy - h * 0.2, w * 0.66, cy - h * 0.3, w * 0.86, cy - h * 0.28);
+    ctx.quadraticCurveTo(w * 0.98, cy - h * 0.24, w * 0.99, cy - h * 0.04);
+    ctx.quadraticCurveTo(w * 0.97, cy + h * 0.12, w * 0.84, cy + h * 0.14);
+    ctx.bezierCurveTo(w * 0.62, cy + h * 0.24, w * 0.3, cy + h * 0.18, w * 0.1, cy + h * 0.04);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.3, 0, cy + h * 0.2, [[0, '#6b5d48'], [0.55, '#9a8a6e'], [0.75, '#d9cfb8'], [1, '#ece6d6']]); ctx.fill();
+    ctx.save(); ctx.clip();
+    var r = rng(91); ctx.fillStyle = 'rgba(40,32,24,0.55)';
+    for (var i = 0; i < 30; i++) { ctx.beginPath(); ctx.arc(w * (0.15 + r() * 0.8), cy - h * (0.24 - r() * 0.3), 1.2 + r() * 2.2, 0, Math.PI * 2); ctx.fill(); }
+    ctx.restore();
+    // brow ridge
+    ctx.strokeStyle = 'rgba(60,50,38,0.7)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(w * 0.82, cy - h * 0.24); ctx.quadraticCurveTo(w * 0.88, cy - h * 0.3, w * 0.93, cy - h * 0.2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w * 0.66, cy + h * 0.1); ctx.quadraticCurveTo(w * 0.6, cy + h * 0.36, w * 0.52, cy + h * 0.38); ctx.quadraticCurveTo(w * 0.56, cy + h * 0.2, w * 0.6, cy + h * 0.1); finFill(ctx, '#7a6c56', 0.95);
+    eye(ctx, w * 0.88, cy - h * 0.13, h * 0.045);
+  };
+
+  // Whale shark: the biggest fish; dark blue-grey with white spots and pale stripes, a wide flat mouth at the front, ridges along the side.
+  species.whaleshark = function (ctx, w, h) {
+    var cy = h * 0.55;
+    ctx.beginPath(); ctx.moveTo(w * 0.12, cy); ctx.quadraticCurveTo(w * 0.06, cy - h * 0.3, w * 0.02, cy - h * 0.48); ctx.quadraticCurveTo(w * 0.05, cy - h * 0.1, w * 0.04, cy + h * 0.02);
+    ctx.quadraticCurveTo(w * 0.05, cy + h * 0.16, w * 0.02, cy + h * 0.3); ctx.quadraticCurveTo(w * 0.08, cy + h * 0.12, w * 0.12, cy + h * 0.06); finFill(ctx, '#2f4a5e', 0.97);
+    ctx.beginPath(); ctx.moveTo(w * 0.5, cy - h * 0.2); ctx.quadraticCurveTo(w * 0.45, cy - h * 0.5, w * 0.4, cy - h * 0.52); ctx.quadraticCurveTo(w * 0.42, cy - h * 0.3, w * 0.38, cy - h * 0.18); finFill(ctx, '#2e485c', 0.98);
+    ctx.beginPath(); ctx.moveTo(w * 0.1, cy + h * 0.02);
+    ctx.bezierCurveTo(w * 0.3, cy - h * 0.26, w * 0.7, cy - h * 0.34, w * 0.92, cy - h * 0.22);
+    ctx.quadraticCurveTo(w * 1.0, cy - h * 0.12, w * 0.995, cy + h * 0.04);
+    ctx.quadraticCurveTo(w * 0.98, cy + h * 0.18, w * 0.9, cy + h * 0.2);
+    ctx.bezierCurveTo(w * 0.7, cy + h * 0.3, w * 0.3, cy + h * 0.2, w * 0.1, cy + h * 0.04);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.34, 0, cy + h * 0.28, [[0, '#24394a'], [0.5, '#3f6077'], [0.7, '#c7d3da'], [1, '#e9eef0']]); ctx.fill();
+    ctx.save(); ctx.clip();
+    var r = rng(55); ctx.fillStyle = 'rgba(235,242,246,0.85)';
+    for (var i = 0; i < 90; i++) { var sx = w * (0.14 + r() * 0.82), sy = cy - h * (0.3 - r() * 0.36); ctx.beginPath(); ctx.arc(sx, sy, 1 + r() * 1.8, 0, Math.PI * 2); ctx.fill(); }
+    ctx.strokeStyle = 'rgba(220,232,238,0.5)'; ctx.lineWidth = 1.4;
+    for (var j = 0; j < 9; j++) { var lx = w * (0.22 + j * 0.075); ctx.beginPath(); ctx.moveTo(lx, cy - h * 0.3); ctx.lineTo(lx + w * 0.01, cy + h * 0.02); ctx.stroke(); }
+    ctx.strokeStyle = 'rgba(20,34,46,0.45)'; ctx.lineWidth = 1.6;
+    for (var k = 0; k < 2; k++) { ctx.beginPath(); ctx.moveTo(w * 0.2, cy - h * (0.05 + k * 0.1)); ctx.bezierCurveTo(w * 0.5, cy - h * (0.12 + k * 0.1), w * 0.75, cy - h * (0.14 + k * 0.08), w * 0.9, cy - h * (0.1 + k * 0.05)); ctx.stroke(); }
+    ctx.restore();
+    // wide flat mouth at the very front, gill slits
+    ctx.strokeStyle = 'rgba(18,28,38,0.75)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(w * 0.995, cy + h * 0.06); ctx.lineTo(w * 0.93, cy + h * 0.08); ctx.stroke();
+    ctx.lineWidth = 1.4; for (var g = 0; g < 5; g++) { ctx.beginPath(); ctx.moveTo(w * (0.78 + g * 0.016), cy - h * 0.1); ctx.lineTo(w * (0.775 + g * 0.016), cy + h * 0.12); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(w * 0.7, cy + h * 0.14); ctx.quadraticCurveTo(w * 0.62, cy + h * 0.4, w * 0.54, cy + h * 0.44); ctx.quadraticCurveTo(w * 0.6, cy + h * 0.26, w * 0.64, cy + h * 0.14); finFill(ctx, '#34506a', 0.95);
+    eye(ctx, w * 0.95, cy - h * 0.02, h * 0.025);
+  };
+
   // A clump of turtle grass, the main seagrass of Florida Bay: flat ribbon blades.
   function drawSeagrass(ctx, w, h) {
     var r = rng(77);
@@ -837,7 +975,7 @@ TT.Art = (function () {
 
   // Swim animation: how far the tail end bends, as a share of body height (0 = no animation).
   var WIGGLE = { tang: 0.08, flyingfish: 0.09, puffer: 0.06, puffer_inflated: 0, pistolshrimp: 0.05, loggerhead: 0.035, swordfish: 0.1,
-    hammerhead: 0.11, manatee: 0.04, sheepshead: 0.07, reddrum: 0.09, sawfish: 0.07, hatchling: 0.07, seahorse: 0.03, smallfish: 0.16, fishschool: 0, lionfish: 0.06 };
+    hammerhead: 0.11, manatee: 0.04, sheepshead: 0.07, reddrum: 0.09, sealion: 0.05, iguana: 0.1, penguin: 0.03, bullhead: 0.09, whaleshark: 0.05, sawfish: 0.07, hatchling: 0.07, seahorse: 0.03, smallfish: 0.16, fishschool: 0, lionfish: 0.06 };
   var SWIM_FRAMES = 8;
   // Bake a looping swim cycle from one picture: slice it into thin columns and bend them in a travelling wave
   // that is still at the head (right) and widest at the tail (left). Works in WebGL and Canvas alike.
@@ -865,7 +1003,8 @@ TT.Art = (function () {
     tang: [64, 52], flyingfish: [72, 46], puffer: [62, 44], puffer_inflated: [120, 120], pistolshrimp: [58, 40],
     loggerhead: [84, 62], swordfish: [110, 40], hammerhead: [100, 46], hatchling: [34, 22], seahorse: [24, 44],
     smallfish: [26, 10], fishschool: [70, 50], lionfish: [72, 56],
-    manatee: [100, 52], sawfish: [170, 40], sheepshead: [66, 48], reddrum: [84, 32]
+    manatee: [100, 52], sawfish: [170, 40], sheepshead: [66, 48], reddrum: [84, 32],
+    sealion: [96, 44], iguana: [100, 36], penguin: [62, 38], bullhead: [86, 36], whaleshark: [260, 76]
   };
 
   return {

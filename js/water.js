@@ -25,6 +25,7 @@ TT.Water.prototype.submergedFrac = function (body) {
 
 // Tide levels: the waterline rises and falls continuously. dt in seconds of game time.
 TT.Water.prototype.update = function (dt) {
+  this.t = (this.t || 0) + dt;
   if (!this.tide) return;
   this.tidePhase += dt * Math.PI * 2 / TT.CFG.TIDE_PERIOD;
   this.y = this.tideMid + this.tideAmp * Math.sin(this.tidePhase);
@@ -37,7 +38,11 @@ TT.Water.prototype.currentAt = function (x, y, out) {
   if (!this.isUnder(y)) return out;
   for (var i = 0; i < this.currents.length; i++) {
     var c = this.currents[i];
-    if (x > c.x - c.w / 2 && x < c.x + c.w / 2 && y > c.y - c.h / 2 && y < c.y + c.h / 2) { out.x += c.fx; out.y += c.fy; }
+    if (x > c.x - c.w / 2 && x < c.x + c.w / 2 && y > c.y - c.h / 2 && y < c.y + c.h / 2) {
+      // surge: waves push in and pull back again
+      var m = c.surge ? Math.sin((this.t || 0) * Math.PI * 2 / TT.CFG.SURGE_PERIOD) : 1;
+      out.x += c.fx * m; out.y += c.fy * m;
+    }
   }
   return out;
 };

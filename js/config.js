@@ -2,7 +2,7 @@
 // Units: positions in px, velocities in px per 1/60 s (independent of the physics rate), times in seconds.
 window.TT = window.TT || {};
 
-TT.VERSION = 'v0.6.1';
+TT.VERSION = 'v0.6.2';
 
 // Phones and tablets (coarse pointer) get the touch controls, bigger HUD and a closer camera.
 // Force it on a desktop with ?mobile=1 to preview the phone layout.
@@ -34,6 +34,7 @@ TT.CFG = {
   WATER_ANGULAR_DRAG: 0.07,
   SEDIMENT_MIN_SPEED: 5,     // heavy body hitting the floor faster than this raises silt
   TIDE_PERIOD: 16,           // seconds for the waterline to rise and fall once on tide levels
+  SURGE_PERIOD: 5,           // seconds for a wave surge (currents with surge: true) to push in and pull back
 
   // ---- Swimming ----
   SWIM_IDLE_DRAG: 0.045,     // how quickly you coast to a stop with the stick released
@@ -119,6 +120,11 @@ TT.CFG = {
     hammerhead:   { name: 'Scalloped hammerhead',  radius: 24, density: 0.006,  speed: 7.0, accel: 0.10, cd: 2.6, ability: 'Ram',    len: 4.4,
                     bonusVs: { concrete: 1.5 } },
     sheepshead:   { name: 'Sheepshead',            radius: 21, density: 0.0045, speed: 5.8, accel: 0.15, cd: 1.6, ability: 'Crunch', len: 3.1 },
+    sealion:      { name: 'Galápagos sea lion',    radius: 22, density: 0.005,  speed: 7.0, accel: 0.2,  cd: 1.4, ability: 'Spin',   len: 3.6, air: 32 },
+    iguana:       { name: 'Marine iguana',         radius: 18, density: 0.005,  speed: 4.6, accel: 0.12, cd: 1.8, ability: 'Grip',   len: 4.4, air: 40 },
+    penguin:      { name: 'Galápagos penguin',     radius: 17, density: 0.0045, speed: 7.6, accel: 0.26, cd: 0.9, ability: 'Burst',  len: 3.0, air: 24 },
+    bullhead:     { name: 'Galápagos bullhead shark', radius: 21, density: 0.0065, speed: 4.6, accel: 0.11, cd: 2.0, ability: 'Crush', len: 4.0,
+                    bonusVs: { concrete: 1.5 } },
     manatee:      { name: 'Florida manatee',       radius: 30, density: 0.008,  speed: 4.3, accel: 0.07, cd: 3.0, ability: 'Push',   len: 3.7, air: 55 }
   },
   // air: seconds of breath for air-breathing rescuers (see AIR_* below).
@@ -162,6 +168,10 @@ TT.CFG = {
     pierceSpeed: 18, pierceTime: 0.5,
     ramSpeed: 15, ramTime: 0.55, ramVsConcrete: 3, ramVsContainer: 1.5,
     pushSpeed: 8.5, pushTime: 1.0, pushMassMult: 4,     // manatee: slow, but nothing stops it
+    spinSpeed: 13, spinTime: 0.5,                         // sea lion: a twisting dash that bounces off rock instead of stopping
+    gripTime: 2.2, gripRadius: 64, gripDamage: 90,         // marine iguana: clings in place (currents can't move it) and scrapes junk loose
+    burstSpeed: 15, burstTime: 0.24,                       // penguin: a very short, very quick dash
+    crushRadius: 74, crushHard: 170, crushOther: 80,       // bullhead shark: crushes traps, concrete and shells
     crunchRadius: 70, crunchHard: 130, crunchOther: 50, crunchDash: 9   // sheepshead: a lunge and a bite that cracks shells, metal, wood and traps
   },
 

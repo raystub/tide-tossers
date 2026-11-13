@@ -70,12 +70,12 @@ Lead rescuer in bold; *(built)* = exists in v0.5 under its old number.
 
 | World 3 · Galápagos | World 4 · Monterey Bay kelp |
 | --- | --- |
-| 3-1 Rising Tide · **Galápagos sea lion** *(built as 2-1 with the swordfish; renumbered in v0.6, stars carried over)* | 4-1 Kelp Canopy · **sea otter** |
-| 3-2 Lava Shore · **marine iguana** | 4-2 Elkhorn Slough · **leopard shark** |
-| 3-3 Penguin Rocks · **Galápagos penguin** | 4-3 Harbor Breakwater · **giant Pacific octopus** |
+| 3-1 Rising Tide · **Galápagos sea lion** *(built, v0.6.2)* | 4-1 Kelp Canopy · **sea otter** |
+| 3-2 Lava Shore · **marine iguana** *(built, v0.6.2)* | 4-2 Elkhorn Slough · **leopard shark** |
+| 3-3 Penguin Rocks · **Galápagos penguin** *(built, v0.6.2)* | 4-3 Harbor Breakwater · **giant Pacific octopus** |
 | 3-4 Longline · **swordfish** *(built; renumbered from 2-5)* | 4-4 Urchin Barren · **sunflower sea star** |
-| 3-5 Lava Tube · **Galápagos bullhead shark** *(built as 2-9 without the bullhead; renumbered)* | 4-5 Sand Channel · **bat ray** |
-| 3-6 Darwin's Arch · **scalloped hammerhead** | 4-6 Canyon Head · **northern elephant seal** |
+| 3-5 Lava Tube · **Galápagos bullhead shark** *(built, v0.6.2)* | 4-5 Sand Channel · **bat ray** |
+| 3-6 Darwin's Arch · **scalloped hammerhead** *(built, v0.6.2: whale shark big rescue)* | 4-6 Canyon Head · **northern elephant seal** |
 
 | World 5 · Twilight zone | World 6 · Midnight zone | World 7 · Abyss and trench |
 | --- | --- | --- |
@@ -111,6 +111,10 @@ Abilities, real behaviours and handling for all 42 rescuers are in the Claude do
 - **Campaign:** the worlds above. World tabs on the level screen; unbuilt levels show as "coming soon".
 - **Puzzle:** small rooms, no tide. Every ability use is a move and only abilities break things; stars come from moves used against par. Six rooms at launch, more with each world.
 - **Arcade:** one arena, endless waves. Each wave places more nets, lines and traps (then concrete and lionfish, and a sawfish big rescue every fifth wave); clearing a wave adds time, rescues don't. Best wave and score are saved.
+
+## World 3 notes (v0.6.2)
+
+Lionfish are an Atlantic invasion, so World 3 has none; its threats are longlines, ghost nets, traps and plastic. Wave surge (currents that push in and pull back) arrives in 3-2; the marine iguana's Grip holds against it.
 
 ## Water rules
 

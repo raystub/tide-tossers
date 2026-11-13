@@ -178,7 +178,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
     },
     {
       id: '3-1', name: 'Rising Tide', world: 3, place: 'Galápagos Islands', background: 'galapagos',
-      width: 3100, waterline: 250, tide: { min: 170, max: 330 }, start: { x: 170, y: 60 }, team: ['swordfish', 'tang'], time: 115, exit: { x: 2980, y: 460 },
+      width: 3100, waterline: 250, tide: { min: 170, max: 330 }, start: { x: 170, y: 60 }, team: ['sealion', 'swordfish'], time: 115, exit: { x: 2980, y: 460 },
       statics: [
         { x: 820, y: 560, w: 150, h: 240, look: 'lava' },
         { x: 1500, y: 150, w: 220, h: 300, look: 'lava' },      // overhang: blocks the surface route
@@ -199,11 +199,65 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'trap', x: 2760, y: 645, w: 100, h: 70, holds: [{ k: 'seahorse', n: 1 }] }
       ],
       coral: [], invasives: [], startHealth: 30,
-      hint: 'The tide rises and falls. Swordfish slice nets on contact, and their pierce darts straight through junk.'
+      hint: 'Sea lions SPIN: a twisting dash that bounces off rock. Swordfish slice nets on contact. The tide rises and falls, and sea lions need air.'
+    },
+    {
+      id: '3-2', name: 'Lava Shore', world: 3, place: 'Galápagos Islands', background: 'galapagos',
+      width: 3300, waterline: 230, start: { x: 170, y: 60 }, team: ['iguana', 'sealion'], time: 150, exit: { x: 3180, y: 460 },
+      statics: [
+        { x: 700, y: 330, w: 170, h: 220, look: 'lava' },
+        { x: 1250, y: 600, w: 200, h: 160, look: 'lava' },
+        { x: 1700, y: 360, w: 150, h: 260, look: 'lava' },
+        { x: 2350, y: 590, w: 220, h: 180, look: 'lava' },
+        { x: 2800, y: 340, w: 160, h: 220, look: 'lava' }
+      ],
+      // waves surge in and out along the shore
+      currents: [{ x: 1000, y: 380, w: 900, h: 300, fx: 0.55, fy: 0, surge: true }, { x: 2500, y: 380, w: 900, h: 300, fx: 0.55, fy: 0, surge: true }],
+      objects: [
+        { k: 'plastic', x: 500, y: 235, w: 56, h: 38 }, { k: 'plastic', x: 1450, y: 235, w: 60, h: 40 },
+        { k: 'tin', x: 1060, y: 640, w: 44, h: 80 }, { k: 'wood', x: 2050, y: 235, w: 120, h: 24 },
+        { k: 'glass', x: 2600, y: 650, w: 18, h: 60 }, { k: 'plastic', x: 3000, y: 235, w: 56, h: 38 }
+      ],
+      containers: [
+        { k: 'net', x: 860, y: 420, w: 74, h: 120, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 1500, y: 610, w: 84, h: 140, holds: [{ k: 'hatchling', n: 2 }] },
+        { k: 'net', x: 1880, y: 420, w: 74, h: 120, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'trap', x: 2620, y: 645, w: 100, h: 70, holds: [{ k: 'hatchling', n: 1 }] },
+        { k: 'net', x: 2980, y: 600, w: 110, h: 150, holds: [{ k: 'sealion', n: 1 }] }
+      ],
+      coral: [], invasives: [], startHealth: 30,
+      hint: 'Waves surge in and out. The marine iguana GRIPS: it holds still against the surge and scrapes junk and nets loose. Iguanas breathe air.'
+    },
+    {
+      id: '3-3', name: 'Penguin Rocks', world: 3, place: 'Galápagos Islands', background: 'galapagos',
+      width: 3400, waterline: 200, start: { x: 170, y: 50 }, team: ['penguin', 'iguana', 'sealion'], time: 150, exit: { x: 3280, y: 440 },
+      statics: [
+        { x: 600, y: 560, w: 110, h: 240, look: 'lava' }, { x: 900, y: 260, w: 110, h: 360, look: 'lava' },
+        { x: 1250, y: 560, w: 110, h: 240, look: 'lava' }, { x: 1600, y: 260, w: 110, h: 360, look: 'lava' },
+        { x: 1950, y: 560, w: 110, h: 240, look: 'lava' }, { x: 2300, y: 260, w: 110, h: 360, look: 'lava' },
+        { x: 2650, y: 560, w: 110, h: 240, look: 'lava' }
+      ],
+      // the cold Cromwell Current wells up from below, which is why penguins can live here
+      currents: [{ x: 1600, y: 560, w: 1600, h: 240, fx: 0, fy: -0.18 }],
+      objects: [
+        { k: 'plastic', x: 760, y: 205, w: 56, h: 38 }, { k: 'plastic', x: 1420, y: 205, w: 56, h: 38 }, { k: 'plastic', x: 2120, y: 205, w: 56, h: 38 },
+        { k: 'glass', x: 1080, y: 650, w: 18, h: 60 }, { k: 'tin', x: 2480, y: 640, w: 44, h: 80 }
+      ],
+      containers: [
+        { k: 'net', x: 760, y: 470, w: 70, h: 110, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 1080, y: 470, w: 70, h: 110, holds: [{ k: 'penguin', n: 1 }] },
+        { k: 'net', x: 1420, y: 470, w: 70, h: 110, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 1780, y: 470, w: 70, h: 110, holds: [{ k: 'penguin', n: 1 }] },
+        { k: 'net', x: 2120, y: 470, w: 70, h: 110, holds: [{ k: 'hatchling', n: 1 }] },
+        { k: 'net', x: 2480, y: 470, w: 70, h: 110, holds: [{ k: 'penguin', n: 1 }] },
+        { k: 'trap', x: 3000, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] }
+      ],
+      coral: [], invasives: [], startHealth: 30,
+      hint: 'Weave between the rocks. The penguin BURSTS: a quick dart that recharges fast. It has the shortest breath, so surface often.'
     },
     {
       id: '3-4', name: 'Longline', world: 3, place: 'Galápagos Islands', background: 'galapagos',
-      width: 3600, waterline: 180, start: { x: 170, y: 40 }, team: ['swordfish', 'flyingfish'], time: 100, exit: { x: 3480, y: 420 },
+      width: 3600, waterline: 180, start: { x: 170, y: 40 }, team: ['swordfish', 'flyingfish', 'penguin'], time: 100, exit: { x: 3480, y: 420 },
       statics: [{ x: 520, y: 610, w: 200, h: 140, look: 'lava' }, { x: 2760, y: 600, w: 180, h: 160, look: 'lava' }],
       currents: [
         { x: 1300, y: 440, w: 700, h: 480, fx: -0.34, fy: 0 },
@@ -226,7 +280,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
     },
     {
       id: '3-5', name: 'Lava Tube', world: 3, place: 'Galápagos Islands', background: 'cave',
-      width: 3300, waterline: 150, dark: true, start: { x: 170, y: 220 }, team: ['tang', 'puffer', 'pistolshrimp', 'hammerhead'], time: 150, exit: { x: 3180, y: 430 },
+      width: 3300, waterline: 150, dark: true, start: { x: 170, y: 220 }, team: ['bullhead', 'swordfish', 'penguin'], time: 150, exit: { x: 3180, y: 430 },
       glowSpots: [{ x: 620, y: 560 }, { x: 1150, y: 300 }, { x: 1700, y: 600 }, { x: 2250, y: 330 }, { x: 2750, y: 560 }, { x: 3180, y: 430 }],
       statics: [
         { x: 1650, y: 50, w: 3300, h: 100, look: 'lava' },      // cave roof
@@ -245,8 +299,33 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'trap', x: 2450, y: 645, w: 100, h: 70, holds: [{ k: 'seahorse', n: 1 }] },
         { k: 'net', x: 2900, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] }
       ],
-      coral: [], invasives: [{ k: 'lionfish', x: 2000, y: 420, patrol: 80 }, { k: 'lionfish', x: 2880, y: 440, patrol: 90 }], startHealth: 30, grantGlow: true,
-      hint: 'It\'s dark in the lava tube. Glowing plankton lights anything that moves. Try the Glow Lure.'
+      coral: [], invasives: [], startHealth: 30, grantGlow: true,
+      hint: 'It\'s dark in the lava tube. Bullhead sharks rest in caves like this: their CRUSH cracks traps and concrete. Glowing plankton lights anything that moves.'
+    },
+    {
+      id: '3-6', name: 'Darwin\'s Arch', world: 3, place: 'Galápagos Islands', background: 'galapagos',
+      width: 3900, waterline: 190, start: { x: 170, y: 50 }, team: ['hammerhead', 'bullhead', 'swordfish'], time: 170, exit: { x: 3780, y: 430 },
+      statics: [
+        { x: 1450, y: 120, w: 260, h: 260, look: 'lava' },       // the arch top (above the water)
+        { x: 1340, y: 520, w: 90, h: 320, look: 'lava' },        // its two legs
+        { x: 1560, y: 520, w: 90, h: 320, look: 'lava' },
+        { x: 2500, y: 610, w: 200, h: 140, look: 'lava' }
+      ],
+      currents: [{ x: 900, y: 440, w: 700, h: 480, fx: -0.3, fy: 0 }, { x: 2200, y: 440, w: 900, h: 480, fx: 0.25, fy: 0.05 }],
+      objects: [
+        { k: 'concrete', x: 900, y: 620, w: 40, h: 120 }, { k: 'tin', x: 1100, y: 640, w: 44, h: 80 },
+        { k: 'plastic', x: 1800, y: 195, w: 56, h: 38 }, { k: 'wood', x: 2050, y: 195, w: 120, h: 24 },
+        { k: 'concrete', x: 2900, y: 590, w: 70, h: 40 }, { k: 'plastic', x: 3500, y: 195, w: 56, h: 38 }
+      ],
+      containers: [
+        { k: 'trap', x: 1000, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'line', x: 1800, y: 430, w: 6, h: 460, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'line', x: 2100, y: 430, w: 6, h: 460, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'trap', x: 2900, y: 645, w: 100, h: 70, holds: [{ k: 'hatchling', n: 2 }] },
+        { k: 'net', x: 3420, y: 470, w: 330, h: 170, stages: 3, hang: true, holds: [{ k: 'whaleshark', n: 1 }] }
+      ],
+      coral: [], invasives: [], startHealth: 30,
+      hint: 'A whale shark is trailing a lost net! Tear it three times to set it free. Hammerheads RAM, bullheads CRUSH concrete, swordfish slice lines.'
     }
   ];
 

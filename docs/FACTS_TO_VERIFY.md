@@ -81,6 +81,31 @@ Check each against a trusted source (e.g. NOAA, FWC, IUCN Red List, a university
 | Red drum | Size | Commonly 50–90 cm | ☐ | |
 | Red drum | Fact | The black tail spot may trick predators into attacking the tail instead of the head | ☐ | |
 | Red drum | Threat | Loss of mangrove and seagrass nurseries | ☐ | |
+| Galápagos sea lion | Scientific name | *Zalophus wollebaeki* | ☐ | |
+| Galápagos sea lion | Where | Coasts and beaches of the Galápagos Islands | ☐ | |
+| Galápagos sea lion | Size | Up to about 2.5 m; males up to about 250 kg | ☐ | |
+| Galápagos sea lion | Fact | Galápagos sea lions are found nowhere else in the world except the Galápagos and nearby islands | ☐ | |
+| Galápagos sea lion | Threat | Getting tangled in fishing gear, El Niño food shortages and diseases from dogs | ☐ | |
+| Marine iguana | Scientific name | *Amblyrhynchus cristatus* | ☐ | |
+| Marine iguana | Where | Rocky shores of the Galápagos Islands | ☐ | |
+| Marine iguana | Size | Up to about 1.3 m, much of it tail | ☐ | |
+| Marine iguana | Fact | The marine iguana is the only lizard in the world that feeds in the sea, grazing on algae | ☐ | |
+| Marine iguana | Threat | Introduced predators like cats and rats, El Niño events and pollution | ☐ | |
+| Galápagos penguin | Scientific name | *Spheniscus mendiculus* | ☐ | |
+| Galápagos penguin | Where | The western Galápagos Islands, where cold currents bring food | ☐ | |
+| Galápagos penguin | Size | About 50 cm tall | ☐ | |
+| Galápagos penguin | Fact | It is the only penguin that lives on the equator | ☐ | |
+| Galápagos penguin | Threat | Warm El Niño years that drive away its food, and introduced predators | ☐ | |
+| Galápagos bullhead shark | Scientific name | *Heterodontus quoyi* | ☐ | |
+| Galápagos bullhead shark | Where | Rocky reefs and caves of the Galápagos and Peru | ☐ | |
+| Galápagos bullhead shark | Size | Up to about 1 m | ☐ | |
+| Galápagos bullhead shark | Fact | Bullhead sharks have flat back teeth for crushing crabs, sea urchins and shellfish | ☐ | |
+| Galápagos bullhead shark | Threat | Being caught as bycatch in fishing gear | ☐ | |
+| Whale shark | Scientific name | *Rhincodon typus* | ☐ | |
+| Whale shark | Where | Warm oceans worldwide; large females gather near Darwin Island in the Galápagos | ☐ | |
+| Whale shark | Size | Up to about 12–18 m | ☐ | |
+| Whale shark | Fact | The whale shark is the largest fish in the world, yet it eats tiny plankton | ☐ | |
+| Whale shark | Threat | Boat strikes, fishing nets and fishing; listed as endangered | ☐ | |
 
 ## Art-accuracy notes
 

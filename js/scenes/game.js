@@ -393,18 +393,20 @@ TT.GameScene = new Phaser.Class({
     this.radialPush(x, y, R, 0.05, src);
   },
   // Sheepshead bite: a short-range crunch that cracks hard junk and traps and cuts nets and lines.
-  crunch: function (x, y, R, src) {
+  // hard/other: damage to hard junk (traps, metal, wood, nets) and to the rest; crushConcrete: concrete counts as hard
+  crunch: function (x, y, R, src, hard, other, crushConcrete) {
     var A = TT.CFG.ABILITY, self = this;
+    hard = hard || A.crunchHard; other = other || A.crunchOther;
     this.fx.ring(x, y, R, 0xf3efe2); this.fx.bubbles(x, y, 8);
     this.objects.forEach(function (o) {
       if (!o.alive) return;
       var d = Phaser.Math.Distance.Between(x, y, o.body.position.x, o.body.position.y) - Math.max(o.w, o.h) / 2;
-      if (d <= R) TT.Entities.damage(self, o, o.material === 'concrete' ? A.crunchOther : A.crunchHard, src);
+      if (d <= R) TT.Entities.damage(self, o, o.material === 'concrete' && !crushConcrete ? other : hard, src);
     });
     this.containers.forEach(function (c) {
       if (!c.alive) return;
       var d = Phaser.Math.Distance.Between(x, y, c.sprite.x, c.sprite.y) - Math.max(c.w, c.h) / 2;
-      if (d <= R) TT.Entities.damage(self, c, A.crunchHard, src);
+      if (d <= R) TT.Entities.damage(self, c, hard, src);
     });
   },
   sediment: function (x, y) {

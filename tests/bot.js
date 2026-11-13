@@ -46,20 +46,25 @@ window.__bot = function (maxGameSeconds, opts) {
         if (lion && has('puffer') >= 0) return { x: lion.sprite.x, y: lion.sprite.y, kind: 'lionfish', who: 'puffer', range: 120 };
         var conc = G.objects.find(function (o) { return o.alive && o.material === 'concrete' && dist(o.body.position, cp) < 110; });
         if (conc && has('hammerhead') >= 0) return { x: conc.body.position.x, y: conc.body.position.y, kind: 'concrete', who: 'hammerhead', range: 260, r: 40 };
+        if (conc && has('bullhead') >= 0) return { x: conc.body.position.x, y: conc.body.position.y, kind: 'concrete', who: 'bullhead', range: 100, r: 40 };
         var brittle = G.objects.filter(function (o) { return o.alive && (o.material === 'glass' || o.material === 'plastic') && dist(o.body.position, cp) < 150; });
         if (brittle.length >= 2 && has('pistolshrimp') >= 0) return { x: cp.x, y: cp.y - 30, kind: 'brittle', who: 'pistolshrimp', range: 120 };
         var who = c.ctype === 'trap' ? (has('loggerhead') >= 0 ? 'loggerhead' : has('hammerhead') >= 0 ? 'hammerhead' : 'tang') : (has('swordfish') >= 0 ? 'swordfish' : 'tang');
         if (has('sheepshead') >= 0 && c.ctype !== 'line') who = 'sheepshead';
+        if (c.ctype === 'trap' && has('bullhead') >= 0 && has('loggerhead') < 0 && has('hammerhead') < 0) who = 'bullhead';
+        if (has(who) < 0 || (who === 'tang' && has('tang') < 0)) who = ['sealion', 'penguin', 'swordfish', 'hammerhead', 'bullhead', 'iguana'].find(function (k) { return has(k) >= 0; }) || P.team[0].id;
+        if (c.ctype === 'net' && c.stagesLeft > 1 && has('swordfish') >= 0) who = 'swordfish';
         if (has(who) < 0) who = P.team[0].id === 'pistolshrimp' || P.team[0].id === 'puffer' ? (has('tang') >= 0 ? 'tang' : P.team[0].id) : P.team[0].id;
         var ty = c.ctype === 'line' ? Math.min(C.FLOOR_Y - 60, Math.max(G.water.y + 60, pos.y)) : cp.y;
-        return { x: cp.x, y: ty, kind: c.ctype, who: who, range: who === 'sheepshead' ? Math.max(c.w, c.h) / 2 + 70 : 250, r: Math.max(c.w, c.h) / 2 };
+        var close = who === 'sheepshead' || who === 'bullhead' || who === 'iguana';
+        return { x: cp.x, y: ty, kind: c.ctype, who: who, range: close ? Math.max(c.w, c.h) / 2 + 70 : 250, r: Math.max(c.w, c.h) / 2 };
       }
       if (!opts.noClean) {
         // only junk on this side of any full-height wall (the bot crosses walls left to right only)
         var walled = function (o) { return G.statics.some(function (st) { var b = st.body.bounds; return fullWall(b) && (b.min.x - pos.x) * (b.min.x - o.body.position.x) < 0; }); };
         var os = G.objects.filter(function (o) { return o.alive && !walled(o); }).sort(function (a, b) { return dist(a.body.position, pos) - dist(b.body.position, pos); });
-        if (os.length) { var o = os[0], w2 = o.material === 'concrete' && has('hammerhead') >= 0 ? 'hammerhead' : (o.material === 'glass' || o.material === 'plastic') && has('pistolshrimp') >= 0 ? 'pistolshrimp' : has('tang') >= 0 ? 'tang' : P.team[0].id;
-          return { x: o.body.position.x, y: Math.max(G.water.y + 26, o.body.position.y), kind: 'junk', who: w2, range: w2 === 'pistolshrimp' ? 110 : 220, r: Math.max(o.w, o.h) / 2 }; }
+        if (os.length) { var o = os[0], w2 = o.material === 'concrete' && has('hammerhead') >= 0 ? 'hammerhead' : (o.material === 'glass' || o.material === 'plastic') && has('pistolshrimp') >= 0 ? 'pistolshrimp' : has('tang') >= 0 ? 'tang' : (['sealion', 'penguin', 'swordfish', 'hammerhead', 'bullhead', 'sheepshead'].find(function (k) { return has(k) >= 0; }) || P.team[0].id);
+          return { x: o.body.position.x, y: Math.max(G.water.y + 26, o.body.position.y), kind: 'junk', who: w2, range: w2 === 'pistolshrimp' ? 110 : (w2 === 'bullhead' || w2 === 'sheepshead' || w2 === 'iguana') ? Math.max(o.w, o.h) / 2 + 60 : 220, r: Math.max(o.w, o.h) / 2 }; }
       }
       return { x: G.exit.x, y: G.exit.y, kind: 'exit', who: P.id(), range: 0 };
     }

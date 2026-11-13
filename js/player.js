@@ -76,7 +76,7 @@ TT.Player.prototype.step = function () {
   if (push > 0 && under) { var ah = this.assist(b.position, Math.atan2(iy, ix)); ix = Math.cos(ah); iy = Math.sin(ah); }
 
   var boosting = now < e.boostUntil;
-  if (!boosting && (e.piercing || e.ramming || e.shoving)) this.endBoost();
+  if (!boosting && (e.piercing || e.ramming || e.shoving || e.spinning)) this.endBoost();
 
   if (boosting) {
     // hold the boost speed along the heading; the stick can bend the path a little
@@ -95,6 +95,7 @@ TT.Player.prototype.step = function () {
     vx += (gx * gs - vx) * ga; vy += (gy * gs - vy) * ga;
   } else if (under) {
     var cur = g.water.currentAt(b.position.x, b.position.y, this._cur || (this._cur = { x: 0, y: 0 }));
+    if (now < (e.gripUntil || 0)) { cur.x = 0; cur.y = 0; var gk = Math.pow(0.8, k); vx *= gk; vy *= gk; M.Body.setVelocity(b, { x: vx, y: vy }); return; }
     if (push > 0) {
       var sp = def.speed * (C.STICK_MIN_PUSH + (1 - C.STICK_MIN_PUSH) * push) * (e.inflated ? 0.6 : 1);
       var a = 1 - Math.pow(1 - def.accel, k);
@@ -138,6 +139,16 @@ TT.Player.prototype.onBump = function (other, rel) {
   var e = this.ent;
   if (this.game.clock < e.boostUntil && !e.piercing && rel > 3 && other.alive !== false) {
     if (e.pushing && (other.kind === 'container' || other.kind === 'object')) return;   // the manatee ploughs on
+    if (e.spinning && (other.kind === 'static' || other.kind === 'floor')) {
+      // the sea lion twists off the rock and keeps going
+      var v = TT.vel(e.body), b = e.body, n = other.body && other.body.position ? { x: b.position.x - other.body.position.x, y: b.position.y - other.body.position.y } : { x: 0, y: -1 };
+      if (other.kind === 'floor') n = { x: 0, y: -1 };
+      var nl = Math.sqrt(n.x * n.x + n.y * n.y) || 1; n.x /= nl; n.y /= nl;
+      var dot = v.x * n.x + v.y * n.y;
+      if (dot < 0) this.heading = Math.atan2(v.y - 2 * dot * n.y, v.x - 2 * dot * n.x);
+      this.game.fx.ring(b.position.x, b.position.y, 40, 0xbff3ff);
+      return;
+    }
     if (other.kind === 'static' || other.kind === 'floor' || other.kind === 'container' || other.kind === 'coral' || (other.kind === 'object' && other.alive)) {
       e.boostUntil = Math.min(e.boostUntil, this.game.clock + 0.05);
     }
@@ -146,7 +157,7 @@ TT.Player.prototype.onBump = function (other, rel) {
 
 TT.Player.prototype.endBoost = function () {
   var M = Phaser.Physics.Matter.Matter, e = this.ent;
-  e.piercing = false; e.ramming = false; e.pushing = false;
+  e.piercing = false; e.ramming = false; e.pushing = false; e.spinning = false;
   if (e.shoving) { e.shoving = false; M.Body.setMass(e.body, e.baseMass); }
 };
 
@@ -190,7 +201,7 @@ TT.Player.prototype.update = function (dt) {
     this.wasUnder = under;
     if (now - this.lastSplash > 0.15) {
       this.lastSplash = now;
-      var heavy = e.id === 'loggerhead' || e.id === 'hammerhead' || e.id === 'manatee';
+      var heavy = e.id === 'loggerhead' || e.id === 'hammerhead' || e.id === 'manatee' || e.id === 'sealion';
       g.fx.splash(b.position.x, g.water.y, heavy || sp > 9);
       g.sfx.play(under ? 'splash' : 'breach'); TT.Haptics.buzz(under ? 12 : 6);
     }
@@ -234,7 +245,7 @@ TT.Player.prototype.updateAir = function (dt, under, boosting) {
 // ---------- abilities ----------
 TT.Player.prototype.ready = function () { var g = this.game; return this.member().cdLeft <= 0 && !this.stunned() && !this.outOfAir && !(g.puzzle && g.movesLeft <= 0); };
 // true while an ability is doing the hitting (Puzzle mode only counts these)
-TT.Player.prototype.charging = function () { var e = this.ent; return this.game.clock < e.boostUntil + 0.15 || e.inflated || e.gliding; };
+TT.Player.prototype.charging = function () { var e = this.ent; return this.game.clock < e.boostUntil + 0.15 || e.inflated || e.gliding || this.game.clock < (e.gripUntil || 0); };
 
 TT.Player.prototype.boost = function (speed, time) {
   var e = this.ent;
@@ -279,6 +290,19 @@ TT.Player.prototype.useAbility = function () {
     case 'sheepshead':
       this.boost(A.crunchDash, 0.14);
       g.crunch(x + hx * (e.radius + 22), y + hy * (e.radius + 22), A.crunchRadius, e); g.sfx.play('snap');
+      break;
+    case 'sealion':
+      this.boost(A.spinSpeed, A.spinTime); e.spinning = true; g.fx.bubbles(x, y, 12); g.fx.ring(x, y, 46, 0xbff3ff); g.sfx.play('whoosh');
+      break;
+    case 'iguana':
+      e.gripUntil = g.clock + A.gripTime; g.crunch(x + hx * (e.radius + 14), y + hy * (e.radius + 14), A.gripRadius, e, A.gripDamage, A.gripDamage * 0.4); g.sfx.play('snap');
+      break;
+    case 'penguin':
+      this.boost(A.burstSpeed, A.burstTime); g.fx.bubbles(x, y, 8); g.sfx.play('dash');
+      break;
+    case 'bullhead':
+      this.boost(7, 0.16);
+      g.crunch(x + hx * (e.radius + 24), y + hy * (e.radius + 24), A.crushRadius, e, A.crushHard, A.crushOther, true); g.sfx.play('crack');
       break;
     case 'manatee':
       this.boost(A.pushSpeed, A.pushTime); e.shoving = true; e.pushing = true; M.Body.setMass(b, e.baseMass * A.pushMassMult);

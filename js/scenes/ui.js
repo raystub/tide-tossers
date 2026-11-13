@@ -48,6 +48,10 @@ TT.UI = {
     swordfish: 'Pierce: darts straight through wood, plastic and metal. Slices nets and lines on contact. Concrete stops it.',
     hammerhead: 'Ram: a hard charge. The best way to crack concrete.',
     sheepshead: 'Crunch: a short lunge and bite. Its strong teeth crack traps, cans, wood and nets up close.',
+    sealion: 'Spin: a twisting dash that bounces off rock instead of stopping. Breathes air.',
+    iguana: 'Grip: clings in place so waves can\'t move it, and scrapes nearby junk and nets loose. Breathes air.',
+    penguin: 'Burst: a very quick dart that recharges fast. Very short breath.',
+    bullhead: 'Crush: a short lunge and a bite that cracks traps, concrete and shells.',
     manatee: 'Push: a slow, unstoppable charge that ploughs through several nets and junk in a row. Breathes air: come up before the ring runs out.'
   }
 };
