@@ -103,7 +103,7 @@ TT.LevelSelectScene = new Phaser.Class({
     });
     var world = TT.worldByN(cur), levels = TT.levelsInWorld(cur);
     var stars = TT.Save.worldStars(cur, diff);
-    this.add.text(W / 2, 236, world.name + '  ·  ' + world.depth + '  ·  ★ ' + stars + ' / ' + world.plan.length * 3, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(14), color: '#ffe7a8', stroke: '#06283a', strokeThickness: 3 }).setOrigin(0.5).setDepth(D);
+    this.add.text(W / 2, 236, world.name + '  ·  ' + TT.Units.text(world.depth) + '  ·  ★ ' + stars + ' / ' + world.plan.length * 3, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(14), color: '#ffe7a8', stroke: '#06283a', strokeThickness: 3 }).setOrigin(0.5).setDepth(D);
     // six tiles: built levels, then "coming soon" for the rest of the world's plan
     world.plan.forEach(function (name, i) {
       var id = cur + '-' + (i + 1), l = TT.levelById(id), col = i % 3, row = Math.floor(i / 3);
@@ -215,6 +215,11 @@ TT.FieldGuideScene = new Phaser.Class({
     });
     this.add.text(W / 2, 86, unlocked + ' of ' + CARDS.length + ' cards · ' + (tab === 'trash' ? 'clear levels to learn about the trash in them' : 'clear levels to unlock species and places'), { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(13), color: '#bdf3ff' }).setOrigin(0.5).setDepth(D);
     TT.UI.button(this, 90, 46, 130, 44, '‹ Back', function () { self.scene.start('LevelSelect'); }, { size: 15 }).setDepth(D);
+    // measurement units: cycles Metric -> Imperial -> Both
+    var um = TT.Units.mode();
+    TT.UI.button(this, W - 120, 46, 190, 44, 'Units: ' + TT.Units.NAMES[um], function () {
+      var o = TT.Units.ORDER; TT.Save.setUnits(o[(o.indexOf(um) + 1) % o.length]); self.scene.restart({ tab: tab });
+    }, { size: 14 }).setDepth(D);
     // a scrolling grid of cards (drag or use the mouse wheel when there are more than fit)
     var grid = this.add.container(0, 0).setDepth(D - 1), cols = tab === 'trash' ? 4 : 6, top = 260, rowH = 165, dragged = false;
     var rows = Math.ceil(CARDS.length / cols), minY = Math.min(0, C.HEIGHT - 40 - (top + (rows - 1) * rowH + 75));
@@ -244,7 +249,7 @@ TT.FieldGuideScene = new Phaser.Class({
       this.input.on('pointerdown', function (p) { startY = p.y; startP = grid.y; dragged = false; });
       this.input.on('pointermove', function (p) { if (!p.isDown) return; if (Math.abs(p.y - startY) > 10) dragged = true; if (dragged) grid.y = Phaser.Math.Clamp(startP + p.y - startY, minY, 0); });
       this.input.on('wheel', function (p, o, dx, dy) { grid.y = Phaser.Math.Clamp(grid.y - dy, minY, 0); });
-      this.add.text(W - 24, 86, 'Drag to see more', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(12), color: '#ffe7a8' }).setOrigin(1, 0.5).setDepth(D);
+      this.add.text(W - 24, 96, 'Drag to see more', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(12), color: '#ffe7a8' }).setOrigin(1, 0.5).setDepth(D);
     }
     // header strip stays on top of scrolled cards
     this.add.rectangle(0, 0, W, 172, 0x04202c, 0.92).setOrigin(0, 0).setDepth(D - 0.5);
@@ -275,6 +280,7 @@ TT.FieldGuideScene = new Phaser.Class({
     var body = card.trash ?
       'Where it comes from: ' + card.where + '\n\nHow long it lasts: ' + card.size + '\n\nHow it harms wildlife: ' + card.fact + '\n\nHow to help: ' + card.threat :
       'Where: ' + card.where + '\n\nSize: ' + card.size + '\n\nDid you know? ' + card.fact + '\n\nThreats: ' + card.threat;
+    body = TT.Units.text(body);
     var size = 16, bt;
     do { if (bt) bt.destroy(); bt = this.add.text(tx, y, body, { fontFamily: TT.UI.sans, fontSize: TT.UI.fs(size), color: '#d8f1f4', wordWrap: { width: tw }, lineSpacing: 4 }); size--; }
     while (y + bt.height > py + ph - 28 && size > 11);

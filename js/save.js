@@ -99,6 +99,8 @@ TT.Save = (function () {
     markHintSeen: function (levelId) { load().seenHints[levelId] = true; persist(); },
     tutDone: function (k) { return !!(load().tut || {})[k]; },
     markTut: function (k) { var d = load(); d.tut = d.tut || {}; d.tut[k] = true; persist(); },
+    units: function () { return load().units || null; },   // null = follow the device
+    setUnits: function (u) { load().units = u; persist(); },
     haptics: function () { return load().haptics !== false; },
     setHaptics: function (on) { load().haptics = !!on; persist(); },
     // a level is open when everything before it in its world is cleared (or UNLOCK_ALL is on)

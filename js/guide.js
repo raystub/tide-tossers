@@ -131,3 +131,38 @@ TT.INFO = {
   cots: 'Crown-of-thorns starfish eat coral. A giant triton\'s scent moves them off the reef.',
   lionfish: 'Its spines knock out a rescuer\'s ability. The pufferfish is immune, and a snap or a puff scares it away.'
 };
+
+// ---------- Units ----------
+// Card text is written in metric. TT.Units.text() rewrites every measurement for the player's choice:
+// 'metric', 'imperial', or 'both' (metric first, imperial in brackets). The default follows the device:
+// imperial in the US, metric elsewhere.
+TT.Units = (function () {
+  var RX = /(\d[\d,]*(?:\.\d+)?)(\s*[–-]\s*(\d[\d,]*(?:\.\d+)?))?\s*(km²|km|cm|m|kg)(?![A-Za-z²])/g;
+  var CONV = { cm: [0.393701, 'in'], m: [3.28084, 'ft'], kg: [2.20462, 'lb'], km: [0.621371, 'mi'], 'km²': [0.386102, 'sq mi'] };
+  function num(s) { return parseFloat(String(s).replace(/,/g, '')); }
+  // round to a sensible precision for a field guide
+  function nice(v) {
+    var r;
+    if (v >= 1000) { var p = Math.pow(10, Math.floor(Math.log10(v)) - 1); r = Math.round(v / p) * p; }
+    else if (v >= 100) r = Math.round(v / 10) * 10;
+    else if (v >= 3) r = Math.round(v);
+    else r = Math.round(v * 10) / 10;
+    return r.toLocaleString('en-US');
+  }
+  function mode() {
+    var m = TT.Save && TT.Save.units ? TT.Save.units() : null;
+    if (m === 'metric' || m === 'imperial' || m === 'both') return m;
+    var lang = (navigator.language || '').toLowerCase();
+    return lang === 'en-us' || lang === 'en-lr' || lang === 'my' ? 'imperial' : 'metric';
+  }
+  function text(s, m) {
+    m = m || mode();
+    if (!s || m === 'metric') return s;
+    return String(s).replace(RX, function (all, a, rng, b, u) {
+      var c = CONV[u], dash = rng ? rng.replace(/[\d,.\s]/g, '') || '–' : '';
+      var imp = nice(num(a) * c[0]) + (rng ? dash + nice(num(b) * c[0]) : '') + ' ' + c[1];
+      return m === 'imperial' ? imp : all + ' (' + imp + ')';
+    });
+  }
+  return { text: text, mode: mode, NAMES: { metric: 'Metric', imperial: 'Imperial', both: 'Both' }, ORDER: ['metric', 'imperial', 'both'] };
+})();
