@@ -1,4 +1,4 @@
-package com.raystub.tidetossers;
+package com.swipefinch.tidetossers;
 
 import android.os.Bundle;
 import android.view.View;
