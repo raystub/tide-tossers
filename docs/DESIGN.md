@@ -23,7 +23,7 @@ The full level-by-level plan, with sources for the science and the launch resear
 | Art | Vibrant and glossy, in the spirit of Feeding Frenzy 2: real species, bold outlines, big glossy eyes, lush layered reefs |
 | Primary platform | Phones first |
 | Phone controls | Left thumb: floating stick. Right thumb: ability button. Switch button for the team. Vibration |
-| Campaign | 7 worlds × 6 levels = 42 levels |
+| Campaign | 7 worlds × 6 levels = 42 levels, about 3 minutes per level |
 | Team | One new lead rescuer per level, plus the leads of the two previous levels when they can live in this one |
 | Pressure | Worlds 1–4: tide timer (rescues win time back). Worlds 5–7: air, light meter or dive budget instead, by lead rescuer. Splash difficulty has no limit |
 | Launch size | Worlds 1–5 (30 levels). Worlds 6 and 7 as free updates |
@@ -37,7 +37,7 @@ The full level-by-level plan, with sources for the science and the launch resear
 
 ### Why 30 levels at launch
 
-Well-reviewed mobile puzzle games launched with: Cut the Rope (2010) 100 levels, Metacritic 93; Where's My Water? (2011) 80 levels in 4 worlds, 90; Monument Valley (2014) 10 long levels, 89; Angry Birds (2009) 63 levels, 80. Short physics puzzles shipped 63–100 one-shot levels; Tide Tossers levels are multi-rescue swims of a few minutes each (estimate, to be timed in playtests), so 30 gives a launch of similar size. Angry Birds and Cut the Rope both added free levels within months, which is the model for Worlds 6 and 7. Sources are linked in the Claude doc.
+Well-reviewed mobile puzzle games launched with: Cut the Rope (2010) 100 levels, Metacritic 93; Where's My Water? (2011) 80 levels in 4 worlds, 90; Monument Valley (2014) 10 long levels, 89; Angry Birds (2009) 63 levels, 80. Short physics puzzles shipped 63–100 one-shot levels; Tide Tossers levels are multi-rescue swims with a target of about 3 minutes each, so 30 gives a launch of similar size. Angry Birds and Cut the Rope both added free levels within months, which is the model for Worlds 6 and 7. Sources are linked in the Claude doc.
 
 ## Core loop
 
@@ -70,7 +70,7 @@ Lead rescuer in bold; *(built)* = exists in v0.5 under its old number.
 
 | World 3 · Galápagos | World 4 · Monterey Bay kelp |
 | --- | --- |
-| 3-1 Rising Tide · **Galápagos sea lion** *(built as 2-1)* | 4-1 Kelp Canopy · **sea otter** |
+| 3-1 Rising Tide · **Galápagos sea lion** *(built as 2-1; renumbered, stars reset)* | 4-1 Kelp Canopy · **sea otter** |
 | 3-2 Lava Shore · **marine iguana** | 4-2 Elkhorn Slough · **leopard shark** |
 | 3-3 Penguin Rocks · **Galápagos penguin** | 4-3 Harbor Breakwater · **giant Pacific octopus** |
 | 3-4 Longline · **swordfish** *(built as 2-5)* | 4-4 Urchin Barren · **sunflower sea star** |
@@ -96,7 +96,7 @@ Abilities, real behaviours and handling for all 42 rescuers are in the Claude do
 | Gentle animals | 2 | Big animals block the way until calmed or helped; ramming does nothing |
 | Restoration | 2 | Cleared areas grow coral, kelp or vent life back on screen; that growth raises reef health |
 | Currents | 2 | Streams push you, junk and freed animals |
-| Air | 3 | Air-breathers carry a breath ring that refills at the surface (hidden for World 1's turtle and manatee, who outlast any level) |
+| Air | 1 | Air-breathers carry a breath ring that refills at the surface. World 1's loggerhead and manatee introduce it with a long breath; World 3's sea lions and penguins have shorter ones |
 | Drifting hulls and buoys | 4 | Hulls drift and can be pushed; buoy lines snag animals |
 | Vertical levels | 4 | Levels scroll down as well as across; a depth gauge |
 | Light meter | 5 | Replaces the tide timer for non-mammals: glow fades, refills at plankton and with each rescue |
@@ -130,6 +130,21 @@ Reef health meter (starts low). Up: freeing animals, removing junk, driving off 
 | Current | Standard | 100% | 100% | 1.25 |
 | Riptide | 80% | 125% | 115% | 1.5 |
 | Abyss | 65% | 150% | 130% | 2.0 |
+
+## Business model
+
+Free to play: 5 lives, a fair once-per-level helper (earned or bought, like Angry Birds' Mighty Eagle), cosmetics, rewarded ads and a one-time remove-ads purchase. Most players should be able to finish the campaign without paying. Free seasonal events and new worlds keep players coming back; a marine-conservation partner, plush toys and books, and a premium edition on subscription platforms (as Cut the Rope did on Apple Arcade and Netflix) come later. The comparison of how Angry Birds, Cut the Rope, Where's My Water?, Monument Valley and Candy Crush Saga made money, with sources, is in the Claude doc.
+
+## Long-term roadmap
+
+| Phase | Content | Total levels |
+| --- | --- | --- |
+| Launch | Worlds 1–5, Puzzle and Arcade modes | 30 |
+| Year 1 | World 6 (midnight zone), World 7 (abyss and trench) | 42 |
+| Year 2 | Worlds 8–11: Hawaiian Islands, Arctic under the ice, Southern Ocean and Antarctica, Coral Triangle | 66 |
+| Year 3 | Worlds 12–15: Mediterranean, Sargasso Sea, Gulf of California, Salish Sea | about 90 |
+
+Alongside: free seasonal events, about 4 a year of 3–5 levels each. Pace assumes one new world about every three months (estimate). Scientists recognise 232 marine ecoregions in 12 realms, so places are not the limit; drawing six new animals and a backdrop per world is.
 
 ## Field guide
 
