@@ -52,6 +52,12 @@ TT.UI = {
     iguana: 'Grip: clings in place so waves can\'t move it, and scrapes nearby junk and nets loose. Breathes air.',
     penguin: 'Burst: a very quick dart that recharges fast. Very short breath.',
     bullhead: 'Crush: a short lunge and a bite that cracks traps, concrete and shells.',
+    archerfish: 'Jet: a water jet that auto-aims at junk in front of it, even above the water. Knocks snagged plastic off branches.',
+    parrotfish: 'Grind: grinds coral rubble and algae away so the reef can recover.',
+    wrasse: 'Clean: big gentle animals calm down and move aside. The only way to free a tangled gentle animal.',
+    triton: 'Scent: crown-of-thorns starfish nearby move away. Slow, armoured and not hurt by their spines.',
+    mantis: 'Punch: one very hard strike that cracks concrete, traps and shells.',
+    nautilus: 'Buoy: rises or sinks straight up or down, shoving junk aside.',
     manatee: 'Push: a slow, unstoppable charge that ploughs through several nets and junk in a row. Breathes air: come up before the ring runs out.'
   }
 };

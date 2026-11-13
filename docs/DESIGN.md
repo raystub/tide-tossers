@@ -61,12 +61,12 @@ Lead rescuer in bold; *(built)* = exists in v0.5 under its old number.
 
 | World 1 · Florida Keys | World 2 · Great Barrier Reef |
 | --- | --- |
-| 1-1 Tide Pool Tangle · **blue tang** *(built)* | 2-1 Mangrove Edge · **archerfish** |
-| 1-2 Mangrove Maze · **sheepshead** *(built; flying fish moved to open-water levels, v0.6.1)* | 2-2 Lagoon Bommies · **parrotfish** |
-| 1-3 Bottle Graveyard · **pistol shrimp** *(built)* | 2-3 Cleaning Station · **cleaner wrasse** |
-| 1-4 Spines · **pufferfish** *(built)* | 2-4 Starfish Outbreak · **giant triton** |
-| 1-5 Stone-Crab Traps · **loggerhead** *(built)* | 2-5 Spawning Night · **peacock mantis shrimp** |
-| 1-6 Seagrass Channel · **Florida manatee** *(built, v0.6)* | 2-6 Osprey Reef Wall · **chambered nautilus** |
+| 1-1 Tide Pool Tangle · **blue tang** *(built)* | 2-1 Mangrove Edge · **archerfish** *(built, v0.6.3)* |
+| 1-2 Mangrove Maze · **sheepshead** *(built; flying fish moved to open-water levels, v0.6.1)* | 2-2 Lagoon Bommies · **parrotfish** *(built, v0.6.3)* |
+| 1-3 Bottle Graveyard · **pistol shrimp** *(built)* | 2-3 Cleaning Station · **cleaner wrasse** *(built, v0.6.3)* |
+| 1-4 Spines · **pufferfish** *(built)* | 2-4 Starfish Outbreak · **giant triton** *(built, v0.6.3)* |
+| 1-5 Stone-Crab Traps · **loggerhead** *(built)* | 2-5 Spawning Night · **peacock mantis shrimp** *(built, v0.6.3)* |
+| 1-6 Seagrass Channel · **Florida manatee** *(built, v0.6)* | 2-6 Osprey Reef Wall · **chambered nautilus** *(built, v0.6.3)* |
 
 | World 3 · Galápagos | World 4 · Monterey Bay kelp |
 | --- | --- |
@@ -111,6 +111,10 @@ Abilities, real behaviours and handling for all 42 rescuers are in the Claude do
 - **Campaign:** the worlds above. World tabs on the level screen; unbuilt levels show as "coming soon".
 - **Puzzle:** small rooms, no tide. Every ability use is a move and only abilities break things; stars come from moves used against par. Six rooms at launch, more with each world.
 - **Arcade:** one arena, endless waves. Each wave places more nets, lines and traps (then concrete and lionfish, and a sawfish big rescue every fifth wave); clearing a wave adds time, rescues don't. Best wave and score are saved.
+
+## World 2 notes (v0.6.3)
+
+New systems: snagged junk above the water (archerfish Jet knocks it down); coral rubble and bleached coral that regains colour as reef health rises (parrotfish Grind); gentle giants (mantas) that block a passage until a cleaner wrasse cleans them, and gentle animals tangled in line that only the wrasse can free; crown-of-thorns starfish that slowly eat coral and drain reef health until a giant triton's scent moves them off; a big ghost net that sinks while you tear it (2-6).
 
 ## World 3 notes (v0.6.2)
 

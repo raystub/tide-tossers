@@ -37,8 +37,15 @@ window.__bot = function (maxGameSeconds, opts) {
     }
     function pick() {
       var pos = P.pos(), cs = G.containers.filter(function (c) { return c.alive && !(c.botSkip > G.clock); }).sort(function (a, b) { return G.arcade ? dist(a.sprite, pos) - dist(b.sprite, pos) : a.sprite.x - b.sprite.x; });
+      // crown-of-thorns starfish: send the triton to scent them off the coral
+      var cots = (G.invasives || []).filter(function (l) { return l.alive && l.species === 'cots' && dist(l.sprite, pos) < 900; }).sort(function (a, b) { return dist(a.sprite, pos) - dist(b.sprite, pos); })[0];
+      if (cots && has('triton') >= 0) return { x: cots.sprite.x, y: cots.sprite.y - 50, kind: 'cots', who: 'triton', range: 150, r: 30 };
       if (cs.length) {
         var c = cs[0], cp = { x: c.sprite.x, y: c.sprite.y };
+        // a gentle giant in the way, or a tangled gentle animal: the cleaner wrasse
+        var gate = (G.gentles || []).find(function (gn) { return gn.alive && gn.x > Math.min(pos.x, cp.x) - 40 && gn.x < Math.max(pos.x, cp.x) + 40; });
+        if (gate && has('wrasse') >= 0) return { x: gate.x - (gate.x > pos.x ? gate.w / 2 + 40 : -gate.w / 2 - 40), y: gate.sprite.y, kind: 'gentle', who: 'wrasse', range: 70, r: 20 };
+        if (c.gentle && has('wrasse') >= 0) return { x: cp.x - 30, y: Math.min(C.FLOOR_Y - 60, Math.max(G.water.y + 60, pos.y)), kind: 'gentleline', who: 'wrasse', range: 90, r: 20 };
         // watchdog: no damage to this target for a while -> try a different one for a few seconds
         if (watch.c !== c || c.hp < watch.hp) { watch = { c: c, hp: c.hp, t: G.clock }; }
         else if (G.clock - watch.t > 9 && cs.length > 1) { c.botSkip = G.clock + 6; log.push(G.clock.toFixed(1) + ' skip ' + c.ctype + '@' + Math.round(cp.x)); watch = { c: null }; }
@@ -52,11 +59,12 @@ window.__bot = function (maxGameSeconds, opts) {
         var who = c.ctype === 'trap' ? (has('loggerhead') >= 0 ? 'loggerhead' : has('hammerhead') >= 0 ? 'hammerhead' : 'tang') : (has('swordfish') >= 0 ? 'swordfish' : 'tang');
         if (has('sheepshead') >= 0 && c.ctype !== 'line') who = 'sheepshead';
         if (c.ctype === 'trap' && has('bullhead') >= 0 && has('loggerhead') < 0 && has('hammerhead') < 0) who = 'bullhead';
-        if (has(who) < 0 || (who === 'tang' && has('tang') < 0)) who = ['sealion', 'penguin', 'swordfish', 'hammerhead', 'bullhead', 'iguana'].find(function (k) { return has(k) >= 0; }) || P.team[0].id;
+        if (has('mantis') >= 0 && c.ctype !== 'line') who = 'mantis';
+        if (has(who) < 0 || (who === 'tang' && has('tang') < 0)) who = ['mantis', 'sealion', 'penguin', 'swordfish', 'hammerhead', 'bullhead', 'archerfish', 'parrotfish', 'nautilus', 'iguana'].find(function (k) { return has(k) >= 0; }) || P.team[0].id;
         if (c.ctype === 'net' && c.stagesLeft > 1 && has('swordfish') >= 0) who = 'swordfish';
         if (has(who) < 0) who = P.team[0].id === 'pistolshrimp' || P.team[0].id === 'puffer' ? (has('tang') >= 0 ? 'tang' : P.team[0].id) : P.team[0].id;
         var ty = c.ctype === 'line' ? Math.min(C.FLOOR_Y - 60, Math.max(G.water.y + 60, pos.y)) : cp.y;
-        var close = who === 'sheepshead' || who === 'bullhead' || who === 'iguana';
+        var close = who === 'sheepshead' || who === 'bullhead' || who === 'iguana' || who === 'mantis' || who === 'parrotfish';
         return { x: cp.x, y: ty, kind: c.ctype, who: who, range: close ? Math.max(c.w, c.h) / 2 + 70 : 250, r: Math.max(c.w, c.h) / 2 };
       }
       if (!opts.noClean) {
@@ -64,7 +72,12 @@ window.__bot = function (maxGameSeconds, opts) {
         var walled = function (o) { return G.statics.some(function (st) { var b = st.body.bounds; return fullWall(b) && (b.min.x - pos.x) * (b.min.x - o.body.position.x) < 0; }); };
         var os = G.objects.filter(function (o) { return o.alive && !walled(o); }).sort(function (a, b) { return dist(a.body.position, pos) - dist(b.body.position, pos); });
         if (os.length) { var o = os[0], w2 = o.material === 'concrete' && has('hammerhead') >= 0 ? 'hammerhead' : (o.material === 'glass' || o.material === 'plastic') && has('pistolshrimp') >= 0 ? 'pistolshrimp' : has('tang') >= 0 ? 'tang' : (['sealion', 'penguin', 'swordfish', 'hammerhead', 'bullhead', 'sheepshead'].find(function (k) { return has(k) >= 0; }) || P.team[0].id);
-          return { x: o.body.position.x, y: Math.max(G.water.y + 26, o.body.position.y), kind: 'junk', who: w2, range: w2 === 'pistolshrimp' ? 110 : (w2 === 'bullhead' || w2 === 'sheepshead' || w2 === 'iguana') ? Math.max(o.w, o.h) / 2 + 60 : 220, r: Math.max(o.w, o.h) / 2 }; }
+          if (o.pinned && has('archerfish') >= 0) return { x: o.body.position.x - 60, y: G.water.y + 150, kind: 'pinned', who: 'archerfish', range: 60, r: 10, aim: { x: o.body.position.x, y: o.body.position.y } };
+          if (o.material === 'rubble' && has('parrotfish') >= 0) w2 = 'parrotfish';
+          if (o.material === 'concrete' && has('mantis') >= 0) w2 = 'mantis';
+          if (w2 === 'tang' && has('tang') < 0) w2 = P.team[0].id;
+          if (o.pinned) return { x: G.exit.x, y: G.exit.y, kind: 'exit', who: P.id(), range: 0 };
+          return { x: o.body.position.x, y: Math.max(G.water.y + 26, o.body.position.y), kind: 'junk', who: w2, range: w2 === 'pistolshrimp' ? 110 : (w2 === 'bullhead' || w2 === 'sheepshead' || w2 === 'iguana' || w2 === 'mantis' || w2 === 'parrotfish') ? Math.max(o.w, o.h) / 2 + 60 : 220, r: Math.max(o.w, o.h) / 2 }; }
       }
       return { x: G.exit.x, y: G.exit.y, kind: 'exit', who: P.id(), range: 0 };
     }
@@ -106,6 +119,7 @@ window.__bot = function (maxGameSeconds, opts) {
       // wedged against something (usually a net in the way): use the ability to break through
       if (TT.speed(P.ent.body) < 0.3 && under) { stuckFor += 0.016 * (TT.DEBUG_SPEED || 1); if (stuckFor > 1.2 && P.ready() && !G.puzzle) { P.useAbility(); stuckFor = 0; log.push(G.clock.toFixed(1) + ' unstick'); } } else stuckFor = 0;
       if (T.kind !== 'exit' && wp === T) {
+        if (T.aim && d < T.range) { var aa = Math.atan2(T.aim.y - pos.y, T.aim.x - pos.x); P.input.x = Math.cos(aa); P.input.y = Math.sin(aa); P.input.push = 1; }
         if (d < T.range && P.ready() && G.clock >= retreatUntil) { if (P.useAbility()) log.push(G.clock.toFixed(1) + ' ' + P.id() + ' ability -> ' + T.kind); }
         else if (d < (T.r || 30) + 45 && !P.ready() && G.clock >= retreatUntil && TT.speed(P.ent.body) < 2.5) retreatUntil = G.clock + 0.45;
       }

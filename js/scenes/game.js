@@ -53,6 +53,8 @@ TT.GameScene = new Phaser.Class({
     this.objects = (level.objects || []).map(function (o) { return TT.Entities.junk(self, o, hpMult); });
     this.containers = (level.containers || []).map(function (c) { return TT.Entities.container(self, c, hpMult); });
     this.invasives = (level.invasives || []).map(function (l) { return TT.Entities.lionfish(self, l); });
+    this.gentles = (level.gentle || []).map(function (gd) { return TT.Entities.gentle(self, gd); });
+    if (level.bleached) this.corals.forEach(function (c) { c.sprite.setTint(0xb8b8b0); });
 
     this.trapped = 0;
     this.containers.forEach(function (c) { self.trapped += c.animals.length; });
@@ -170,15 +172,23 @@ TT.GameScene = new Phaser.Class({
           l.home.x += hx * step; l.home.y = Phaser.Math.Clamp(l.home.y + hy * step, this.water.y + 50, TT.CFG.FLOOR_Y - 40);
         }
       }
+      if (l.species === 'cots') {
+        // crown-of-thorns: crawls slowly back and forth over its coral, eating it
+        l.sprite.setPosition(l.home.x + Math.sin(t * 0.25 + l.phase) * l.patrol, l.home.y); l.sprite.rotation = Math.sin(t * 0.4 + l.phase) * 0.15;
+        if (this.state === 'play') this.addHealth(-TT.CFG.COTS_DRAIN * dt);
+        continue;
+      }
       var nx = l.home.x + Math.sin(t * 0.5 + l.phase) * l.patrol, ny = l.home.y + Math.sin(t * 1.3 + l.phase) * 10;
       l.sprite.setFlipX(nx < l.sprite.x); l.sprite.setPosition(nx, ny);
       if (dark) lights.push({ x: nx, y: ny, r: 46, a: 0.45 });
     }
+    for (i = 0; i < this.gentles.length; i++) { var gn = this.gentles[i]; if (gn.alive && !gn.calm) gn.sprite.y = gn.y + Math.sin(t * 0.8 + gn.phase) * 4; }
     // trapped animals follow their container and struggle
     for (i = 0; i < this.containers.length; i++) {
       var c = this.containers[i];
       if (!c.alive) continue;
       if (c.ctype === 'line') TT.Entities.drawLine(c, t);
+      if (c.sink && this.state === 'play' && c.body.position.y < c.sinkTo) Phaser.Physics.Matter.Matter.Body.setPosition(c.body, { x: c.body.position.x, y: Math.min(c.sinkTo, c.body.position.y + c.sink * dt) });
       var cx = c.sprite.x, cy = c.sprite.y, rot = c.ctype === 'trap' ? c.sprite.rotation : 0, cs = Math.cos(rot), sn = Math.sin(rot);
       for (var ai = 0; ai < c.animals.length; ai++) {
         var a = c.animals[ai];
@@ -243,6 +253,11 @@ TT.GameScene = new Phaser.Class({
     if (this.state === 'done') return;
     this.health = Phaser.Math.Clamp(this.health + d, 0, 100);
     this.ocean.setHealth(this.health, this.level.startHealth);
+    if (this.level.bleached && this.corals) {
+      // bleached coral regains its colour as the reef recovers
+      var f = Phaser.Math.Clamp((this.health - this.level.startHealth) / Math.max(1, 90 - this.level.startHealth), 0, 1), v = Math.round(0xb8 + (0xff - 0xb8) * f);
+      this.corals.forEach(function (c) { c.sprite.setTint(Phaser.Display.Color.GetColor(v, v, Math.round(v * (0.96 + 0.04 * f)))); });
+    }
   },
   chain: function () {
     var C = TT.CFG;
@@ -351,13 +366,13 @@ TT.GameScene = new Phaser.Class({
     if (l.fleeing || !l.alive) return;
     l.fleeing = true; l.alive = false;
     this.removeQueue.push(l.body);
-    var spr = l.sprite, dir = spr.x < this.player.pos().x ? -1 : 1;
-    spr.setFlipX(dir < 0);
-    this.tweens.add({ targets: spr, x: spr.x + dir * 900, y: spr.y - 80, alpha: 0, duration: 1800, ease: 'Sine.easeIn', onComplete: function () { spr.destroy(); } });
+    var spr = l.sprite, dir = spr.x < this.player.pos().x ? -1 : 1, cots = l.species === 'cots';
+    if (!cots) spr.setFlipX(dir < 0);
+    this.tweens.add({ targets: spr, x: spr.x + dir * (cots ? 260 : 900), y: spr.y + (cots ? 120 : -80), alpha: 0, angle: cots ? dir * 90 : 0, duration: cots ? 2600 : 1800, ease: 'Sine.easeIn', onComplete: function () { spr.destroy(); } });
     this.addHealth(this.gain.invasive);
     this.score += TT.CFG.SCORE.invasive * this.chain();
     this.sfx.play('flee');
-    this.flash(spr.x, spr.y - 40, 'Lionfish driven off', '#ffe0a8');
+    this.flash(spr.x, spr.y - 40, cots ? 'Crown-of-thorns moved off the reef' : 'Lionfish driven off', '#ffe0a8');
   },
   lionfishNear: function (x, y, R) {
     var self = this;
@@ -408,6 +423,84 @@ TT.GameScene = new Phaser.Class({
       var d = Phaser.Math.Distance.Between(x, y, c.sprite.x, c.sprite.y) - Math.max(c.w, c.h) / 2;
       if (d <= R) TT.Entities.damage(self, c, hard, src);
     });
+  },
+  // Archerfish: a water jet that auto-aims at the nearest junk, net or snagged object in front of the fish (also above the water).
+  jet: function (x, y, heading, src) {
+    var A = TT.CFG.ABILITY, M = Phaser.Physics.Matter.Matter, best = null, bd = A.jetRange, cone = Phaser.Math.DegToRad(A.jetCone), W = Phaser.Math.Angle.Wrap;
+    var consider = function (ent, px, py) {
+      var dx = px - x, dy = py - y, d = Math.sqrt(dx * dx + dy * dy);
+      if (d > bd || Math.abs(W(Math.atan2(dy, dx) - heading)) > cone) return;
+      bd = d; best = { ent: ent, x: px, y: py };
+    };
+    this.objects.forEach(function (o) { if (o.alive) consider(o, o.body.position.x, o.body.position.y); });
+    this.containers.forEach(function (c) { if (c.alive && !c.gentle) consider(c, c.sprite.x, c.sprite.y); });
+    var tx = best ? best.x : x + Math.cos(heading) * A.jetRange, ty = best ? best.y : y + Math.sin(heading) * A.jetRange;
+    // the jet: a quick line of droplets
+    var g = this.add.graphics().setDepth(11), self = this;
+    g.lineStyle(5, 0xe6fbff, 0.9); g.beginPath(); g.moveTo(x, y); g.lineTo(tx, ty); g.strokePath();
+    g.lineStyle(2, 0xffffff, 1); g.beginPath(); g.moveTo(x, y); g.lineTo(tx, ty); g.strokePath();
+    this.tweens.add({ targets: g, alpha: 0, duration: 260, onComplete: function () { g.destroy(); } });
+    for (var i = 0; i < 6; i++) this.fx.bubbles(x + (tx - x) * i / 6, y + (ty - y) * i / 6, 1);
+    if (!best) return;
+    this.fx.splash(tx, ty, false);
+    var e = best.ent;
+    if (e.kind === 'object') {
+      if (e.pinned) { e.pinned = false; e.body.ttFall = true; e.sprite.setStatic(false); this.flash(tx, ty - 26, 'Knocked down!', '#e6fbff'); }
+      var len = bd || 1; M.Body.setVelocity(e.body, { x: (tx - x) / len * 4, y: (ty - y) / len * 4 });
+    }
+    TT.Entities.damage(this, e, A.jetDamage, src);
+  },
+  // Parrotfish: grinds coral rubble and algae away; barely scratches anything else.
+  grind: function (x, y, R, src) {
+    var A = TT.CFG.ABILITY, self = this;
+    this.fx.ring(x, y, R, 0xf3efe2); this.fx.silt(x, y);
+    this.objects.forEach(function (o) {
+      if (!o.alive) return;
+      var d = Phaser.Math.Distance.Between(x, y, o.body.position.x, o.body.position.y) - Math.max(o.w, o.h) / 2;
+      if (d <= R) TT.Entities.damage(self, o, o.material === 'rubble' ? A.grindRubble : A.grindOther, src);
+    });
+    this.containers.forEach(function (c) {
+      if (!c.alive || c.gentle) return;
+      var d = Phaser.Math.Distance.Between(x, y, c.sprite.x, c.sprite.y) - Math.max(c.w, c.h) / 2;
+      if (d <= R) TT.Entities.damage(self, c, A.grindOther * 1.5, src);
+    });
+  },
+  // Cleaner wrasse: big gentle animals nearby calm down and move aside; tangled gentle animals are freed.
+  clean: function (x, y, R) {
+    var self = this, any = false;
+    this.fx.ring(x, y, R, 0x9fe8ff);
+    for (var k = 0; k < 8; k++) this.fx.sparkle(x + (Math.random() - 0.5) * R, y + (Math.random() - 0.5) * R);
+    this.gentles.forEach(function (gn) {
+      if (!gn.alive || gn.calm) return;
+      if (Phaser.Math.Distance.Between(x, y, gn.sprite.x, gn.sprite.y) > R + gn.w / 2) return;
+      gn.calm = true; gn.alive = false; any = true;
+      self.removeQueue.push(gn.body);
+      var spr = gn.sprite;
+      self.tweens.add({ targets: spr, y: Math.max(self.water.y + 60, spr.y - 170), x: spr.x + (spr.flipX ? -160 : 160), duration: 2200, ease: 'Sine.easeInOut', onComplete: function () { spr.setDepth(3.4).setAlpha(0.8); } });
+      self.addHealth(2); self.score += 400;
+      self.flash(spr.x, spr.y - 50, 'Cleaned! It glides aside', '#bff3ff', 20);
+    });
+    this.containers.forEach(function (c) {
+      if (!c.alive || !c.gentle) return;
+      var d = Phaser.Math.Distance.Between(x, y, c.sprite.x, c.sprite.y) - Math.max(c.w, c.h) / 2;
+      if (d <= R) { any = true; c.gentle = false; self.breakContainer(c, null); }
+    });
+    return any;
+  },
+  gentleWarn: function (c) {
+    if (this.clock - (this.lastGentleWarn || -9) < 2.5) return;
+    this.lastGentleWarn = this.clock;
+    this.flash(c.sprite.x, c.sprite.y - c.h / 2 - 20, 'Careful! Only a cleaner wrasse can free it', '#ffe7a8', 18);
+  },
+  // Giant triton: crown-of-thorns starfish (and lionfish) nearby move away from its scent.
+  scent: function (x, y, R) {
+    this.fx.ring(x, y, R, 0xc8f0a8); this.fx.ring(x, y, R * 0.6, 0xc8f0a8);
+    for (var k = 0; k < 10; k++) this.fx.bubbles(x + (Math.random() - 0.5) * R, y + (Math.random() - 0.5) * R * 0.6, 1);
+    this.lionfishNear(x, y, R);
+  },
+  punchStars: function (x, y) {
+    this.fx.ring(x, y, 50, 0xffe08a); this.cameras.main.shake(110, 0.005); this.hitStop = Math.max(this.hitStop, 0.04);
+    this.lionfishNear(x, y, 40);
   },
   sediment: function (x, y) {
     if (this.time.now - this.lastSilt < 250) return;
@@ -510,7 +603,8 @@ TT.GameScene = new Phaser.Class({
       var ids = [];
       this.level.team.forEach(function (q) { if (ids.indexOf(q) < 0) ids.push(q); });
       (this.level.containers || []).forEach(function (c) { (c.holds || []).forEach(function (h) { if (ids.indexOf(h.k) < 0) ids.push(h.k); }); });
-      if ((this.level.invasives || []).length) ids.push('lionfish');
+      (this.level.invasives || []).forEach(function (l) { var sp = l.k || 'lionfish'; if (ids.indexOf(sp) < 0) ids.push(sp); });
+      (this.level.gentle || []).forEach(function (gd) { if (ids.indexOf(gd.k) < 0) ids.push(gd.k); });
       if (!this.puzzle) ids.push(TT.worldByN(this.level.world).card);
       res.newCards = TT.Save.unlockCards(ids);
       this.sfx.play('win'); TT.Haptics.buzz([30, 60, 30, 60, 70]);

@@ -177,6 +177,128 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       hint: 'Seagrass is precious: don\'t knock junk onto it. The manatee\'s push is slow but unstoppable. Air-breathers must come up for air.'
     },
     {
+      id: '2-1', name: 'Mangrove Edge', world: 2, place: 'Great Barrier Reef', background: 'keys',
+      width: 3300, waterline: 220, start: { x: 170, y: 60 }, team: ['archerfish', 'loggerhead'], time: 140, exit: { x: 3180, y: 450 },
+      statics: [
+        { x: 650, y: 320, w: 46, h: 440, look: 'root' }, { x: 1150, y: 330, w: 46, h: 460, look: 'root' },
+        { x: 1700, y: 320, w: 46, h: 440, look: 'root' }, { x: 2300, y: 330, w: 46, h: 460, look: 'root' },
+        { x: 2750, y: 640, w: 200, h: 80, look: 'rock' }
+      ],
+      objects: [
+        { k: 'plastic', x: 760, y: 150, w: 54, h: 36, pinned: true }, { k: 'glass', x: 1260, y: 140, w: 18, h: 56, pinned: true },
+        { k: 'plastic', x: 1820, y: 160, w: 56, h: 38, pinned: true }, { k: 'plastic', x: 2420, y: 150, w: 54, h: 36, pinned: true },
+        { k: 'tin', x: 1450, y: 640, w: 44, h: 80 }, { k: 'plastic', x: 2050, y: 225, w: 60, h: 40 }
+      ],
+      containers: [
+        { k: 'net', x: 900, y: 600, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 1450, y: 400, w: 74, h: 120, holds: [{ k: 'hatchling', n: 2 }] },
+        { k: 'trap', x: 2000, y: 645, w: 100, h: 70, holds: [{ k: 'clownfish', n: 2 }] },
+        { k: 'net', x: 2550, y: 420, w: 74, h: 120, holds: [{ k: 'seahorse', n: 1 }] },
+        { k: 'trap', x: 2950, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] }
+      ],
+      coral: [{ x: 1250, y: 640, w: 120, h: 76 }, { x: 2600, y: 640, w: 120, h: 76 }], invasives: [], startHealth: 30,
+      hint: 'Plastic is snagged in the mangroves above the water. The archerfish JETS water to knock it down: aim up and tap. The loggerhead shoves traps open.'
+    },
+    {
+      id: '2-2', name: 'Lagoon Bommies', world: 2, place: 'Great Barrier Reef', background: 'keys', bleached: true,
+      width: 3400, waterline: 190, start: { x: 170, y: 50 }, team: ['parrotfish', 'archerfish', 'loggerhead'], time: 150, exit: { x: 3280, y: 440 },
+      statics: [{ x: 900, y: 590, w: 200, h: 180, look: 'rock' }, { x: 1800, y: 580, w: 220, h: 200, look: 'rock' }, { x: 2700, y: 590, w: 200, h: 180, look: 'rock' }],
+      objects: [
+        { k: 'rubble', x: 880, y: 470, w: 90, h: 50 }, { k: 'rubble', x: 1780, y: 450, w: 100, h: 54 }, { k: 'rubble', x: 1860, y: 450, w: 70, h: 44 },
+        { k: 'rubble', x: 2700, y: 470, w: 90, h: 50 }, { k: 'rubble', x: 1300, y: 650, w: 80, h: 50 }, { k: 'rubble', x: 2300, y: 650, w: 80, h: 50 },
+        { k: 'plastic', x: 1500, y: 195, w: 56, h: 38 }
+      ],
+      containers: [
+        { k: 'net', x: 1150, y: 600, w: 84, h: 150, holds: [{ k: 'clownfish', n: 2 }] },
+        { k: 'net', x: 1450, y: 360, w: 74, h: 130, hang: true, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'trap', x: 2100, y: 645, w: 100, h: 70, holds: [{ k: 'hatchling', n: 2 }] },
+        { k: 'net', x: 3000, y: 600, w: 84, h: 150, holds: [{ k: 'clownfish', n: 2 }] }
+      ],
+      coral: [{ x: 700, y: 640, w: 130, h: 80 }, { x: 1050, y: 640, w: 110, h: 76 }, { x: 1600, y: 640, w: 130, h: 80 }, { x: 2500, y: 640, w: 130, h: 80 }, { x: 2900, y: 640, w: 110, h: 76 }],
+      invasives: [], startHealth: 25,
+      hint: 'This lagoon is bleached and smothered in rubble and algae. The parrotfish GRINDS it away, and the coral gets its colour back as the reef recovers.'
+    },
+    {
+      id: '2-3', name: 'Cleaning Station', world: 2, place: 'Great Barrier Reef', background: 'keys',
+      width: 3500, waterline: 190, start: { x: 170, y: 50 }, team: ['wrasse', 'parrotfish', 'archerfish'], time: 150, exit: { x: 3380, y: 440 },
+      statics: [
+        { x: 1300, y: 300, w: 160, h: 280, look: 'rock' }, { x: 1300, y: 630, w: 160, h: 120, look: 'rock' },
+        { x: 2400, y: 290, w: 160, h: 280, look: 'rock' }, { x: 2400, y: 630, w: 160, h: 120, look: 'rock' }
+      ],
+      // big manta rays waiting at the cleaning stations fill the gaps until they've been cleaned
+      gentle: [{ k: 'manta', x: 1300, y: 505, len: 240 }, { k: 'manta', x: 2400, y: 500, len: 240, flip: true }],
+      currents: [{ x: 1850, y: 440, w: 700, h: 480, fx: 0.25, fy: 0 }],
+      objects: [
+        { k: 'rubble', x: 800, y: 650, w: 80, h: 50 }, { k: 'plastic', x: 900, y: 195, w: 56, h: 38 },
+        { k: 'tin', x: 1900, y: 640, w: 44, h: 80 }, { k: 'plastic', x: 2900, y: 195, w: 56, h: 38 }
+      ],
+      containers: [
+        { k: 'net', x: 900, y: 600, w: 84, h: 150, holds: [{ k: 'clownfish', n: 2 }] },
+        { k: 'line', x: 1800, y: 430, w: 6, h: 460, gentle: true, holds: [{ k: 'manta', n: 1 }] },
+        { k: 'net', x: 2900, y: 600, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 3150, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'hatchling', n: 1 }] }
+      ],
+      coral: [{ x: 650, y: 640, w: 120, h: 76 }, { x: 2650, y: 640, w: 120, h: 76 }], invasives: [], startHealth: 30,
+      hint: 'Mantas wait at cleaning stations. They are too big to push, so the cleaner wrasse CLEANS them and they glide aside. Only the wrasse can free the tangled manta.'
+    },
+    {
+      id: '2-4', name: 'Starfish Outbreak', world: 2, place: 'Great Barrier Reef', background: 'keys',
+      width: 3500, waterline: 190, start: { x: 170, y: 50 }, team: ['triton', 'wrasse', 'parrotfish'], time: 160, exit: { x: 3380, y: 440 },
+      statics: [{ x: 1700, y: 600, w: 200, h: 160, look: 'rock' }],
+      objects: [{ k: 'rubble', x: 1150, y: 650, w: 80, h: 50 }, { k: 'plastic', x: 1400, y: 195, w: 56, h: 38 }, { k: 'rubble', x: 2400, y: 650, w: 80, h: 50 }, { k: 'glass', x: 2900, y: 650, w: 18, h: 60 }],
+      containers: [
+        { k: 'net', x: 1000, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'clownfish', n: 2 }] },
+        { k: 'net', x: 1950, y: 600, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 2650, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'hatchling', n: 2 }] },
+        { k: 'net', x: 3150, y: 600, w: 84, h: 150, holds: [{ k: 'clownfish', n: 1 }] }
+      ],
+      coral: [{ x: 700, y: 640, w: 130, h: 80 }, { x: 1300, y: 640, w: 130, h: 80 }, { x: 2200, y: 640, w: 130, h: 80 }, { x: 2800, y: 640, w: 130, h: 80 }],
+      invasives: [{ k: 'cots', x: 700, y: 590 }, { k: 'cots', x: 1300, y: 590 }, { k: 'cots', x: 1340, y: 600 }, { k: 'cots', x: 2200, y: 590 }, { k: 'cots', x: 2800, y: 590 }, { k: 'cots', x: 2770, y: 600 }],
+      startHealth: 35,
+      hint: 'Crown-of-thorns starfish are eating the coral and draining reef health. They flee the scent of the giant triton: swim close and tap. Their spines sting everything else.'
+    },
+    {
+      id: '2-5', name: 'Spawning Night', world: 2, place: 'Great Barrier Reef', background: 'keys', dark: true,
+      width: 3400, waterline: 190, start: { x: 170, y: 60 }, team: ['mantis', 'triton', 'wrasse'], time: 160, exit: { x: 3280, y: 440 },
+      glowSpots: [{ x: 700, y: 600 }, { x: 1200, y: 600 }, { x: 1700, y: 450 }, { x: 2200, y: 600 }, { x: 2700, y: 600 }, { x: 3280, y: 440 }],
+      statics: [{ x: 1500, y: 610, w: 180, h: 140, look: 'rock' }, { x: 2450, y: 600, w: 180, h: 160, look: 'rock' }],
+      objects: [
+        { k: 'concrete', x: 950, y: 590, w: 70, h: 40 }, { k: 'concrete', x: 1950, y: 590, w: 70, h: 40 }, { k: 'tin', x: 1360, y: 640, w: 44, h: 80 },
+        { k: 'concrete', x: 2950, y: 590, w: 70, h: 40 }, { k: 'glass', x: 2250, y: 650, w: 18, h: 60 }
+      ],
+      containers: [
+        { k: 'trap', x: 950, y: 645, w: 100, h: 70, holds: [{ k: 'clownfish', n: 2 }] },
+        { k: 'trap', x: 1950, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 2250, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'hatchling', n: 2 }] },
+        { k: 'trap', x: 2950, y: 645, w: 100, h: 70, holds: [{ k: 'clownfish', n: 1 }] }
+      ],
+      coral: [{ x: 700, y: 640, w: 130, h: 80 }, { x: 1200, y: 640, w: 120, h: 76 }, { x: 2700, y: 640, w: 130, h: 80 }],
+      invasives: [{ k: 'cots', x: 700, y: 590 }, { k: 'cots', x: 2700, y: 590 }],
+      startHealth: 30,
+      hint: 'On spawning night the coral releases its eggs. The mantis shrimp PUNCHES: one strike cracks concrete and traps. Keep the starfish off the coral.'
+    },
+    {
+      id: '2-6', name: 'Osprey Reef Wall', world: 2, place: 'Great Barrier Reef', background: 'keys',
+      width: 3700, waterline: 190, start: { x: 170, y: 50 }, team: ['nautilus', 'mantis', 'triton'], time: 170, exit: { x: 3580, y: 430 },
+      statics: [
+        { x: 700, y: 560, w: 260, h: 240, look: 'rock' }, { x: 1500, y: 520, w: 240, h: 320, look: 'rock' },
+        { x: 2300, y: 560, w: 260, h: 240, look: 'rock' }
+      ],
+      // strong currents sweep along the wall, and a ghost net with turtles in it is sinking toward the deep
+      currents: [{ x: 1100, y: 330, w: 800, h: 260, fx: 0.32, fy: 0 }, { x: 1900, y: 330, w: 800, h: 260, fx: -0.3, fy: 0.08 }],
+      objects: [{ k: 'concrete', x: 1000, y: 620, w: 40, h: 120 }, { k: 'tin', x: 1850, y: 640, w: 44, h: 80 }, { k: 'plastic', x: 2600, y: 195, w: 56, h: 38 }, { k: 'concrete', x: 2700, y: 590, w: 70, h: 40 }],
+      containers: [
+        { k: 'trap', x: 1100, y: 645, w: 100, h: 70, holds: [{ k: 'clownfish', n: 2 }] },
+        { k: 'net', x: 1900, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'trap', x: 2700, y: 645, w: 100, h: 70, holds: [{ k: 'hatchling', n: 2 }] },
+        { k: 'net', x: 3250, y: 300, w: 300, h: 160, stages: 3, sink: 7, sinkTo: 560, holds: [{ k: 'loggerhead', n: 2 }] }
+      ],
+      coral: [{ x: 1250, y: 640, w: 120, h: 76 }, { x: 3000, y: 640, w: 120, h: 76 }],
+      invasives: [{ k: 'cots', x: 1250, y: 590 }, { k: 'cots', x: 3000, y: 590 }],
+      startHealth: 30,
+      hint: 'A ghost net with two turtles is sinking down the wall! Tear it three times. The nautilus BUOYS straight up or down, the mantis shrimp punches.'
+    },
+    {
       id: '3-1', name: 'Rising Tide', world: 3, place: 'Galápagos Islands', background: 'galapagos',
       width: 3100, waterline: 250, tide: { min: 170, max: 330 }, start: { x: 170, y: 60 }, team: ['sealion', 'swordfish'], time: 115, exit: { x: 2980, y: 460 },
       statics: [

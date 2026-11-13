@@ -106,6 +106,56 @@ Check each against a trusted source (e.g. NOAA, FWC, IUCN Red List, a university
 | Whale shark | Size | Up to about 12–18 m | ☐ | |
 | Whale shark | Fact | The whale shark is the largest fish in the world, yet it eats tiny plankton | ☐ | |
 | Whale shark | Threat | Boat strikes, fishing nets and fishing; listed as endangered | ☐ | |
+| Archerfish | Scientific name | *Toxotes chatareus* | ☐ | |
+| Archerfish | Where | Mangroves and river mouths of northern Australia and Southeast Asia | ☐ | |
+| Archerfish | Size | Up to about 30–40 cm | ☐ | |
+| Archerfish | Fact | Archerfish spit jets of water to knock insects off leaves above the water | ☐ | |
+| Archerfish | Threat | Loss of mangrove habitat | ☐ | |
+| Parrotfish | Scientific name | *Family Scaridae* | ☐ | |
+| Parrotfish | Where | Coral reefs worldwide, including the Great Barrier Reef | ☐ | |
+| Parrotfish | Size | Most are about 30–50 cm | ☐ | |
+| Parrotfish | Fact | Parrotfish scrape algae off coral with beak-like teeth, and the coral they grind up becomes white sand | ☐ | |
+| Parrotfish | Threat | Overfishing and coral reef decline | ☐ | |
+| Bluestreak cleaner wrasse | Scientific name | *Labroides dimidiatus* | ☐ | |
+| Bluestreak cleaner wrasse | Where | Coral reefs of the Indian and Pacific Oceans, including the Great Barrier Reef | ☐ | |
+| Bluestreak cleaner wrasse | Size | Up to about 10–14 cm | ☐ | |
+| Bluestreak cleaner wrasse | Fact | Big fish and manta rays line up at its cleaning station to have parasites picked off | ☐ | |
+| Bluestreak cleaner wrasse | Threat | Collection for aquariums and reef decline | ☐ | |
+| Giant triton | Scientific name | *Charonia tritonis* | ☐ | |
+| Giant triton | Where | Coral reefs of the Indian and Pacific Oceans | ☐ | |
+| Giant triton | Size | Shell up to about 50 cm | ☐ | |
+| Giant triton | Fact | The giant triton is one of the few animals that eats crown-of-thorns starfish | ☐ | |
+| Giant triton | Threat | Collection for its beautiful shell | ☐ | |
+| Peacock mantis shrimp | Scientific name | *Odontodactylus scyllarus* | ☐ | |
+| Peacock mantis shrimp | Where | Coral reefs of the Indian and Pacific Oceans | ☐ | |
+| Peacock mantis shrimp | Size | Usually about 10–18 cm | ☐ | |
+| Peacock mantis shrimp | Fact | Its club-like arms strike so fast they can crack snail shells, one of the fastest strikes of any animal | ☐ | |
+| Peacock mantis shrimp | Threat | Reef damage and collection for aquariums | ☐ | |
+| Chambered nautilus | Scientific name | *Nautilus pompilius* | ☐ | |
+| Chambered nautilus | Where | Deep slopes of coral reefs in the Indian and Pacific Oceans, including Osprey Reef | ☐ | |
+| Chambered nautilus | Size | Shell about 20 cm | ☐ | |
+| Chambered nautilus | Fact | It controls the gas and liquid in its shell chambers to rise and sink | ☐ | |
+| Chambered nautilus | Threat | Collection for its shell | ☐ | |
+| Reef manta ray | Scientific name | *Mobula alfredi* | ☐ | |
+| Reef manta ray | Where | Coral reefs of the Indian and Pacific Oceans, including the Great Barrier Reef | ☐ | |
+| Reef manta ray | Size | Wings up to about 3–5 m across | ☐ | |
+| Reef manta ray | Fact | Manta rays visit cleaning stations where small fish clean them | ☐ | |
+| Reef manta ray | Threat | Fishing nets, fishing line and boat strikes | ☐ | |
+| Crown-of-thorns starfish | Scientific name | *Acanthaster species* | ☐ | |
+| Crown-of-thorns starfish | Where | Coral reefs of the Indian and Pacific Oceans | ☐ | |
+| Crown-of-thorns starfish | Size | Usually about 25–35 cm across | ☐ | |
+| Crown-of-thorns starfish | Fact | Outbreaks of crown-of-thorns starfish can eat large areas of living coral | ☐ | |
+| Crown-of-thorns starfish | Threat | They are the threat here: outbreaks are managed to protect the reef | ☐ | |
+| Clownfish (anemonefish) | Scientific name | *Amphiprion species* | ☐ | |
+| Clownfish (anemonefish) | Where | Coral reefs of the Indian and Pacific Oceans | ☐ | |
+| Clownfish (anemonefish) | Size | Usually about 8–11 cm | ☐ | |
+| Clownfish (anemonefish) | Fact | Clownfish live among the stinging tentacles of sea anemones, protected by a layer of mucus | ☐ | |
+| Clownfish (anemonefish) | Threat | Collection for aquariums and reef decline | ☐ | |
+| Great Barrier Reef | Country | Queensland, Australia | ☐ | |
+| Great Barrier Reef | Where | Off the coast of Queensland, Australia | ☐ | |
+| Great Barrier Reef | Size | About 2,300 km long | ☐ | |
+| Great Barrier Reef | Fact | It is the largest coral reef system in the world and can be seen from space | ☐ | |
+| Great Barrier Reef | Threat | Warming water and coral bleaching, crown-of-thorns outbreaks and pollution | ☐ | |
 
 ## Art-accuracy notes
 

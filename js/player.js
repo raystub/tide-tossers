@@ -304,6 +304,26 @@ TT.Player.prototype.useAbility = function () {
       this.boost(7, 0.16);
       g.crunch(x + hx * (e.radius + 24), y + hy * (e.radius + 24), A.crushRadius, e, A.crushHard, A.crushOther, true); g.sfx.play('crack');
       break;
+    case 'archerfish':
+      g.jet(x + hx * e.radius, y + hy * e.radius, this.heading, e); g.sfx.play('whoosh');
+      break;
+    case 'parrotfish':
+      this.boost(7, 0.18); g.grind(x + hx * (e.radius + 18), y + hy * (e.radius + 18), A.grindRadius, e); g.sfx.play('crack');
+      break;
+    case 'wrasse':
+      this.boost(9, 0.15); g.clean(x, y, A.cleanRadius); g.sfx.play('ready');
+      break;
+    case 'triton':
+      g.scent(x, y, A.scentRadius); g.sfx.play('puff');
+      break;
+    case 'mantis':
+      this.boost(12, 0.12);
+      g.crunch(x + hx * (e.radius + 22), y + hy * (e.radius + 22), A.punchRadius, e, A.punchDamage, A.punchDamage * 0.5, true); g.punchStars(x + hx * (e.radius + 22), y + hy * (e.radius + 22)); g.sfx.play('snap');
+      break;
+    case 'nautilus':
+      this.heading = inp.push > 0 && inp.y > 0.3 ? Math.PI / 2 : -Math.PI / 2;
+      this.boost(A.buoySpeed, A.buoyTime); e.shoving = true; M.Body.setMass(b, e.baseMass * 2); g.fx.bubbles(x, y, 14); g.sfx.play('whoosh');
+      break;
     case 'manatee':
       this.boost(A.pushSpeed, A.pushTime); e.shoving = true; e.pushing = true; M.Body.setMass(b, e.baseMass * A.pushMassMult);
       g.fx.bubbles(x, y, 16); g.fx.ring(x + hx * 30, y + hy * 30, 50, 0xbff3ff); g.sfx.play('whoosh');

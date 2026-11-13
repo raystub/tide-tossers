@@ -2,7 +2,7 @@
 // Units: positions in px, velocities in px per 1/60 s (independent of the physics rate), times in seconds.
 window.TT = window.TT || {};
 
-TT.VERSION = 'v0.6.2';
+TT.VERSION = 'v0.6.3';
 
 // Phones and tablets (coarse pointer) get the touch controls, bigger HUD and a closer camera.
 // Force it on a desktop with ?mobile=1 to preview the phone layout.
@@ -67,6 +67,7 @@ TT.CFG = {
   CORAL_PENALTY: 5,          // reef health % lost per coral hit
   CORAL_COOLDOWN: 1.0,
   LIONFISH_FLEE_SPEED: 4,    // junk hitting a lionfish faster than this drives it off
+  COTS_DRAIN: 0.1,           // reef health % per second eaten by each crown-of-thorns starfish still on the reef
   LIONFISH_HUNT_RANGE: 300,  // Arcade lionfish drift toward a rescuer this close...
   LIONFISH_HUNT_SPEED: 48,   // ...at this many px per second
 
@@ -98,7 +99,8 @@ TT.CFG = {
     glass:    { name: 'Glass',    density: 0.002,  buoy: 'neutral', hp: 25,  score: 80 },
     wood:     { name: 'Wood',     density: 0.002,  buoy: 'floats',  hp: 70,  score: 100 },
     tin:      { name: 'Metal',    density: 0.004,  buoy: 'sinks',   hp: 130, score: 150 },
-    concrete: { name: 'Concrete', density: 0.006,  buoy: 'sinks',   hp: 400, score: 250 }
+    concrete: { name: 'Concrete', density: 0.006,  buoy: 'sinks',   hp: 400, score: 250 },
+    rubble:   { name: 'Coral rubble', density: 0.003, buoy: 'sinks', hp: 120, score: 120 }
   },
   CONTAINERS: {
     net:  { hp: 110, minSpeed: 4.5 },
@@ -125,6 +127,13 @@ TT.CFG = {
     penguin:      { name: 'Galápagos penguin',     radius: 17, density: 0.0045, speed: 7.6, accel: 0.26, cd: 0.9, ability: 'Burst',  len: 3.0, air: 24 },
     bullhead:     { name: 'Galápagos bullhead shark', radius: 21, density: 0.0065, speed: 4.6, accel: 0.11, cd: 2.0, ability: 'Crush', len: 4.0,
                     bonusVs: { concrete: 1.5 } },
+    archerfish:   { name: 'Archerfish',            radius: 18, density: 0.004,  speed: 6.0, accel: 0.16, cd: 0.9, ability: 'Jet',    len: 3.3 },
+    parrotfish:   { name: 'Parrotfish',            radius: 22, density: 0.005,  speed: 5.6, accel: 0.15, cd: 1.2, ability: 'Grind',  len: 3.3,
+                    bonusVs: { rubble: 3 } },
+    wrasse:       { name: 'Bluestreak cleaner wrasse', radius: 13, density: 0.004, speed: 6.8, accel: 0.3, cd: 0.8, ability: 'Clean', len: 4.2 },
+    triton:       { name: 'Giant triton',          radius: 22, density: 0.008,  speed: 3.8, accel: 0.1,  cd: 2.4, ability: 'Scent',  len: 3.4, spineproof: true },
+    mantis:       { name: 'Peacock mantis shrimp', radius: 17, density: 0.006,  speed: 5.2, accel: 0.18, cd: 1.5, ability: 'Punch',  len: 3.8 },
+    nautilus:     { name: 'Chambered nautilus',    radius: 20, density: 0.004,  speed: 4.6, accel: 0.1,  cd: 1.3, ability: 'Buoy',   len: 3.2 },
     manatee:      { name: 'Florida manatee',       radius: 30, density: 0.008,  speed: 4.3, accel: 0.07, cd: 3.0, ability: 'Push',   len: 3.7, air: 55 }
   },
   // air: seconds of breath for air-breathing rescuers (see AIR_* below).
@@ -172,6 +181,12 @@ TT.CFG = {
     gripTime: 2.2, gripRadius: 64, gripDamage: 90,         // marine iguana: clings in place (currents can't move it) and scrapes junk loose
     burstSpeed: 15, burstTime: 0.24,                       // penguin: a very short, very quick dash
     crushRadius: 74, crushHard: 170, crushOther: 80,       // bullhead shark: crushes traps, concrete and shells
+    jetRange: 400, jetCone: 40, jetDamage: 70,             // archerfish: auto-aimed water jet; knocks snagged junk off branches above the water
+    grindRadius: 72, grindRubble: 220, grindOther: 40,     // parrotfish: grinds rubble and algae away
+    cleanRadius: 140,                                      // cleaner wrasse: calms big animals, frees tangled gentle ones
+    scentRadius: 240,                                      // giant triton: crown-of-thorns starfish move away from its scent
+    punchRadius: 62, punchDamage: 460,                     // mantis shrimp: one very hard strike
+    buoySpeed: 9, buoyTime: 0.7,                           // nautilus: rises or sinks straight up or down
     crunchRadius: 70, crunchHard: 130, crunchOther: 50, crunchDash: 9   // sheepshead: a lunge and a bite that cracks shells, metal, wood and traps
   },
 
