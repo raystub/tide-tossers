@@ -2,7 +2,7 @@
 // Units: positions in px, velocities in px per 1/60 s (independent of the physics rate), times in seconds.
 window.TT = window.TT || {};
 
-TT.VERSION = 'v0.5.1';
+TT.VERSION = 'v0.6.0';
 
 // Phones and tablets (coarse pointer) get the touch controls, bigger HUD and a closer camera.
 // Force it on a desktop with ?mobile=1 to preview the phone layout.
@@ -112,11 +112,39 @@ TT.CFG = {
                     bonusVs: { plastic: 2, glass: 2 } },
     puffer:       { name: 'Pufferfish',            radius: 20, density: 0.0035, speed: 5.2, accel: 0.13, cd: 3.5, ability: 'Puff',   len: 3.3, nick: 'Puff' },
     pistolshrimp: { name: 'Pistol shrimp',         radius: 16, density: 0.005,  speed: 5.4, accel: 0.15, cd: 2.4, ability: 'Snap',   len: 3.6 },
-    loggerhead:   { name: 'Loggerhead sea turtle', radius: 26, density: 0.006,  speed: 5.0, accel: 0.085, cd: 2.8, ability: 'Shove', len: 3.4 },
+    loggerhead:   { name: 'Loggerhead sea turtle', radius: 26, density: 0.006,  speed: 5.0, accel: 0.085, cd: 2.8, ability: 'Shove', len: 3.4, air: 45 },
     swordfish:    { name: 'Swordfish',             radius: 19, density: 0.005,  speed: 8.0, accel: 0.11, cd: 2.0, ability: 'Pierce', len: 5.6, nick: 'Spike' },
     hammerhead:   { name: 'Scalloped hammerhead',  radius: 24, density: 0.006,  speed: 7.0, accel: 0.10, cd: 2.6, ability: 'Ram',    len: 4.4,
-                    bonusVs: { concrete: 1.5 } }
+                    bonusVs: { concrete: 1.5 } },
+    manatee:      { name: 'Florida manatee',       radius: 30, density: 0.008,  speed: 4.3, accel: 0.07, cd: 3.0, ability: 'Push',   len: 3.7, air: 55 }
   },
+  // air: seconds of breath for air-breathing rescuers (see AIR_* below).
+
+  // ---- Air (air-breathing rescuers) ----
+  AIR_REFILL: 0.45,          // share of a full breath regained per second at the surface
+  AIR_BOOST_DRAIN: 1.8,      // breath runs out this much faster while dashing or pushing
+  AIR_LOW: 0.25,             // ring turns red and beeps below this share
+  AIR_SURFACE_PAD: 14,       // within this many px below the waterline counts as breathing
+  AIR_OUT_RISE: 3.2,         // out of breath: pulled up at this speed until it reaches the surface
+
+  // ---- Seagrass ----
+  SEAGRASS_PENALTY: 4,       // reef health % lost when sinking junk or a charge crushes a seagrass patch
+  SEAGRASS_COOLDOWN: 1.2,
+  SEAGRASS_CRUSH_SPEED: 3,   // junk landing faster than this crushes it
+  SEAGRASS_DASH_SPEED: 9,    // rescuers only crush it at charge speed
+
+  // ---- Big rescues (staged nets) ----
+  STAGE_TIME_BONUS: 4,       // seconds of tide won back per stage torn
+
+  // ---- Puzzle mode ----
+  PUZZLE_SETTLE: 2.5,        // seconds to let junk settle after the last move before calling it
+
+  // ---- Arcade mode ----
+  ARCADE_START_TIME: 75,     // seconds on the clock for wave 1
+  ARCADE_WAVE_TIME: 32,      // seconds added for wave 2; 2 s less each wave after...
+  ARCADE_WAVE_TIME_MIN: 16,  // ...down to this. Rescues add no time in Arcade.
+  ARCADE_HP_GROWTH: 0.08,    // nets and junk get this much tougher per wave
+  ARCADE_LEVEL_WIDTH: 2600,
 
   // ---- Abilities ----
   ABILITY: {
@@ -126,7 +154,8 @@ TT.CFG = {
     snapRadius: 150, snapDamageBrittle: 110, snapDamageOther: 30,
     shoveSpeed: 10.5, shoveTime: 0.7, shoveMassMult: 2,
     pierceSpeed: 18, pierceTime: 0.5,
-    ramSpeed: 15, ramTime: 0.55, ramVsConcrete: 3, ramVsContainer: 1.5
+    ramSpeed: 15, ramTime: 0.55, ramVsConcrete: 3, ramVsContainer: 1.5,
+    pushSpeed: 8.5, pushTime: 1.0, pushMassMult: 4      // manatee: slow, but nothing stops it
   },
 
   // ---- Difficulty ----
@@ -146,7 +175,10 @@ TT.CFG = {
     glow:      { name: 'Glow Lure',     desc: 'Lights up a dark level', darkOnly: true },
     netcutter: { name: 'Net Cutter',    desc: 'Cuts the nearest net or fishing line' }
   },
-  GADGET_START_COUNT: 3
+  GADGET_START_COUNT: 3,
+
+  // Every campaign level is open while the game is in testing. Set false to unlock levels in order.
+  UNLOCK_ALL: true
 };
 
 // Fill the screen: keep the height at 720 and widen the view to match the device's shape

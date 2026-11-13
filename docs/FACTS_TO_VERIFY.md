@@ -61,6 +61,16 @@ Check each against a trusted source (e.g. NOAA, FWC, IUCN Red List, a university
 | Florida Keys | Fact | Lined by the only living coral barrier reef in the continental United States | ☐ | |
 | Galápagos Islands | Where | Volcanic islands about 1,000 km off the coast of Ecuador | ☐ | |
 | Galápagos Islands | Fact | Many animals there, like the Galápagos sea lion, live nowhere else | ☐ | |
+| Florida manatee | Scientific name | *Trichechus manatus latirostris* | ☐ | |
+| Florida manatee | Where | Warm, shallow coastal waters, rivers and springs of Florida | ☐ | |
+| Florida manatee | Size | About 3 m; often 400–550 kg | ☐ | |
+| Florida manatee | Fact | Plant-eaters that graze on seagrass for hours a day, and must come up to breathe air | ☐ | |
+| Florida manatee | Threat | Boat strikes, loss of seagrass, cold snaps and fishing line | ☐ | |
+| Smalltooth sawfish | Scientific name | *Pristis pectinata* | ☐ | |
+| Smalltooth sawfish | Where | Shallow coastal waters of southern Florida | ☐ | |
+| Smalltooth sawfish | Size | Up to about 5–7 m | ☐ | |
+| Smalltooth sawfish | Fact | A sawfish is a ray, not a shark; it sweeps its toothed saw to stun small fish | ☐ | |
+| Smalltooth sawfish | Threat | Tangling in fishing nets; listed as endangered in the United States | ☐ | |
 
 ## Art-accuracy notes
 

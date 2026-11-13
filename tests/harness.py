@@ -26,12 +26,15 @@ class Game:
         self.page.on('console', lambda m: self.errors.append(m.text) if m.type == 'error' else None)
         self.page.goto(f'http://127.0.0.1:{self.port}/index.html?{query}')
         self.page.wait_for_function('window.TT && TT.game && TT.game.scene.isActive("Title")')
-    def start(self, level, difficulty='current', skip_tutorial=True):
+    def start(self, level, difficulty='current', skip_tutorial=True, mode=None):
+        mode = mode or ('arcade' if level == 'arcade' else 'puzzle' if level.startswith('P') else 'campaign')
         pg = self.page
         if skip_tutorial: pg.evaluate('["swim","ability","swap"].forEach(k => TT.Save.markTut(k))')
         pg.evaluate(f'TT.Save.setDifficulty("{difficulty}")')
-        pg.evaluate('''(id) => { const g = TT.game; g.scene.getScenes(true).forEach(s => g.scene.stop(s.scene.key)); window.__TT_GAME = null; g.scene.start('Game', { levelId: id }); }''', level)
+        pg.evaluate('''(id) => { const g = TT.game; g.scene.getScenes(true).forEach(s => g.scene.stop(s.scene.key)); window.__TT_GAME = null; g.scene.start('Game', { levelId: id, mode: '%s' }); }''' % mode, level)
         pg.wait_for_function('window.__TT_GAME && __TT_GAME.level && __TT_GAME.level.id === "%s" && __TT_GAME.player && TT.game.scene.isActive("UI")' % level)
+    def all_ids(self):
+        return self.page.evaluate('TT.LEVELS.map(l => l.id).concat(TT.PUZZLES.map(p => p.id))') + ['arcade']
     def shot(self, path): self.page.screenshot(path=path, animations='disabled')
     def close(self):
         self.browser.close(); self.pw.stop(); self.srv.shutdown(); self.srv.server_close()

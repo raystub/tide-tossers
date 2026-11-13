@@ -9,8 +9,10 @@ TT.Player = function (game, team, x, y) {
   this.game = game;
   this.team = team.map(function (id) {
     var def = C.RESCUERS[id];
-    return { id: id, def: def, cdMax: def.cd * D.cd, cdLeft: 0 };
+    return { id: id, def: def, cdMax: def.cd * D.cd, cdLeft: 0, airMax: def.air || 0, air: def.air || 0 };
   });
+  this.outOfAir = false; this.lastAirBeep = 0;
+  this.airG = game.add.graphics().setDepth(12);
   this.index = 0;
   this.input = { x: 0, y: 0, push: 0 };   // set by Controls (or the test bot) every frame
   this.heading = 0;                        // radians, direction of travel / facing
@@ -63,6 +65,14 @@ TT.Player.prototype.step = function () {
   }
 
   var ix = inp.x, iy = inp.y, push = inp.push;
+  if (this.outOfAir && under) {
+    // out of breath: the creature heads straight up for air whatever the stick says
+    this.endBoost(); e.boostUntil = 0;
+    var rise = C.AIR_OUT_RISE, ra = 1 - Math.pow(1 - 0.12, k);
+    vx += (ix * push * 1.5 - vx) * ra; vy += (-rise - vy) * ra;
+    M.Body.setVelocity(b, { x: vx, y: vy });
+    return;
+  }
   if (push > 0 && under) { var ah = this.assist(b.position, Math.atan2(iy, ix)); ix = Math.cos(ah); iy = Math.sin(ah); }
 
   var boosting = now < e.boostUntil;
@@ -127,6 +137,7 @@ TT.Player.prototype.afterStep = function () {
 TT.Player.prototype.onBump = function (other, rel) {
   var e = this.ent;
   if (this.game.clock < e.boostUntil && !e.piercing && rel > 3 && other.alive !== false) {
+    if (e.pushing && (other.kind === 'container' || other.kind === 'object')) return;   // the manatee ploughs on
     if (other.kind === 'static' || other.kind === 'floor' || other.kind === 'container' || other.kind === 'coral' || (other.kind === 'object' && other.alive)) {
       e.boostUntil = Math.min(e.boostUntil, this.game.clock + 0.05);
     }
@@ -135,7 +146,7 @@ TT.Player.prototype.onBump = function (other, rel) {
 
 TT.Player.prototype.endBoost = function () {
   var M = Phaser.Physics.Matter.Matter, e = this.ent;
-  e.piercing = false; e.ramming = false;
+  e.piercing = false; e.ramming = false; e.pushing = false;
   if (e.shoving) { e.shoving = false; M.Body.setMass(e.body, e.baseMass); }
 };
 
@@ -163,6 +174,7 @@ TT.Player.prototype.update = function (dt) {
     if (m.cdLeft > 0) { m.cdLeft = Math.max(0, m.cdLeft - dt); if (m.cdLeft === 0 && i === this.index) g.sfx.play('ready'); }
   }
   if (e.inflated && now > e.inflateUntil) this.deflate();
+  this.updateAir(dt, under, now < e.boostUntil);
   // heading follows the velocity; when nearly still, settle level
   var boosting = now < e.boostUntil;
   if (!boosting) {
@@ -178,7 +190,7 @@ TT.Player.prototype.update = function (dt) {
     this.wasUnder = under;
     if (now - this.lastSplash > 0.15) {
       this.lastSplash = now;
-      var heavy = e.id === 'loggerhead' || e.id === 'hammerhead';
+      var heavy = e.id === 'loggerhead' || e.id === 'hammerhead' || e.id === 'manatee';
       g.fx.splash(b.position.x, g.water.y, heavy || sp > 9);
       g.sfx.play(under ? 'splash' : 'breach'); TT.Haptics.buzz(under ? 12 : 6);
     }
@@ -188,8 +200,41 @@ TT.Player.prototype.update = function (dt) {
   if (this.shield && Math.random() < 0.3) g.fx.sparkle(b.position.x + (Math.random() - 0.5) * 50, b.position.y + (Math.random() - 0.5) * 50);
 };
 
+// ---------- air (air-breathing rescuers) ----------
+TT.Player.prototype.breathing = function () {
+  var b = this.ent.body, g = this.game;
+  return !g.water.isUnder(b.position.y - this.ent.radius * 0.5 - TT.CFG.AIR_SURFACE_PAD);
+};
+TT.Player.prototype.updateAir = function (dt, under, boosting) {
+  var C = TT.CFG, g = this.game, e = this.ent, b = e.body, gr = this.airG, self = this;
+  this.team.forEach(function (m, i) {
+    if (!m.airMax) return;
+    if (i !== self.index || self.breathing()) m.air = Math.min(m.airMax, m.air + m.airMax * C.AIR_REFILL * dt);
+    else if (g.state === 'play') m.air = Math.max(0, m.air - dt * (boosting ? C.AIR_BOOST_DRAIN : 1));
+  });
+  var m = this.member();
+  gr.clear();
+  if (!m.airMax) { this.outOfAir = false; return; }
+  var frac = m.air / m.airMax;
+  if (frac <= 0 && !this.outOfAir && g.state === 'play') {
+    this.outOfAir = true;
+    g.flash(b.position.x, b.position.y - 40, 'Out of air!', '#ffb39a', 20); g.sfx.play('sting'); TT.Haptics.buzz([30, 30, 30]);
+  }
+  if (this.outOfAir && this.breathing()) { this.outOfAir = false; g.flash(b.position.x, b.position.y - 40, 'Breath!', '#bff3ff'); g.sfx.play('ready'); }
+  var low = frac < C.AIR_LOW;
+  if (low && under && g.state === 'play' && g.clock - this.lastAirBeep > 1) { this.lastAirBeep = g.clock; g.sfx.play('tick'); }
+  if (frac >= 0.999) return;
+  // the breath ring: a bubble arc around the creature that empties as it holds its breath
+  var x = b.position.x, y = b.position.y, R = e.radius + 16;
+  gr.lineStyle(7, 0x02131c, 0.45); gr.strokeCircle(x, y, R);
+  gr.lineStyle(5, low ? 0xff6b4a : 0xbff3ff, low ? 0.7 + 0.3 * Math.sin(g.clock * 12) : 0.9);
+  gr.beginPath(); gr.arc(x, y, R, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * frac, false); gr.strokePath();
+};
+
 // ---------- abilities ----------
-TT.Player.prototype.ready = function () { return this.member().cdLeft <= 0 && !this.stunned(); };
+TT.Player.prototype.ready = function () { var g = this.game; return this.member().cdLeft <= 0 && !this.stunned() && !this.outOfAir && !(g.puzzle && g.movesLeft <= 0); };
+// true while an ability is doing the hitting (Puzzle mode only counts these)
+TT.Player.prototype.charging = function () { var e = this.ent; return this.game.clock < e.boostUntil + 0.15 || e.inflated || e.gliding; };
 
 TT.Player.prototype.boost = function (speed, time) {
   var e = this.ent;
@@ -231,8 +276,13 @@ TT.Player.prototype.useAbility = function () {
     case 'hammerhead':
       this.boost(A.ramSpeed, A.ramTime); e.ramming = true; g.fx.bubbles(x, y, 8); g.sfx.play('dash');
       break;
+    case 'manatee':
+      this.boost(A.pushSpeed, A.pushTime); e.shoving = true; e.pushing = true; M.Body.setMass(b, e.baseMass * A.pushMassMult);
+      g.fx.bubbles(x, y, 16); g.fx.ring(x + hx * 30, y + hy * 30, 50, 0xbff3ff); g.sfx.play('whoosh');
+      break;
   }
   m.cdLeft = m.cdMax;
+  g.onAbilityUsed();
   TT.Haptics.buzz(18);
   g.tutorial.onAbility();
   return true;
@@ -285,7 +335,7 @@ TT.Player.prototype.swap = function (toIndex) {
   e.alive = false;
   g.removeQueue.push(e.body);
   e.sprite.destroy();
-  this.index = next;
+  this.index = next; this.outOfAir = false;
   this.spawn(x, y, vel);
   this.swapReadyAt = g.clock + TT.CFG.SWAP_COOLDOWN;
   g.fx.bubbles(x, y, 16); g.fx.ring(x, y, 60, 0xbff3ff); g.sfx.play('swap'); TT.Haptics.buzz(10);

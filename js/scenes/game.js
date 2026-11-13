@@ -5,12 +5,14 @@ TT.GameScene = new Phaser.Class({
   Extends: Phaser.Scene,
   initialize: function GameScene() { Phaser.Scene.call(this, { key: 'Game' }); },
 
-  init: function (data) { this.levelId = (data && data.levelId) || '1-1'; },
+  // data: { levelId, mode: 'campaign' | 'puzzle' | 'arcade' }
+  init: function (data) { this.levelId = (data && data.levelId) || '1-1'; this.mode = (data && data.mode) || 'campaign'; },
 
   create: function () {
     var C = TT.CFG, self = this;
-    var level = this.level = TT.levelById(this.levelId);
-    this.difficulty = TT.Save.difficulty();
+    this.puzzle = this.mode === 'puzzle'; this.arcade = this.mode === 'arcade';
+    var level = this.level = this.arcade ? TT.Arcade.level() : TT.levelById(this.levelId);
+    this.difficulty = this.puzzle || this.arcade ? 'current' : TT.Save.difficulty();
     var D = this.D = C.DIFFICULTY[this.difficulty];
     this.sfx = TT.Sfx;
     // Phaser reuses this scene object on restart, so reset every per-level field here.
@@ -20,7 +22,9 @@ TT.GameScene = new Phaser.Class({
     this.health = level.startHealth;
     this.removeQueue = []; this.lastSilt = 0; this.lights = []; this.botInput = null;
     this.allFreeAt = 0; this.exitOpen = false; this.lit = false;
-    this.timed = D.time > 0; this.timeMax = this.timeLeft = this.timed ? Math.round(level.time * D.time) : 0; this.lastTick = 99;
+    this.timed = !this.puzzle && D.time > 0; this.timeMax = this.timeLeft = this.timed ? Math.round(level.time * D.time) : 0; this.lastTick = 99;
+    this.movesLeft = this.puzzle ? level.moves : 0; this.movesUsed = 0; this.stillFor = 0;
+    this.wave = 0; this.waveClearAt = 0;
     this.gadgetUsed = false; this.gadgetName = '';
 
     var W = this.worldW = level.width, H = C.HEIGHT;
@@ -42,9 +46,10 @@ TT.GameScene = new Phaser.Class({
     wall(-25, H / 2, 50, 2800, 'static'); wall(W + 25, H / 2, 50, 2800, 'static');
     wall(W / 2, -110, W + 800, 100, 'static');   // sky ceiling: caps the highest leaps
 
-    var hpMult = D.hp;
+    var hpMult = this.puzzle ? (level.hp || 0.8) : D.hp;   // puzzles: one good hit per net
     this.statics = (level.statics || []).map(function (s, i) { return TT.Entities.staticBody(self, s, i); });
     this.corals = (level.coral || []).map(function (c, i) { return TT.Entities.coral(self, c, i); });
+    this.seagrass = (level.seagrass || []).map(function (sg, i) { return TT.Entities.seagrass(self, sg, i); });
     this.objects = (level.objects || []).map(function (o) { return TT.Entities.junk(self, o, hpMult); });
     this.containers = (level.containers || []).map(function (c) { return TT.Entities.container(self, c, hpMult); });
     this.invasives = (level.invasives || []).map(function (l) { return TT.Entities.lionfish(self, l); });
@@ -62,6 +67,7 @@ TT.GameScene = new Phaser.Class({
       object: nObj ? budget * objShare / nObj : 0,
       invasive: nInv ? budget * invShare / nInv : 0
     };
+    if (this.arcade) this.gain = { animal: 3, object: 0.6, invasive: 2 };
     this.ocean.setHealth(this.health, level.startHealth);
 
     // ---------- player, school, exit ----------
@@ -74,6 +80,8 @@ TT.GameScene = new Phaser.Class({
     cam.centerOn(level.start.x, Math.max(level.start.y, 200));
     this.lookX = 0; this.lookY = 0;
     this.tutorial = new TT.Tutorial(this);
+    if (this.puzzle) this.player.team.forEach(function (m) { m.cdMax = 0.6; });
+    if (this.arcade) this.nextWave();
 
     if (level.grantGlow && !TT.Save.glowGranted(level.id)) {
       TT.Save.addGadget('glow'); TT.Save.markGlowGranted(level.id);
@@ -187,6 +195,8 @@ TT.GameScene = new Phaser.Class({
         if (whole <= 10 && whole < this.lastTick && whole > 0) { this.lastTick = whole; this.sfx.play('tick'); }
         if (this.timeLeft <= 0) { this.timeLeft = 0; this.finish(this.trapped <= 0, 'tide'); }
       }
+      if (this.puzzle) this.puzzleCheck(dt);
+      if (this.arcade && this.trapped <= 0 && this.waveClearAt && t > this.waveClearAt) { this.waveClearAt = 0; this.nextWave(); }
       // exit: open once everyone is free
       if (this.exitOpen && this.state === 'play') {
         var ex = this.exit, dx = pb.position.x - ex.x, dy = pb.position.y - ex.y;
@@ -256,18 +266,48 @@ TT.GameScene = new Phaser.Class({
     this.trapped -= n; this.freed += n;
     this.addHealth(this.gain.animal * n);
     this.score += C.SCORE.animal * n * k;
-    if (this.timed) this.timeLeft = Math.min(this.timeMax + 30, this.timeLeft + C.RESCUE_TIME_BONUS * n);
+    if (this.timed && !this.arcade) this.timeLeft = Math.min(this.timeMax + 30, this.timeLeft + C.RESCUE_TIME_BONUS * n);
+    if (this.arcade && this.trapped <= 0) this.waveClearAt = this.clock + 1.6;
     this.player.recharge();
-    var label = (n > 1 ? n + ' freed!' : 'Freed!') + (k > 1 ? '  x' + k : '') + (this.timed ? '  +' + C.RESCUE_TIME_BONUS * n + 's' : '');
+    var label = (n > 1 ? n + ' freed!' : 'Freed!') + (k > 1 ? '  x' + k : '') + (this.timed && !this.arcade ? '  +' + C.RESCUE_TIME_BONUS * n + 's' : '');
     this.flash(c.x, c.sprite.y - c.h / 2 - 14, label, '#bff7d2', 24);
     this.time.delayedCall(120, function () { TT.Sfx.play('free', k); });
     TT.Haptics.buzz([25, 40, 25]);
     this.hitStop = 0.06; this.cameras.main.shake(140, 0.004);
     this.tutorial.onRescue();
+    if (this.puzzle && this.trapped <= 0 && this.state === 'play') { this.time.delayedCall(C.WIN_DELAY_MS, function () { self.finish(true, 'puzzle'); }); return; }
+    if (this.arcade) return;
     if (this.trapped <= 0 && this.state === 'play' && !this.exitOpen) {
       this.exitOpen = true; this.allFreeAt = this.time.now;
       if (this.cleanupLeft()) this.time.delayedCall(900, function () { if (self.state === 'play') self.message('Everyone is free! Clean up the junk for more stars, or swim into the glowing current to finish.', 5000); });
     }
+  },
+  // A big rescue: the net has to be torn several times before the animal is free.
+  tearStage: function (c, src) {
+    var C = TT.CFG, spr = c.sprite;
+    c.stagesLeft--; c.hp = c.maxHp;
+    var left = c.stagesLeft;
+    spr.setAlpha(0.95 - 0.22 * (c.stages - left));
+    this.fx.shatter(spr.x, spr.y, 'net', 10); this.fx.ring(spr.x, spr.y, 110, 0xbff7d2);
+    this.sfx.play('tear'); TT.Haptics.buzz([20, 30, 20]);
+    this.cameras.main.shake(120, 0.004); this.hitStop = 0.04;
+    if (this.timed) this.timeLeft = Math.min(this.timeMax + 30, this.timeLeft + C.STAGE_TIME_BONUS);
+    this.player.recharge();
+    this.addHealth(this.gain.animal * 0.3);
+    this.flash(c.x, spr.y - c.h / 2 - 14, 'Net torn! ' + left + ' more' + (this.timed ? '  +' + C.STAGE_TIME_BONUS + 's' : ''), '#bff7d2', 22);
+    c.animals.forEach(function (a) { a.ox += (Math.random() - 0.5) * 10; });
+  },
+  seagrassHit: function (t, o) {
+    var C = TT.CFG;
+    if (o && o.kind === 'rescuer' && this.player.shield) { this.player.shield = false; this.sfx.play('shield'); this.flash(t.x, C.FLOOR_Y - 60, 'Bubble Shield popped', '#bff3ff'); return; }
+    this.addHealth(-C.SEAGRASS_PENALTY);
+    this.score += C.SCORE.coralHit;
+    var x = o && o.body ? o.body.position.x : t.x;
+    this.fx.silt(x, C.FLOOR_Y);
+    this.sfx.play('coral'); TT.Haptics.buzz(30);
+    this.flash(x, C.FLOOR_Y - 70, 'Seagrass crushed  -' + C.SEAGRASS_PENALTY + '%', '#ffb39a');
+    var self = this;
+    t.clumps.forEach(function (cl) { if (Math.abs(cl.x - x) < 70) self.tweens.add({ targets: cl, scaleY: cl.scaleY * 0.55, duration: 120, yoyo: true, hold: 900 }); });
   },
   hitFlash: function (c) {
     var spr = c.sprite; if (!spr || spr.ttPulse) return;
@@ -355,7 +395,7 @@ TT.GameScene = new Phaser.Class({
 
   // ---------- gadgets (one per level) ----------
   gadgetAvailable: function (k) {
-    if (this.gadgetUsed || this.state !== 'play') return false;
+    if (this.gadgetUsed || this.state !== 'play' || this.puzzle) return false;
     if (TT.CFG.GADGETS[k].darkOnly && !this.level.dark) return false;
     if (k === 'netcutter' && !this.containers.some(function (c) { return c.alive && c.ctype !== 'trap'; })) return false;
     if (k === 'kelp' && !this.timed) return false;
@@ -383,6 +423,38 @@ TT.GameScene = new Phaser.Class({
     this.breakContainer(best, null);
   },
 
+  // ---------- modes ----------
+  onAbilityUsed: function () {
+    if (!this.puzzle) return;
+    this.movesUsed++; this.movesLeft = Math.max(0, this.movesLeft - 1);
+    if (this.movesLeft === 0 && this.trapped > 0) this.message('Out of moves! Waiting to see where everything lands…', 2500);
+  },
+  // Puzzle: out of moves and everything has settled, with animals still trapped = try again.
+  puzzleCheck: function (dt) {
+    if (this.movesLeft > 0 || this.trapped <= 0 || this.state !== 'play') { this.stillFor = 0; return; }
+    var moving = this.player.charging() || TT.speed(this.player.ent.body) > 1.5;
+    for (var i = 0; i < this.objects.length && !moving; i++) { var o = this.objects[i]; if (o.alive && TT.speed(o.body) > 0.4) moving = true; }
+    this.stillFor = moving ? 0 : this.stillFor + dt;
+    if (this.stillFor > TT.CFG.PUZZLE_SETTLE) this.finish(false, 'moves');
+  },
+  // Arcade: spawn the next wave of trapped animals, junk and lionfish into the same arena.
+  nextWave: function () {
+    var C = TT.CFG, self = this, n = ++this.wave, data = TT.Arcade.wave(n, this.level, this.player.pos());
+    var hpMult = this.D.hp * (1 + C.ARCADE_HP_GROWTH * (n - 1));
+    var fadeIn = function (spr) { if (!spr) return; var a = spr.alpha; spr.setAlpha(0); self.tweens.add({ targets: spr, alpha: a, duration: 600 }); };
+    data.objects.forEach(function (o) { var e = TT.Entities.junk(self, o, hpMult); fadeIn(e.sprite); self.objects.push(e); });
+    data.containers.forEach(function (c) {
+      var e = TT.Entities.container(self, c, hpMult); fadeIn(e.sprite); e.animals.forEach(function (a) { fadeIn(a.sprite); });
+      self.containers.push(e); self.trapped += e.animals.length; self.totalAnimals += e.animals.length;
+    });
+    data.invasives.forEach(function (l) { var e = TT.Entities.lionfish(self, l); fadeIn(e.sprite); self.invasives.push(e); });
+    var add = Math.max(C.ARCADE_WAVE_TIME_MIN, C.ARCADE_WAVE_TIME - 2 * (n - 2));
+    if (n > 1) { this.timeLeft += add; this.timeMax = Math.max(this.timeMax, this.timeLeft); this.player.recharge(); this.score += 500 * (n - 1); }
+    this.lastTick = 99;
+    this.message('Wave ' + n + (n > 1 ? '  ·  +' + add + 's' : '') + '\n' + data.blurb, 2600);
+    this.sfx.play('ready');
+  },
+
   // ---------- pause / end ----------
   setPaused: function (on) {
     this.paused = on;
@@ -394,22 +466,28 @@ TT.GameScene = new Phaser.Class({
     this.state = 'done';
     this.player.input.push = 0; this.tutorial.hide();
     var stars = 0, secs = this.timed ? Math.floor(this.timeLeft) : 0;
-    if (win) {
+    if (this.arcade) return this.finishArcade();
+    if (win && this.puzzle) {
+      stars = this.movesUsed <= this.level.par ? 3 : this.movesUsed <= this.level.par + 1 ? 2 : 1;
+      this.score += this.movesLeft * 400;
+      this.school.swimOff();
+    } else if (win) {
       stars = 1 + (this.health >= C.STAR2_HEALTH ? 1 : 0) + (this.health >= C.STAR3_HEALTH ? 1 : 0);
       this.score += secs * C.SCORE.second;
       this.school.swimOff();
     }
     var finalScore = Math.max(0, Math.round(this.score * this.D.mult));
     var res = { win: win, how: how, stars: stars, health: Math.round(this.health), score: finalScore, freed: this.freed, total: this.totalAnimals,
-      time: Math.round(this.elapsed), secondsLeft: secs, junkLeft: this.cleanupLeft(), newCards: [], bonusGadget: null };
+      time: Math.round(this.elapsed), secondsLeft: secs, junkLeft: this.puzzle ? 0 : this.cleanupLeft(), newCards: [], bonusGadget: null,
+      mode: this.mode, moves: this.movesUsed, par: this.level.par };
     if (win) {
-      var rec = TT.Save.recordResult(this.level.id, this.difficulty, stars, res.health, finalScore, res.time);
+      var rec = TT.Save.recordResult(this.level.id, this.puzzle ? 'puzzle' : this.difficulty, stars, res.health, finalScore, res.time);
       if (rec.newThreeStar) { var ks = Object.keys(C.GADGETS), g = ks[Math.floor(Math.random() * ks.length)]; TT.Save.addGadget(g); res.bonusGadget = C.GADGETS[g].name; }
       var ids = [];
       this.level.team.forEach(function (q) { if (ids.indexOf(q) < 0) ids.push(q); });
       (this.level.containers || []).forEach(function (c) { (c.holds || []).forEach(function (h) { if (ids.indexOf(h.k) < 0) ids.push(h.k); }); });
       if ((this.level.invasives || []).length) ids.push('lionfish');
-      ids.push(this.level.world === 1 ? 'place_keys' : 'place_galapagos');
+      if (!this.puzzle) ids.push(TT.worldByN(this.level.world).card);
       res.newCards = TT.Save.unlockCards(ids);
       this.sfx.play('win'); TT.Haptics.buzz([30, 60, 30, 60, 70]);
     } else this.sfx.play('lose');
@@ -417,11 +495,22 @@ TT.GameScene = new Phaser.Class({
     var self = this;
     this.time.delayedCall(win ? 900 : 500, function () { self.events.emit('finished', res); });
   },
-  restartLevel: function () { this.scene.stop('UI'); this.scene.restart({ levelId: this.level.id }); },
-  toMenu: function () { this.scene.stop('UI'); this.scene.start('LevelSelect'); },
+  finishArcade: function () {
+    var C = TT.CFG, cleared = this.wave - (this.trapped > 0 ? 1 : 0);
+    var finalScore = Math.max(0, Math.round(this.score));
+    var best = TT.Save.recordArcade(cleared, finalScore);
+    var res = { win: cleared > 0, how: 'arcade', mode: 'arcade', wave: this.wave, cleared: cleared, stars: 0, health: Math.round(this.health), score: finalScore,
+      freed: this.freed, total: this.totalAnimals, time: Math.round(this.elapsed), newBest: best, best: TT.Save.arcadeBest(), newCards: [], bonusGadget: null };
+    this.sfx.play(cleared > 0 ? 'win' : 'lose');
+    this.result = res;
+    var self = this;
+    this.time.delayedCall(700, function () { self.events.emit('finished', res); });
+  },
+  restartLevel: function () { this.scene.stop('UI'); this.scene.restart({ levelId: this.level.id, mode: this.mode }); },
+  toMenu: function () { this.scene.stop('UI'); this.scene.start(this.puzzle ? 'PuzzleSelect' : this.arcade ? 'Title' : 'LevelSelect'); },
   nextLevel: function () {
-    var i = TT.LEVELS.indexOf(this.level), n = TT.LEVELS[i + 1];
+    var list = this.puzzle ? TT.PUZZLES : TT.LEVELS, i = list.indexOf(this.level), n = list[i + 1];
     this.scene.stop('UI');
-    if (n) this.scene.restart({ levelId: n.id }); else this.scene.start('LevelSelect');
+    if (n) this.scene.restart({ levelId: n.id, mode: this.mode }); else this.scene.start(this.puzzle ? 'PuzzleSelect' : 'LevelSelect');
   }
 });

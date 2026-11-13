@@ -50,7 +50,8 @@ TT.Entities = (function () {
       go.setAlpha(0.95);
     }
     go.setDepth(7.5);
-    ent = tag(go, { kind: 'container', ctype: d.k, hp: cdef.hp * hpMult, maxHp: cdef.hp * hpMult, alive: true, w: d.w, h: d.h, x: d.x, y: d.y, animals: [] });
+    var stages = d.stages || 1, hp = cdef.hp * hpMult * (stages > 1 ? 1.5 : 1);
+    ent = tag(go, { kind: 'container', ctype: d.k, hp: hp, maxHp: hp, alive: true, w: d.w, h: d.h, x: d.x, y: d.y, animals: [], stages: stages, stagesLeft: stages });
     if (d.hang) TT.Scenery.attachRope(scene, ent);
     if (d.k === 'line') {
       ent.lineGfx = scene.add.graphics().setDepth(7.6);
@@ -63,7 +64,7 @@ TT.Entities = (function () {
       var akey = TT.Art.speciesKey(scene, k), sz = TT.Art.SPECIES_SIZE[k];
       var spr = scene.add.sprite(d.x, d.y, akey).setDepth(7.4);
       TT.Art.playSwim(spr, k);
-      var scale = TT.Art.scaleFor(scene, akey, sz[0] * (k === 'fishschool' ? 0.9 : 1.35));
+      var scale = TT.Art.scaleFor(scene, akey, sz[0] * (k === 'fishschool' ? 0.9 : sz[0] >= 120 ? 1 : 1.35));
       spr.setScale(scale);
       var n = list.length, ox = n > 1 ? (i - (n - 1) / 2) * Math.min(26, d.w * 0.4) : 0;
       if (d.k === 'line') ox = 14;
@@ -98,6 +99,22 @@ TT.Entities = (function () {
     scene.tweens.add({ targets: glow, alpha: 0.14, duration: 1400 + idx * 170, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     scene.time.addEvent({ delay: 900 + idx * 130, loop: true, callback: function () { if (scene.fx) scene.fx.sparkle(d.x + (Math.random() - 0.5) * d.w * 0.8, d.y - d.h * 0.2 + (Math.random() - 0.5) * d.h * 0.6); } });
     return tag(go, { kind: 'coral', lastHit: -9999, alive: true });
+  }
+
+  // A living seagrass meadow on the floor: swaying clumps plus a sensor that notices anything crashing into it.
+  function seagrass(scene, d, idx) {
+    var y = C.FLOOR_Y + 4, n = Math.max(3, Math.round(d.w / 26)), clumps = [];
+    for (var i = 0; i < n; i++) {
+      var x = d.x - d.w / 2 + (i + 0.5) * d.w / n + (Math.random() - 0.5) * 10;
+      var c = scene.add.image(x, y, 'seagrass').setOrigin(0.5, 1).setDepth(i % 3 === 0 ? 8.8 : 5.5).setScale(0.8 + Math.random() * 0.5).setFlipX(Math.random() < 0.5);
+      c.rotation = (Math.random() - 0.5) * 0.1;
+      scene.tweens.add({ targets: c, rotation: c.rotation + 0.12, duration: 1300 + Math.random() * 700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: Math.random() * 900 });
+      clumps.push(c);
+    }
+    var b = scene.matter.add.rectangle(d.x, C.FLOOR_Y - 28, d.w, 56, { isStatic: true, isSensor: true });
+    var ent = { kind: 'seagrass', alive: true, lastHit: -9999, clumps: clumps, x: d.x, w: d.w, body: b };
+    b.tt = ent;
+    return ent;
   }
 
   function lionfish(scene, d) {
@@ -153,12 +170,20 @@ TT.Entities = (function () {
       }
       return;
     }
+    if (t.kind === 'seagrass') {
+      var crush = (o.kind === 'object' && C.MATERIALS[o.material].buoy !== 'floats' && rel > C.SEAGRASS_CRUSH_SPEED) ||
+                  (o.kind === 'container' && o.ctype === 'trap' && rel > C.SEAGRASS_CRUSH_SPEED) ||
+                  (o.kind === 'rescuer' && rel > C.SEAGRASS_DASH_SPEED);
+      if (crush && game.time.now - t.lastHit > C.SEAGRASS_COOLDOWN * 1000) { t.lastHit = game.time.now; game.seagrassHit(t, o); }
+      return;
+    }
     if (t.kind === 'object') {
       if (rel < C.MIN_DAMAGE_SPEED) return;
       if (o.kind === 'rescuer' && o.piercing) {
         if (t.material === 'concrete') { o.stopDead = true; o.piercing = false; }
         else { o.restoreVel = { x: o.pierceVel.x, y: o.pierceVel.y }; game.destroyObject(t, o); return; }
       }
+      if (o.kind === 'rescuer' && game.puzzle && !game.player.charging()) return;
       var dmg = C.DAMAGE_SCALE * rel * otherMass(o);
       if (o.kind === 'rescuer') dmg *= rescuerMult(o, t.material);
       damage(game, t, dmg, o);
@@ -167,7 +192,8 @@ TT.Entities = (function () {
     if (t.kind === 'container') {
       var cd = C.CONTAINERS[t.ctype];
       if (o.kind === 'static' || o.kind === 'floor' || o.kind === 'coral') return;
-      if (o.kind === 'rescuer' && o.id === 'swordfish' && t.ctype !== 'trap' && rel > 2) { damage(game, t, 9999, o); return; }
+      if (o.kind === 'rescuer' && game.puzzle && !game.player.charging()) return;
+      if (o.kind === 'rescuer' && o.id === 'swordfish' && t.ctype !== 'trap' && rel > 2) { damage(game, t, t.stagesLeft > 1 ? t.maxHp : 9999, o); return; }
       if (cd.minSpeed && rel < cd.minSpeed) return;
       if (rel < C.MIN_DAMAGE_SPEED) return;
       var d2 = C.DAMAGE_SCALE * rel * otherMass(o);
@@ -176,7 +202,7 @@ TT.Entities = (function () {
     }
     if (t.kind === 'floor' && o.kind !== 'static' && o.body && !o.body.isStatic) {
       var heavy = (o.kind === 'object' && (o.material === 'concrete' || o.material === 'tin')) ||
-                  (o.kind === 'rescuer' && (o.id === 'loggerhead' || o.id === 'hammerhead')) || (o.kind === 'container' && o.ctype === 'trap');
+                  (o.kind === 'rescuer' && (o.id === 'loggerhead' || o.id === 'hammerhead' || o.id === 'manatee')) || (o.kind === 'container' && o.ctype === 'trap');
       if (heavy && rel > C.SEDIMENT_MIN_SPEED) game.sediment(o.body.position.x, C.FLOOR_Y);
     }
   }
@@ -185,6 +211,7 @@ TT.Entities = (function () {
     t.hp -= amount;
     if (t.hp <= 0) {
       if (t.kind === 'object') game.destroyObject(t, source);
+      else if (t.kind === 'container' && t.stagesLeft > 1) game.tearStage(t, source);
       else if (t.kind === 'container') game.breakContainer(t, source);
     } else if (t.sprite && t.kind === 'container') {
       game.hitFlash(t);
@@ -196,6 +223,6 @@ TT.Entities = (function () {
     }
   }
 
-  return { rescuer: rescuer, junk: junk, container: container, coral: coral, lionfish: lionfish, staticBody: staticBody,
+  return { rescuer: rescuer, junk: junk, container: container, coral: coral, seagrass: seagrass, lionfish: lionfish, staticBody: staticBody,
     impact: impact, damage: damage, drawLine: drawLine };
 })();

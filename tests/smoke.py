@@ -6,7 +6,7 @@ from harness import Game
 
 g = Game(); pg = g.page; ok = True
 try:
-    for lid in pg.evaluate('TT.LEVELS.map(l => l.id)'):
+    for lid in g.all_ids():
         g.start(lid); pg.wait_for_timeout(1200)
         x0 = pg.evaluate('__TT_GAME.player.pos().x')
         pg.evaluate('__TT_GAME.botInput = { x: 1, y: 0.2, push: 1 }'); pg.wait_for_timeout(1200)

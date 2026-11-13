@@ -3,7 +3,7 @@
 window.__bot = function (maxGameSeconds, opts) {
   opts = opts || {};
   return new Promise(function (resolve) {
-    var G = window.__TT_GAME, C = TT.CFG, P = G.player, log = [], retreatUntil = 0, leapState = null, lastSwap = -9;
+    var G = window.__TT_GAME, C = TT.CFG, P = G.player, log = [], retreatUntil = 0, leapState = null, lastSwap = -9, breathing = false, stuckFor = 0, watch = { c: null };
     var dist = function (a, b) { return Math.hypot(a.x - b.x, a.y - b.y); };
     var has = function (id) { return P.team.findIndex(function (m) { return m.id === id; }); };
     function use(id) { var i = has(id); if (i >= 0 && P.index !== i && G.clock - lastSwap > 1) { if (P.swap(i)) { lastSwap = G.clock; log.push(G.clock.toFixed(1) + ' swap ' + id); } } return i >= 0 && P.index === i; }
@@ -15,8 +15,9 @@ window.__bot = function (maxGameSeconds, opts) {
     function fullWall(b) { return b.min.y < G.water.y - 20 && b.max.y > C.FLOOR_Y - 30; }
     function waypoint(pos, T) {
       var best = null;
-      for (var i = 0; i < G.statics.length; i++) {
-        var b = G.statics[i].body.bounds;
+      var obst = G.statics.concat(G.corals);
+      for (var i = 0; i < obst.length; i++) {
+        var b = obst[i].body.bounds;
         if (!segHits(pos, T, b, 34)) continue;
         if (b.max.x - b.min.x > 1500) continue;            // cave roof
         var d = Math.abs((b.min.x + b.max.x) / 2 - pos.x);
@@ -35,9 +36,12 @@ window.__bot = function (maxGameSeconds, opts) {
       return { x: farX, y: y };
     }
     function pick() {
-      var pos = P.pos(), cs = G.containers.filter(function (c) { return c.alive; }).sort(function (a, b) { return a.sprite.x - b.sprite.x; });
+      var pos = P.pos(), cs = G.containers.filter(function (c) { return c.alive && !(c.botSkip > G.clock); }).sort(function (a, b) { return G.arcade ? dist(a.sprite, pos) - dist(b.sprite, pos) : a.sprite.x - b.sprite.x; });
       if (cs.length) {
         var c = cs[0], cp = { x: c.sprite.x, y: c.sprite.y };
+        // watchdog: no damage to this target for a while -> try a different one for a few seconds
+        if (watch.c !== c || c.hp < watch.hp) { watch = { c: c, hp: c.hp, t: G.clock }; }
+        else if (G.clock - watch.t > 9 && cs.length > 1) { c.botSkip = G.clock + 6; log.push(G.clock.toFixed(1) + ' skip ' + c.ctype + '@' + Math.round(cp.x)); watch = { c: null }; }
         var lion = G.invasives.find(function (l) { return l.alive && dist(l.sprite, cp) < 260; });
         if (lion && has('puffer') >= 0) return { x: lion.sprite.x, y: lion.sprite.y, kind: 'lionfish', who: 'puffer', range: 120 };
         var conc = G.objects.find(function (o) { return o.alive && o.material === 'concrete' && dist(o.body.position, cp) < 110; });
@@ -50,7 +54,9 @@ window.__bot = function (maxGameSeconds, opts) {
         return { x: cp.x, y: ty, kind: c.ctype, who: who, range: 250, r: Math.max(c.w, c.h) / 2 };
       }
       if (!opts.noClean) {
-        var os = G.objects.filter(function (o) { return o.alive; }).sort(function (a, b) { return dist(a.body.position, pos) - dist(b.body.position, pos); });
+        // only junk on this side of any full-height wall (the bot crosses walls left to right only)
+        var walled = function (o) { return G.statics.some(function (st) { var b = st.body.bounds; return fullWall(b) && (b.min.x - pos.x) * (b.min.x - o.body.position.x) < 0; }); };
+        var os = G.objects.filter(function (o) { return o.alive && !walled(o); }).sort(function (a, b) { return dist(a.body.position, pos) - dist(b.body.position, pos); });
         if (os.length) { var o = os[0], w2 = o.material === 'concrete' && has('hammerhead') >= 0 ? 'hammerhead' : (o.material === 'glass' || o.material === 'plastic') && has('pistolshrimp') >= 0 ? 'pistolshrimp' : has('tang') >= 0 ? 'tang' : P.team[0].id;
           return { x: o.body.position.x, y: Math.max(G.water.y + 26, o.body.position.y), kind: 'junk', who: w2, range: w2 === 'pistolshrimp' ? 110 : 220, r: Math.max(o.w, o.h) / 2 }; }
       }
@@ -61,10 +67,18 @@ window.__bot = function (maxGameSeconds, opts) {
       if (G.state === 'done' || G.clock > maxGameSeconds) {
         clearInterval(timer); G.botInput = null;
         var wait = setInterval(function () { if (G.result || G.clock > maxGameSeconds) { clearInterval(wait);
-          resolve({ result: G.result, clock: +G.clock.toFixed(1), health: Math.round(G.health), freed: G.freed, total: G.totalAnimals, timeLeft: Math.round(G.timeLeft), stings: G.stings, log: log.slice(-12) }); } }, 100);
+          resolve({ result: G.result, wave: G.wave, clock: +G.clock.toFixed(1), health: Math.round(G.health), freed: G.freed, total: G.totalAnimals, timeLeft: Math.round(G.timeLeft), stings: G.stings, log: log.slice(-12) }); } }, 100);
         return;
       }
       var pos = P.pos(), T = pick(), under = G.water.isUnder(pos.y), inp = { x: 0, y: 0, push: 1 };
+      // air-breathers come up for a breath when the ring runs low
+      var mem = P.member();
+      if (mem.airMax) {
+        if (mem.air / mem.airMax < 0.3) breathing = true;
+        if (breathing && mem.air / mem.airMax > 0.95) breathing = false;
+        if (breathing) { var ba = Math.atan2(G.water.y - 10 - pos.y, (T.x > pos.x ? 60 : -60)); G.botInput = { x: Math.cos(ba), y: Math.sin(ba), push: 1 }; return; }
+      } else breathing = false;
+      if (G.puzzle && T.kind !== 'exit') T.range = Math.min(T.range, (T.r || 30) + (T.kind === 'lionfish' || T.kind === 'brittle' ? 60 : 75));
       if (leapState) {
         // crossing a wall with the flying fish: aim up-forward, leap, hold forward while gliding
         var wb = leapState.wall;
@@ -83,6 +97,8 @@ window.__bot = function (maxGameSeconds, opts) {
       if (G.clock < retreatUntil) ang += Math.PI;
       inp.x = Math.cos(ang); inp.y = Math.sin(ang);
       G.botInput = inp;
+      // wedged against something (usually a net in the way): use the ability to break through
+      if (TT.speed(P.ent.body) < 0.3 && under) { stuckFor += 0.016 * (TT.DEBUG_SPEED || 1); if (stuckFor > 1.2 && P.ready() && !G.puzzle) { P.useAbility(); stuckFor = 0; log.push(G.clock.toFixed(1) + ' unstick'); } } else stuckFor = 0;
       if (T.kind !== 'exit' && wp === T) {
         if (d < T.range && P.ready() && G.clock >= retreatUntil) { if (P.useAbility()) log.push(G.clock.toFixed(1) + ' ' + P.id() + ' ability -> ' + T.kind); }
         else if (d < (T.r || 30) + 45 && !P.ready() && G.clock >= retreatUntil && TT.speed(P.ent.body) < 2.5) retreatUntil = G.clock + 0.45;

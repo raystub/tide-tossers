@@ -10,7 +10,8 @@ TT.Save = (function () {
   function blank() {
     var g = {};
     Object.keys(TT.CFG.GADGETS).forEach(function (k) { g[k] = TT.CFG.GADGET_START_COUNT; });
-    return { levels: {}, difficulty: 'current', gadgets: g, guide: {}, glowGranted: {}, seenHints: {}, tut: {}, haptics: true, muted: false };
+    return { levels: {}, difficulty: 'current', gadgets: g, guide: {}, glowGranted: {}, seenHints: {}, tut: {}, haptics: true, muted: false,
+      world: 1, arcade: { wave: 0, score: 0 }, ids: 2 };
   }
 
   function read(key) {
@@ -25,6 +26,8 @@ TT.Save = (function () {
       var b = blank();
       data = Object.assign(b, parsed);
       data.gadgets = Object.assign(b.gadgets, parsed.gadgets || {});
+      data.arcade = Object.assign(b.arcade, parsed.arcade || {});
+      if (!parsed.ids) migrateIds();
     } else {
       var old = read(OLD_KEY);
       if (old) {
@@ -37,6 +40,18 @@ TT.Save = (function () {
       }
     }
     return data;
+  }
+
+  // v0.6 renumbered the Galápagos levels into World 3; carry their stars across.
+  function migrateIds() {
+    var map = { '2-1': '3-1', '2-5': '3-4', '2-9': '3-5' };
+    ['levels', 'glowGranted', 'seenHints'].forEach(function (k) {
+      var o = data[k] || {}, out = {};
+      Object.keys(o).forEach(function (id) { out[map[id] || id] = o[id]; });
+      data[k] = out;
+    });
+    data.ids = 2;
+    persist();
   }
 
   function persist() {
@@ -86,6 +101,23 @@ TT.Save = (function () {
     markTut: function (k) { var d = load(); d.tut = d.tut || {}; d.tut[k] = true; persist(); },
     haptics: function () { return load().haptics !== false; },
     setHaptics: function (on) { load().haptics = !!on; persist(); },
+    // a level is open when everything before it in its world is cleared (or UNLOCK_ALL is on)
+    levelOpen: function (level) {
+      if (TT.CFG.UNLOCK_ALL) return true;
+      var list = level.puzzle ? TT.PUZZLES : TT.levelsInWorld(level.world), i = list.indexOf(level);
+      if (i <= 0) return level.puzzle || level.world === 1 || this.worldDone(level.world - 1);
+      return this.cleared(list[i - 1].id);
+    },
+    worldDone: function (n) { var self = this, l = TT.levelsInWorld(n); return l.length > 0 && l.every(function (x) { return self.cleared(x.id); }); },
+    worldStars: function (n, diff) { var self = this; return TT.levelsInWorld(n).reduce(function (a, l) { var r = self.levelResult(l.id, diff); return a + (r ? r.stars : 0); }, 0); },
+    world: function () { return load().world || 1; },
+    setWorld: function (n) { load().world = n; persist(); },
+    arcadeBest: function () { return load().arcade; },
+    recordArcade: function (wave, score) {
+      var a = load().arcade, better = wave > a.wave || (wave === a.wave && score > a.score);
+      if (better) { a.wave = wave; a.score = score; persist(); }
+      return better;
+    },
     muted: function () { return !!load().muted; },
     setMuted: function (m) { load().muted = !!m; persist(); }
   };

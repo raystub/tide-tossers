@@ -414,6 +414,90 @@ TT.Art = (function () {
 
   // ---------- containers, coral, scenery ----------
   // Ghost net: a sagging diamond mesh of old rope with a weighted foot line, floats and algae.
+
+  // Florida manatee: huge, grey-brown and wrinkled, round paddle tail, small flipper, square bristly snout, tiny eye.
+  species.manatee = function (ctx, w, h) {
+    var cy = h * 0.54;
+    // paddle tail
+    ctx.beginPath(); ctx.ellipse(w * 0.1, cy + h * 0.02, w * 0.1, h * 0.3, 0.12, 0, Math.PI * 2);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.3, 0, cy + h * 0.3, [[0, '#6e6a62'], [1, '#8f897d']]); ctx.fill();
+    // far flipper
+    ctx.beginPath(); ctx.ellipse(w * 0.66, cy + h * 0.26, w * 0.06, h * 0.12, 0.6, 0, Math.PI * 2); ctx.fillStyle = '#6a655c'; ctx.fill();
+    // body: a long rounded torpedo
+    ctx.beginPath(); ctx.moveTo(w * 0.15, cy);
+    ctx.bezierCurveTo(w * 0.22, cy - h * 0.42, w * 0.7, cy - h * 0.46, w * 0.86, cy - h * 0.16);
+    ctx.quadraticCurveTo(w * 0.97, cy - h * 0.06, w * 0.97, cy + h * 0.08);
+    ctx.quadraticCurveTo(w * 0.96, cy + h * 0.2, w * 0.86, cy + h * 0.2);
+    ctx.bezierCurveTo(w * 0.7, cy + h * 0.4, w * 0.24, cy + h * 0.36, w * 0.15, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.44, 0, cy + h * 0.38, [[0, '#5e5c58'], [0.45, '#8b877e'], [0.8, '#b3ab9a'], [1, '#c8bfac']]);
+    ctx.fill();
+    ctx.save(); ctx.clip();
+    // wrinkles, scars and a little algae, as on real manatees
+    ctx.strokeStyle = 'rgba(60,55,48,0.32)'; ctx.lineWidth = 1.3;
+    for (var i = 0; i < 9; i++) { var x = w * (0.24 + i * 0.07); ctx.beginPath(); ctx.moveTo(x, cy - h * 0.32); ctx.quadraticCurveTo(x - w * 0.02, cy, x + w * 0.005, cy + h * 0.3); ctx.stroke(); }
+    var r = rng(21); ctx.fillStyle = 'rgba(110,140,80,0.22)';
+    for (var a = 0; a < 18; a++) { ctx.beginPath(); ctx.ellipse(w * (0.25 + r() * 0.5), cy - h * (0.1 + r() * 0.25), w * 0.025, h * 0.03, 0, 0, Math.PI * 2); ctx.fill(); }
+    ctx.restore();
+    // snout pad and bristles
+    ctx.beginPath(); ctx.ellipse(w * 0.935, cy + h * 0.06, w * 0.05, h * 0.13, 0, 0, Math.PI * 2); ctx.fillStyle = '#9d9483'; ctx.fill();
+    ctx.fillStyle = 'rgba(40,36,30,0.6)';
+    for (var b = 0; b < 10; b++) { ctx.beginPath(); ctx.arc(w * (0.915 + (b % 3) * 0.018), cy + h * (-0.02 + Math.floor(b / 3) * 0.05), 0.9, 0, Math.PI * 2); ctx.fill(); }
+    ctx.strokeStyle = 'rgba(40,36,30,0.5)'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(w * 0.92, cy + h * 0.17); ctx.quadraticCurveTo(w * 0.95, cy + h * 0.2, w * 0.975, cy + h * 0.15); ctx.stroke();
+    // near flipper
+    ctx.beginPath(); ctx.moveTo(w * 0.72, cy + h * 0.08); ctx.bezierCurveTo(w * 0.7, cy + h * 0.32, w * 0.62, cy + h * 0.44, w * 0.56, cy + h * 0.42);
+    ctx.bezierCurveTo(w * 0.6, cy + h * 0.3, w * 0.64, cy + h * 0.18, w * 0.66, cy + h * 0.08);
+    ctx.fillStyle = '#7a756b'; ctx.fill();
+    eye(ctx, w * 0.835, cy - h * 0.08, h * 0.028);
+  };
+
+  // Smalltooth sawfish: a flattened shark-like ray, olive-grey above, white below, with a long toothed saw (rostrum).
+  species.sawfish = function (ctx, w, h) {
+    var cy = h * 0.56;
+    // tail with a big upper lobe
+    ctx.beginPath(); ctx.moveTo(w * 0.12, cy - h * 0.02); ctx.quadraticCurveTo(w * 0.06, cy - h * 0.28, w * 0.0, cy - h * 0.42); ctx.quadraticCurveTo(w * 0.04, cy - h * 0.1, w * 0.04, cy + h * 0.05);
+    ctx.quadraticCurveTo(w * 0.07, cy + h * 0.12, w * 0.12, cy + h * 0.06); finFill(ctx, '#6d6e58', 0.95);
+    // two dorsal fins
+    [[0.5, 0.42], [0.3, 0.3]].forEach(function (d) {
+      ctx.beginPath(); ctx.moveTo(w * (d[0] + 0.05), cy - h * 0.1); ctx.quadraticCurveTo(w * (d[0] + 0.01), cy - h * (0.1 + d[1]), w * (d[0] - 0.03), cy - h * (0.1 + d[1])); ctx.quadraticCurveTo(w * (d[0] - 0.01), cy - h * 0.2, w * (d[0] - 0.03), cy - h * 0.08);
+      finFill(ctx, '#6a6b55', 0.96);
+    });
+    // body
+    ctx.beginPath(); ctx.moveTo(w * 0.1, cy + h * 0.02);
+    ctx.bezierCurveTo(w * 0.3, cy - h * 0.18, w * 0.56, cy - h * 0.2, w * 0.68, cy - h * 0.06);
+    ctx.lineTo(w * 0.68, cy + h * 0.08);
+    ctx.bezierCurveTo(w * 0.56, cy + h * 0.2, w * 0.3, cy + h * 0.16, w * 0.1, cy + h * 0.04);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.2, 0, cy + h * 0.18, [[0, '#5d5f48'], [0.45, '#8d8c6c'], [0.62, '#e6e2d4'], [1, '#f6f3ea']]);
+    ctx.fill();
+    // pectoral fin (wide, ray-like)
+    ctx.beginPath(); ctx.moveTo(w * 0.6, cy + h * 0.06); ctx.quadraticCurveTo(w * 0.52, cy + h * 0.4, w * 0.44, cy + h * 0.42); ctx.quadraticCurveTo(w * 0.5, cy + h * 0.2, w * 0.5, cy + h * 0.08);
+    finFill(ctx, '#77775d', 0.95);
+    // the saw: a long flat blade with teeth on both edges
+    ctx.beginPath(); ctx.moveTo(w * 0.66, cy - h * 0.05); ctx.lineTo(w * 0.99, cy - h * 0.025); ctx.quadraticCurveTo(w * 1.0, cy, w * 0.99, cy + h * 0.025); ctx.lineTo(w * 0.66, cy + h * 0.07); ctx.closePath();
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.05, 0, cy + h * 0.07, [[0, '#7f7c62'], [1, '#c9c4ad']]); ctx.fill();
+    ctx.fillStyle = '#f2ecda';
+    for (var t = 0; t < 22; t++) {
+      var tx = w * (0.7 + t * 0.013), e = (tx - w * 0.66) / (w * 0.33);
+      var top = cy - h * (0.05 - 0.025 * e), bot = cy + h * (0.07 - 0.045 * e);
+      ctx.beginPath(); ctx.moveTo(tx - 1.5, top); ctx.lineTo(tx, top - h * 0.07); ctx.lineTo(tx + 1.5, top); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(tx - 1.5, bot); ctx.lineTo(tx, bot + h * 0.07); ctx.lineTo(tx + 1.5, bot); ctx.fill();
+    }
+    eye(ctx, w * 0.64, cy - h * 0.07, h * 0.035);
+  };
+
+  // A clump of turtle grass, the main seagrass of Florida Bay: flat ribbon blades.
+  function drawSeagrass(ctx, w, h) {
+    var r = rng(77);
+    for (var i = 0; i < 9; i++) {
+      var x = w * (0.15 + r() * 0.7), lean = (r() - 0.5) * w * 0.5, top = h * (0.05 + r() * 0.35), bw = 3 + r() * 2.5;
+      var g = ctx.createLinearGradient(0, h, 0, top);
+      g.addColorStop(0, '#2f6a2a'); g.addColorStop(0.6, '#4f9a3a'); g.addColorStop(1, r() < 0.4 ? '#a9b860' : '#6cbc4a');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.moveTo(x - bw, h);
+      ctx.quadraticCurveTo(x - bw + lean * 0.3, h * 0.5, x + lean, top);
+      ctx.quadraticCurveTo(x + bw + lean * 0.4, h * 0.5, x + bw, h); ctx.fill();
+    }
+  }
+
   function drawNet(ctx, w, h) {
     var r = rng(21 + Math.round(w + h)), step = 17, m = 5;
     ctx.fillStyle = 'rgba(40,70,60,0.22)'; ctx.fillRect(m, m, w - m * 2, h - m * 2);
@@ -698,7 +782,7 @@ TT.Art = (function () {
 
   // Swim animation: how far the tail end bends, as a share of body height (0 = no animation).
   var WIGGLE = { tang: 0.08, flyingfish: 0.09, puffer: 0.06, puffer_inflated: 0, pistolshrimp: 0.05, loggerhead: 0.035, swordfish: 0.1,
-    hammerhead: 0.11, hatchling: 0.07, seahorse: 0.03, smallfish: 0.16, fishschool: 0, lionfish: 0.06 };
+    hammerhead: 0.11, manatee: 0.04, sawfish: 0.07, hatchling: 0.07, seahorse: 0.03, smallfish: 0.16, fishschool: 0, lionfish: 0.06 };
   var SWIM_FRAMES = 8;
   // Bake a looping swim cycle from one picture: slice it into thin columns and bend them in a travelling wave
   // that is still at the head (right) and widest at the tail (left). Works in WebGL and Canvas alike.
@@ -725,7 +809,8 @@ TT.Art = (function () {
   var SPECIES_SIZE = {
     tang: [64, 52], flyingfish: [72, 46], puffer: [62, 44], puffer_inflated: [120, 120], pistolshrimp: [58, 40],
     loggerhead: [84, 62], swordfish: [110, 40], hammerhead: [100, 46], hatchling: [34, 22], seahorse: [24, 44],
-    smallfish: [26, 10], fishschool: [70, 50], lionfish: [72, 56]
+    smallfish: [26, 10], fishschool: [70, 50], lionfish: [72, 56],
+    manatee: [100, 52], sawfish: [170, 40]
   };
 
   return {
@@ -762,6 +847,7 @@ TT.Art = (function () {
         ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.beginPath(); ctx.arc(w / 2, w / 2, 22, 0, 7); ctx.fill();
         ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(w / 2, w / 2, 38, 0, 7); ctx.stroke();
       });
+      canvas(scene, 'seagrass', 60, 96, function (ctx, w, h) { drawSeagrass(ctx, w, h); stylize(ctx, w, h, { sat: 1.3, outline: 1.5 }); });
       canvas(scene, 'caustics', 256, 256, drawCaustics);
       canvas(scene, 'light_brush', 256, 256, radialBrush);
       canvas(scene, 'dot', 32, 32, dot);

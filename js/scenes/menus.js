@@ -61,11 +61,15 @@ TT.TitleScene = new Phaser.Class({
     title.setFontSize(TT.MOBILE ? '104px' : '100px');
     this.tweens.add({ targets: title, y: 204, duration: 2200, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     TT.UI.title(this, W / 2, 286, 'Free the trapped. Restore the reef.', 24, '#d8fbff').setDepth(D);
-    this.add.text(W / 2, 326, 'PROTOTYPE ' + TT.VERSION, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(12), color: '#bdf3ff', stroke: '#06283a', strokeThickness: 3, letterSpacing: 3 }).setOrigin(0.5).setDepth(D);
-    TT.UI.button(this, W / 2, 420, 280, 72, 'Play', function () { TT.Sfx.unlock(); self.scene.start('LevelSelect'); }, { size: 26, fill: 0xff8a3c, stroke: 0xffe2c2, radius: 36 }).setDepth(D);
-    TT.UI.button(this, W / 2, 506, 240, 52, 'Field guide', function () { self.scene.start('FieldGuide'); }, { size: 17 }).setDepth(D);
+    this.add.text(W / 2, 326, 'PREVIEW ' + TT.VERSION, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(12), color: '#bdf3ff', stroke: '#06283a', strokeThickness: 3, letterSpacing: 3 }).setOrigin(0.5).setDepth(D);
+    TT.UI.button(this, W / 2, 404, 300, 72, 'Campaign', function () { TT.Sfx.unlock(); self.scene.start('LevelSelect'); }, { size: 26, fill: 0xff8a3c, stroke: 0xffe2c2, radius: 36 }).setDepth(D);
+    var best = TT.Save.arcadeBest();
+    TT.UI.button(this, W / 2 - 160, 494, 290, 62, 'Puzzle\n' + TT.PUZZLES.length + ' planning challenges', function () { TT.Sfx.unlock(); self.scene.start('PuzzleSelect'); }, { size: 15, fill: 0x16806a, stroke: 0xbff7d2, radius: 24 }).setDepth(D);
+    TT.UI.button(this, W / 2 + 160, 494, 290, 62, 'Arcade\n' + (best.wave ? 'Best: ' + best.wave + ' waves' : 'Endless waves'), function () { TT.Sfx.unlock(); self.scene.start('Game', { mode: 'arcade' }); }, { size: 15, fill: 0x7a5a14, stroke: 0xffe7a8, radius: 24 }).setDepth(D);
+    TT.UI.button(this, W / 2 - 130, 574, 220, 48, 'Field guide', function () { self.scene.start('FieldGuide'); }, { size: 15 }).setDepth(D);
+    TT.UI.button(this, W / 2 + 130, 574, 220, 48, 'Sound: ' + (TT.Sfx.isMuted() ? 'Off' : 'On'), function () { TT.Sfx.unlock(); TT.Sfx.setMuted(!TT.Sfx.isMuted()); self.scene.restart(); }, { size: 15 }).setDepth(D);
     if (TT.MOBILE && !TT.INSTALLED && this.scale.fullscreen.available) {
-      TT.UI.button(this, W / 2, 576, 240, 52, 'Full screen', function () {
+      TT.UI.button(this, W - 150, 46, 220, 48, 'Full screen', function () {
         try { self.scale.startFullscreen(); if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(function () {}); } catch (e) { /* not allowed here */ }
       }, { size: 15 }).setDepth(D);
     }
@@ -90,43 +94,83 @@ TT.LevelSelectScene = new Phaser.Class({
       TT.UI.button(self, W / 2 + (i - 1.5) * 140, 130, 128, 42, C.DIFFICULTY[k].name, function () { TT.Save.setDifficulty(k); self.scene.restart(); },
         { size: 15, fill: on ? 0x16806a : 0x0a3d55, stroke: on ? 0xbff7d2 : 0x7fb7c6, radius: 21 }).setDepth(D);
     });
-    var ox = (W - 1280) / 2;
-    var rows = [{ title: 'Florida Keys', world: 1 }, { title: 'Galápagos Islands', world: 2 }];
-    rows.forEach(function (row, ri) {
-      var y = 214 + ri * 200;
-      self.add.text(ox + 70, y - 38, row.title, { fontFamily: TT.UI.display, fontStyle: '800', fontSize: TT.UI.fs(22), color: '#ffffff', stroke: '#06283a', strokeThickness: 5 }).setDepth(D);
-      var lv = TT.LEVELS.filter(function (l) { return l.world === row.world; });
-      lv.forEach(function (l, i) {
-        var x = ox + 164 + i * 238, res = TT.Save.levelResult(l.id, diff);
-        var tile = TT.UI.button(self, x, y + 60, 222, 124, '', function () { TT.Sfx.unlock(); self.scene.start('Game', { levelId: l.id }); }, { fill: res ? 0x0f5a78 : 0x0a3d55, radius: 18 }).setDepth(D);
-        var t1 = self.add.text(-98, -52, l.id, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: '13px', color: '#bdf3ff' });
-        var t2 = self.add.text(0, -16, l.name, { fontFamily: TT.UI.display, fontStyle: '800', fontSize: '18px', color: '#ffffff', align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5);
-        tile.add([t1, t2]);
-        for (var st = 0; st < 3; st++) {
-          var on2 = res && st < res.stars;
-          tile.add(self.add.star((st - 1) * 30, 20, 5, 6, 13, on2 ? 0xffd75e : 0x123f52).setStrokeStyle(2, on2 ? 0xfff2c8 : 0x3f6f80));
-        }
-        // the team as small portraits
-        l.team.forEach(function (id, ti) {
-          var key = TT.Art.speciesKey(self, id);
-          tile.add(self.add.image((ti - (l.team.length - 1) / 2) * 36, 47, key).setScale(TT.Art.scaleFor(self, key, 30)));
-        });
-        var tag = l.dark ? 'DARK' : l.tide ? 'TIDES' : (l.currents && l.currents.length) ? 'CURRENTS' : '';
-        if (tag) tile.add(self.add.text(98, -52, tag, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: '12px', color: '#ffe7a8' }).setOrigin(1, 0));
-      });
+    // world tabs
+    var cur = TT.Save.world(), tabW = 236, ox = (W - 1280) / 2;
+    TT.WORLDS.forEach(function (wd, i) {
+      var on = wd.n === cur, built = TT.levelsInWorld(wd.n).length;
+      var b = TT.UI.button(self, W / 2 + (i - 2) * (tabW + 8), 192, tabW, 50, wd.n + '  ' + wd.name, function () { TT.Save.setWorld(wd.n); self.scene.restart(); },
+        { size: 14, fill: on ? 0x16806a : built ? 0x0a3d55 : 0x16262e, stroke: on ? 0xbff7d2 : built ? 0x7fb7c6 : 0x3f5a66, color: built ? '#ffffff' : '#8fa1a6', radius: 20 }).setDepth(D);
     });
-    // options
-    var oy = 606, hasVib = TT.Haptics.available();
-    TT.UI.button(this, W / 2 - (hasVib ? 120 : 0), oy, 220, 46, 'Sound: ' + (TT.Sfx.isMuted() ? 'Off' : 'On'), function () { TT.Sfx.unlock(); TT.Sfx.setMuted(!TT.Sfx.isMuted()); self.scene.restart(); }, { size: 14 }).setDepth(D);
-    if (hasVib) {
-      TT.UI.button(this, W / 2 + 120, oy, 220, 46, 'Vibration: ' + (TT.Save.haptics() ? 'On' : 'Off'), function () {
-        TT.Save.setHaptics(!TT.Save.haptics()); if (TT.Save.haptics()) TT.Haptics.buzz(30); self.scene.restart();
-      }, { size: 14 }).setDepth(D);
-    }
+    var world = TT.worldByN(cur), levels = TT.levelsInWorld(cur);
+    var stars = TT.Save.worldStars(cur, diff);
+    this.add.text(W / 2, 236, world.name + '  ·  ' + world.depth + '  ·  ★ ' + stars + ' / ' + world.plan.length * 3, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(14), color: '#ffe7a8', stroke: '#06283a', strokeThickness: 3 }).setOrigin(0.5).setDepth(D);
+    // six tiles: built levels, then "coming soon" for the rest of the world's plan
+    world.plan.forEach(function (name, i) {
+      var id = cur + '-' + (i + 1), l = TT.levelById(id), col = i % 3, row = Math.floor(i / 3);
+      var x = ox + 640 + (col - 1) * 372, y = 330 + row * 158;
+      if (!l) {
+        var t0 = TT.UI.button(self, x, y, 356, 142, '', function () {}, { fill: 0x16262e, stroke: 0x3f5a66, radius: 18 }).setDepth(D);
+        t0.add(self.add.text(-160, -58, id, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(14), color: '#6f8790' }));
+        t0.add(self.add.text(0, -8, name, { fontFamily: TT.UI.display, fontStyle: '800', fontSize: TT.UI.fs(20), color: '#8fa1a6', align: 'center', wordWrap: { width: 320 } }).setOrigin(0.5));
+        t0.add(self.add.text(0, 36, 'Coming soon', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(14), color: '#6f8790' }).setOrigin(0.5));
+        return;
+      }
+      var open = TT.Save.levelOpen(l), res = TT.Save.levelResult(l.id, diff);
+      var tile = TT.UI.button(self, x, y, 356, 142, '', function () { if (!open) return; TT.Sfx.unlock(); self.scene.start('Game', { levelId: l.id }); },
+        { fill: !open ? 0x16262e : res ? 0x0f5a78 : 0x0a3d55, radius: 18 }).setDepth(D);
+      tile.add(self.add.text(-160, -58, l.id, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(14), color: '#bdf3ff' }));
+      tile.add(self.add.text(0, -26, l.name, { fontFamily: TT.UI.display, fontStyle: '800', fontSize: TT.UI.fs(20), color: open ? '#ffffff' : '#8fa1a6', align: 'center', wordWrap: { width: 320 } }).setOrigin(0.5));
+      for (var st = 0; st < 3; st++) {
+        var on2 = res && st < res.stars;
+        tile.add(self.add.star(-130 + st * 26, 44, 5, 5, 11, on2 ? 0xffd75e : 0x123f52).setStrokeStyle(2, on2 ? 0xfff2c8 : 0x3f6f80));
+      }
+      l.team.forEach(function (id2, ti) {
+        var key = TT.Art.speciesKey(self, id2);
+        tile.add(self.add.image(40 + ti * 44, 40, key).setScale(TT.Art.scaleFor(self, key, 38)).setAlpha(open ? 1 : 0.4));
+      });
+      var tag = !open ? 'LOCKED' : l.dark ? 'DARK' : l.tide ? 'TIDES' : (l.containers || []).some(function (c) { return c.stages; }) ? 'BIG RESCUE' : (l.currents && l.currents.length) ? 'CURRENTS' : '';
+      if (tag) tile.add(self.add.text(162, -58, tag, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(12), color: '#ffe7a8' }).setOrigin(1, 0));
+    });
     var gs = Object.keys(C.GADGETS).map(function (k) { return C.GADGETS[k].name + ' ×' + TT.Save.gadgetCount(k); }).join('    ');
     this.add.text(W / 2, 668, 'Gadgets: ' + gs, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(13), color: '#ffe7a8', stroke: '#06283a', strokeThickness: 3 }).setOrigin(0.5).setDepth(D);
     TT.UI.button(this, 90, 46, 130, 44, '‹ Title', function () { self.scene.start('Title'); }, { size: 15 }).setDepth(D);
     TT.UI.button(this, W - 110, 46, 170, 44, 'Field guide', function () { self.scene.start('FieldGuide'); }, { size: 15 }).setDepth(D);
+    if (TT.Haptics.available()) TT.UI.button(this, W - 110, 100, 170, 40, 'Vibration: ' + (TT.Save.haptics() ? 'On' : 'Off'), function () {
+      TT.Save.setHaptics(!TT.Save.haptics()); if (TT.Save.haptics()) TT.Haptics.buzz(30); self.scene.restart();
+    }, { size: 13 }).setDepth(D);
+    window.__TT_MENU = this;
+  }
+});
+
+// Puzzle mode: pick a room. Stars come from moves used against par.
+TT.PuzzleSelectScene = new Phaser.Class({
+  Extends: Phaser.Scene,
+  initialize: function PuzzleSelectScene() { Phaser.Scene.call(this, { key: 'PuzzleSelect' }); },
+  create: function () {
+    var C = TT.CFG, W = C.WIDTH, self = this, D = 30;
+    TT.menuBackdrop(this, 0.5);
+    TT.UI.title(this, W / 2, 46, 'Puzzles', 36).setDepth(D);
+    this.add.text(W / 2, 92, 'Every ability use is a move, and only abilities break things. Plan each rescue. No tide.', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(14), color: '#bdf3ff' }).setOrigin(0.5).setDepth(D);
+    TT.UI.button(this, 90, 46, 130, 44, '‹ Title', function () { self.scene.start('Title'); }, { size: 15 }).setDepth(D);
+    var ox = (W - 1280) / 2;
+    TT.PUZZLES.forEach(function (p, i) {
+      var col = i % 3, row = Math.floor(i / 3), x = ox + 640 + (col - 1) * 372, y = 230 + row * 190;
+      var open = TT.Save.levelOpen(p), res = TT.Save.levelResult(p.id, 'puzzle');
+      var tile = TT.UI.button(self, x, y, 356, 170, '', function () { if (!open) return; TT.Sfx.unlock(); self.scene.start('Game', { levelId: p.id, mode: 'puzzle' }); },
+        { fill: !open ? 0x16262e : res ? 0x0f5a78 : 0x0a3d55, radius: 18 }).setDepth(D);
+      tile.add(self.add.text(-160, -72, 'Puzzle ' + (i + 1), { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(14), color: '#bdf3ff' }));
+      tile.add(self.add.text(162, -72, 'PAR ' + p.par + ' · ' + p.moves + ' MOVES', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(12), color: '#ffe7a8' }).setOrigin(1, 0));
+      tile.add(self.add.text(0, -34, p.name, { fontFamily: TT.UI.display, fontStyle: '800', fontSize: TT.UI.fs(22), color: open ? '#ffffff' : '#8fa1a6' }).setOrigin(0.5));
+      for (var st = 0; st < 3; st++) {
+        var on = res && st < res.stars;
+        tile.add(self.add.star(-130 + st * 26, 50, 5, 5, 11, on ? 0xffd75e : 0x123f52).setStrokeStyle(2, on ? 0xfff2c8 : 0x3f6f80));
+      }
+      p.team.forEach(function (id, ti) {
+        var key = TT.Art.speciesKey(self, id);
+        tile.add(self.add.image(40 + ti * 48, 44, key).setScale(TT.Art.scaleFor(self, key, 42)).setAlpha(open ? 1 : 0.4));
+      });
+      if (res) tile.add(self.add.text(0, 6, 'Best: ' + res.score.toLocaleString(), { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(13), color: '#bff7d2' }).setOrigin(0.5));
+    });
     window.__TT_MENU = this;
   }
 });

@@ -20,6 +20,6 @@ window.addEventListener('load', function () {
         debug: /[?&]debug=1/.test(location.search)
       }
     },
-    scene: [TT.BootScene, TT.TitleScene, TT.LevelSelectScene, TT.GameScene, TT.UIScene, TT.FieldGuideScene]
+    scene: [TT.BootScene, TT.TitleScene, TT.LevelSelectScene, TT.PuzzleSelectScene, TT.GameScene, TT.UIScene, TT.FieldGuideScene]
   });
 });

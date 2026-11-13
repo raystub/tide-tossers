@@ -66,15 +66,15 @@ Lead rescuer in bold; *(built)* = exists in v0.5 under its old number.
 | 1-3 Bottle Graveyard · **pistol shrimp** *(built)* | 2-3 Cleaning Station · **cleaner wrasse** |
 | 1-4 Spines · **pufferfish** *(built)* | 2-4 Starfish Outbreak · **giant triton** |
 | 1-5 Stone-Crab Traps · **loggerhead** *(built)* | 2-5 Spawning Night · **peacock mantis shrimp** |
-| 1-6 Seagrass Channel · **Florida manatee** | 2-6 Osprey Reef Wall · **chambered nautilus** |
+| 1-6 Seagrass Channel · **Florida manatee** *(built, v0.6)* | 2-6 Osprey Reef Wall · **chambered nautilus** |
 
 | World 3 · Galápagos | World 4 · Monterey Bay kelp |
 | --- | --- |
-| 3-1 Rising Tide · **Galápagos sea lion** *(built as 2-1; renumbered, stars reset)* | 4-1 Kelp Canopy · **sea otter** |
+| 3-1 Rising Tide · **Galápagos sea lion** *(built as 2-1 with the swordfish; renumbered in v0.6, stars carried over)* | 4-1 Kelp Canopy · **sea otter** |
 | 3-2 Lava Shore · **marine iguana** | 4-2 Elkhorn Slough · **leopard shark** |
 | 3-3 Penguin Rocks · **Galápagos penguin** | 4-3 Harbor Breakwater · **giant Pacific octopus** |
-| 3-4 Longline · **swordfish** *(built as 2-5)* | 4-4 Urchin Barren · **sunflower sea star** |
-| 3-5 Lava Tube · **Galápagos bullhead shark** *(built as 2-9)* | 4-5 Sand Channel · **bat ray** |
+| 3-4 Longline · **swordfish** *(built; renumbered from 2-5)* | 4-4 Urchin Barren · **sunflower sea star** |
+| 3-5 Lava Tube · **Galápagos bullhead shark** *(built as 2-9 without the bullhead; renumbered)* | 4-5 Sand Channel · **bat ray** |
 | 3-6 Darwin's Arch · **scalloped hammerhead** | 4-6 Canyon Head · **northern elephant seal** |
 
 | World 5 · Twilight zone | World 6 · Midnight zone | World 7 · Abyss and trench |
@@ -105,6 +105,12 @@ Abilities, real behaviours and handling for all 42 rescuers are in the Claude do
 | Dive budget | 6 | Replaces the tide timer for whales: one breath for the whole level |
 | Silt, delicacy | 7 | Fast swimming raises blinding silt; bumping fragile life costs reef health |
 | Pressure | 7 | Only hadal natives go below about 6,000 m, so the team shrinks |
+
+## Modes (v0.6)
+
+- **Campaign:** the worlds above. World tabs on the level screen; unbuilt levels show as "coming soon".
+- **Puzzle:** small rooms, no tide. Every ability use is a move and only abilities break things; stars come from moves used against par. Six rooms at launch, more with each world.
+- **Arcade:** one arena, endless waves. Each wave places more nets, lines and traps (then concrete and lionfish, and a sawfish big rescue every fifth wave); clearing a wave adds time, rescues don't. Best wave and score are saved.
 
 ## Water rules
 

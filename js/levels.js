@@ -10,7 +10,24 @@
 //   coral:      protected living coral.   invasives: lionfish patrolling around (x, y).
 //   currents:   zones that push everything inside: fx, fy in px per (1/60 s)^2.
 //   tide:       { min, max } waterline range; the water rises and falls continuously.
+//   seagrass:   [{ x, w }] living seagrass meadows on the floor. Junk crashing into them, or a charge through them, costs reef health.
+//   containers may have stages: n (a big rescue: the net must be torn n times) and holds big animals.
 window.TT = window.TT || {};
+
+// The campaign: five worlds of six levels, going deeper. `plan` names every slot, so unbuilt levels show as "coming soon".
+TT.WORLDS = [
+  { n: 1, name: 'Florida Keys', depth: '0–20 m', card: 'place_keys', background: 'keys',
+    plan: ['Tide Pool Tangle', 'Mangrove Maze', 'Bottle Graveyard', 'Spines', 'Stone-Crab Traps', 'Seagrass Channel'] },
+  { n: 2, name: 'Great Barrier Reef', depth: '0–300 m', card: 'place_gbr', background: 'keys',
+    plan: ['Mangrove Edge', 'Lagoon Bommies', 'Cleaning Station', 'Starfish Outbreak', 'Spawning Night', 'Osprey Reef Wall'] },
+  { n: 3, name: 'Galápagos Islands', depth: '0–300 m', card: 'place_galapagos', background: 'galapagos',
+    plan: ['Rising Tide', 'Lava Shore', 'Penguin Rocks', 'Longline', 'Lava Tube', 'Darwin\'s Arch'] },
+  { n: 4, name: 'Monterey Bay Kelp', depth: '0–300 m', card: 'place_monterey', background: 'keys',
+    plan: ['Kelp Canopy', 'Elkhorn Slough', 'Harbor Breakwater', 'Urchin Barren', 'Sand Channel', 'Canyon Head'] },
+  { n: 5, name: 'Twilight Zone', depth: '200–1,000 m', card: 'place_twilight', background: 'cave',
+    plan: ['Dusk at the Rim', 'Scattering Layer', 'The Night Rise', 'Mirror Halls', 'Barreleye Window', 'Oxygen Minimum Zone'] }
+];
+TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.WORLDS[i].n === n) return TT.WORLDS[i]; return TT.WORLDS[0]; };
 
 (function () {
   TT.LEVELS = [
@@ -110,7 +127,7 @@ window.TT = window.TT || {};
     },
     {
       id: '1-5', name: 'Stone-Crab Traps', world: 1, place: 'Florida Keys', background: 'keys',
-      width: 3300, waterline: 190, start: { x: 170, y: 40 }, team: ['loggerhead', 'hammerhead', 'tang'], time: 120, exit: { x: 3180, y: 420 },
+      width: 3300, waterline: 190, start: { x: 170, y: 40 }, team: ['loggerhead', 'puffer', 'pistolshrimp'], time: 130, exit: { x: 3180, y: 420 },
       statics: [{ x: 760, y: 620, w: 220, h: 120, look: 'rock' }, { x: 2330, y: 600, w: 200, h: 160, look: 'rock' }],
       currents: [{ x: 1650, y: 440, w: 520, h: 480, fx: -0.3, fy: 0 }],
       objects: [
@@ -129,10 +146,37 @@ window.TT = window.TT || {};
       ],
       coral: [{ x: 1450, y: 640, w: 130, h: 80 }, { x: 2180, y: 640, w: 130, h: 80 }],
       invasives: [], startHealth: 30,
-      hint: 'Concrete weighs the traps down. The hammerhead\'s ram cracks it; the turtle shoves traps open.'
+      hint: 'Concrete weighs the traps down: shove it off with the turtle, then shove the traps open. Turtles breathe air, so surface when the ring runs low.'
     },
     {
-      id: '2-1', name: 'Rising Tide', world: 2, place: 'Galápagos Islands', background: 'galapagos',
+      id: '1-6', name: 'Seagrass Channel', world: 1, place: 'Florida Keys', background: 'keys',
+      width: 3700, waterline: 200, start: { x: 170, y: 50 }, team: ['manatee', 'loggerhead', 'puffer'], time: 160, exit: { x: 3580, y: 430 },
+      statics: [
+        { x: 960, y: 570, w: 200, h: 220, look: 'rock' },      // ledge with a concrete block on top
+        { x: 2240, y: 610, w: 170, h: 140, look: 'rock' }
+      ],
+      seagrass: [{ x: 600, w: 380 }, { x: 1330, w: 420 }, { x: 1900, w: 300 }, { x: 2720, w: 380 }],
+      currents: [{ x: 2100, y: 440, w: 700, h: 480, fx: -0.22, fy: 0 }],
+      objects: [
+        { k: 'plastic', x: 700, y: 205, w: 56, h: 38 }, { k: 'plastic', x: 1650, y: 205, w: 60, h: 40 },
+        { k: 'concrete', x: 930, y: 440, w: 70, h: 40 },
+        { k: 'tin', x: 1690, y: 640, w: 44, h: 80 },
+        { k: 'glass', x: 2190, y: 520, w: 18, h: 60 },
+        { k: 'tin', x: 2560, y: 640, w: 44, h: 80 }, { k: 'plastic', x: 2980, y: 205, w: 56, h: 38 }
+      ],
+      containers: [
+        { k: 'net', x: 1590, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] },
+        { k: 'net', x: 1880, y: 360, w: 74, h: 130, hang: true, holds: [{ k: 'seahorse', n: 1 }] },
+        { k: 'trap', x: 2440, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 3220, y: 560, w: 250, h: 150, stages: 3, hang: true, holds: [{ k: 'sawfish', n: 1 }] }
+      ],
+      coral: [{ x: 2080, y: 640, w: 120, h: 76 }],
+      invasives: [{ k: 'lionfish', x: 2440, y: 520, patrol: 100 }],
+      startHealth: 30,
+      hint: 'Seagrass is precious: don\'t knock junk onto it. The manatee\'s push is slow but unstoppable. Air-breathers must come up for air.'
+    },
+    {
+      id: '3-1', name: 'Rising Tide', world: 3, place: 'Galápagos Islands', background: 'galapagos',
       width: 3100, waterline: 250, tide: { min: 170, max: 330 }, start: { x: 170, y: 60 }, team: ['swordfish', 'tang'], time: 115, exit: { x: 2980, y: 460 },
       statics: [
         { x: 820, y: 560, w: 150, h: 240, look: 'lava' },
@@ -157,7 +201,7 @@ window.TT = window.TT || {};
       hint: 'The tide rises and falls. Swordfish slice nets on contact, and their pierce darts straight through junk.'
     },
     {
-      id: '2-5', name: 'Longline', world: 2, place: 'Galápagos Islands', background: 'galapagos',
+      id: '3-4', name: 'Longline', world: 3, place: 'Galápagos Islands', background: 'galapagos',
       width: 3600, waterline: 180, start: { x: 170, y: 40 }, team: ['swordfish', 'flyingfish'], time: 100, exit: { x: 3480, y: 420 },
       statics: [{ x: 520, y: 610, w: 200, h: 140, look: 'lava' }, { x: 2760, y: 600, w: 180, h: 160, look: 'lava' }],
       currents: [
@@ -180,7 +224,7 @@ window.TT = window.TT || {};
       hint: 'Cut every longline, then get past the driftwood boom: pierce it, or leap over with the flying fish.'
     },
     {
-      id: '2-9', name: 'Lava Tube', world: 2, place: 'Galápagos Islands', background: 'cave',
+      id: '3-5', name: 'Lava Tube', world: 3, place: 'Galápagos Islands', background: 'cave',
       width: 3300, waterline: 150, dark: true, start: { x: 170, y: 220 }, team: ['tang', 'puffer', 'pistolshrimp', 'hammerhead'], time: 150, exit: { x: 3180, y: 430 },
       glowSpots: [{ x: 620, y: 560 }, { x: 1150, y: 300 }, { x: 1700, y: 600 }, { x: 2250, y: 330 }, { x: 2750, y: 560 }, { x: 3180, y: 430 }],
       statics: [
@@ -206,7 +250,9 @@ window.TT = window.TT || {};
   ];
 
   TT.levelById = function (id) {
-    for (var i = 0; i < TT.LEVELS.length; i++) if (TT.LEVELS[i].id === id) return TT.LEVELS[i];
+    var lists = [TT.LEVELS, TT.PUZZLES || []];
+    for (var k = 0; k < lists.length; k++) for (var i = 0; i < lists[k].length; i++) if (lists[k][i].id === id) return lists[k][i];
     return null;
   };
+  TT.levelsInWorld = function (n) { return TT.LEVELS.filter(function (l) { return l.world === n; }); };
 })();

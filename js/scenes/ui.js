@@ -44,9 +44,10 @@ TT.UI = {
     flyingfish: 'Leap: jumps out of the water and glides over walls and floating junk. Hits plastic and glass twice as hard.',
     puffer: 'Puff: blows up to shove junk away and drive off lionfish. Immune to spines.',
     pistolshrimp: 'Snap: an underwater shockwave that shatters nearby glass and plastic.',
-    loggerhead: 'Shove: a slow, heavy charge that bashes traps and moves heavy junk.',
+    loggerhead: 'Shove: a slow, heavy charge that bashes traps and moves heavy junk. Breathes air: come up before the ring runs out.',
     swordfish: 'Pierce: darts straight through wood, plastic and metal. Slices nets and lines on contact. Concrete stops it.',
-    hammerhead: 'Ram: a hard charge. The best way to crack concrete.'
+    hammerhead: 'Ram: a hard charge. The best way to crack concrete.',
+    manatee: 'Push: a slow, unstoppable charge that ploughs through several nets and junk in a row. Breathes air: come up before the ring runs out.'
   }
 };
 
@@ -57,7 +58,7 @@ TT.UIScene = new Phaser.Class({
 
   create: function () {
     var C = TT.CFG, g = this.game2, self = this, W = C.WIDTH, H = C.HEIGHT, M = TT.MOBILE;
-    this.panelOpen = null; this.infoBox = null; this.gadgetPanel = null; this.pausePanel = null;
+    this.panelOpen = null; this.infoBox = null; this.gadgetPanel = null; this.pausePanel = null; this.swapG = null; this.swapImg = null;
     this.controls = new TT.Controls(this, g);
 
     // soft dark corners pull the eye to the middle of the screen
@@ -66,7 +67,9 @@ TT.UIScene = new Phaser.Class({
     this.bar = this.add.graphics();
     this.bar.fillGradientStyle(0x031c2a, 0x031c2a, 0x031c2a, 0x031c2a, 0.7, 0.7, 0, 0);
     this.bar.fillRect(0, 0, W, M ? 120 : 92);
-    this.add.text(18, 8, g.level.id + '  ' + g.level.name.toUpperCase() + '  ·  ' + C.DIFFICULTY[g.difficulty].name.toUpperCase(),
+    var head = g.arcade ? 'ARCADE  ·  ENDLESS WAVES' : g.puzzle ? 'PUZZLE ' + g.level.id.slice(1) + '  ' + g.level.name.toUpperCase() :
+      g.level.id + '  ' + g.level.name.toUpperCase() + '  ·  ' + C.DIFFICULTY[g.difficulty].name.toUpperCase();
+    this.add.text(18, 8, head,
       { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(11), color: '#bdf3ff', stroke: '#031c2a', strokeThickness: 3, letterSpacing: 1 });
 
     // team portraits (tap to switch)
@@ -95,8 +98,11 @@ TT.UIScene = new Phaser.Class({
     // tide gauge (right of centre)
     this.tideG = this.add.graphics();
     this.tideText = this.add.text(0, 0, '', { fontFamily: TT.UI.display, fontStyle: '800', fontSize: TT.UI.fs(20), stroke: '#031c2a', strokeThickness: 4, color: '#ffffff' }).setOrigin(0.5);
-    this.tideLabel = this.add.text(0, 0, 'TIDE', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(10), color: '#bdf3ff', stroke: '#031c2a', strokeThickness: 3 }).setOrigin(0.5);
+    this.tideLabel = this.add.text(0, 0, g.arcade ? 'TIME' : 'TIDE', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(10), color: '#bdf3ff', stroke: '#031c2a', strokeThickness: 3 }).setOrigin(0.5);
     this.tideText.setVisible(g.timed); this.tideLabel.setVisible(g.timed);
+    // Puzzle: moves left (in the dial's place)
+    this.movesText = this.add.text(0, 0, '', { fontFamily: TT.UI.display, fontStyle: '800', fontSize: TT.UI.fs(20), stroke: '#031c2a', strokeThickness: 4, color: '#ffffff' }).setOrigin(0.5).setVisible(g.puzzle);
+    this.movesLabel = this.add.text(0, 0, 'MOVES', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(10), color: '#bdf3ff', stroke: '#031c2a', strokeThickness: 3 }).setOrigin(0.5).setVisible(g.puzzle);
 
     // pause + gadgets (top right)
     var bw = M ? 76 : 54, bh = M ? 60 : 40, by = (M ? 14 : 12) + bh / 2;
@@ -228,7 +234,7 @@ TT.UIScene = new Phaser.Class({
     var playing = g.state === 'play';
 
     // reef health bar with star ticks
-    var hg = this.healthG, bw = M ? 330 : 280, x0 = W / 2 - bw / 2 - (g.timed ? (M ? 56 : 44) : 0), y0 = M ? 30 : 26, hh = M ? 22 : 16;
+    var hg = this.healthG, bw = M ? 330 : 280, x0 = W / 2 - bw / 2 - (g.timed || g.puzzle ? (M ? 56 : 44) : 0), y0 = M ? 30 : 26, hh = M ? 22 : 16;
     hg.clear();
     hg.fillStyle(0x02131c, 0.85); hg.fillRoundedRect(x0 - 3, y0 - 3, bw + 6, hh + 6, (hh + 6) / 2);
     var f = g.health / 100;
@@ -241,7 +247,15 @@ TT.UIScene = new Phaser.Class({
       hg.lineStyle(2, on ? 0xfff2c8 : 0x5c8794, 1); hg.strokeCircle(sx, y0 + hh / 2, hh * 0.62);
     });
     this.healthText.setX(x0 + bw / 2).setText('REEF HEALTH ' + Math.round(g.health) + '%');
-    this.freedText.setX(x0 + bw / 2).setText('Animals freed ' + g.freed + ' / ' + g.totalAnimals + (g.combo > 1 ? '    Chain x' + g.combo : ''));
+    this.freedText.setX(x0 + bw / 2).setText((g.arcade ? 'Wave ' + g.wave + '  ·  freed ' + g.freed : 'Animals freed ' + g.freed + ' / ' + g.totalAnimals) + (g.combo > 1 ? '    Chain x' + g.combo : ''));
+    if (g.puzzle) {
+      var mr = M ? 34 : 26, mx2 = x0 + bw + mr + (M ? 34 : 26), my2 = y0 + hh / 2 + (M ? 12 : 8), mlow = g.movesLeft <= 1;
+      hg.fillStyle(0x02131c, 0.85); hg.fillCircle(mx2, my2, mr + 4);
+      hg.fillStyle(mlow ? 0xff6b4a : 0xff8a3c, 1); hg.fillCircle(mx2, my2, mr);
+      hg.lineStyle(2, 0xffe2c2, 0.9); hg.strokeCircle(mx2, my2, mr + 4);
+      this.movesText.setPosition(mx2, my2).setText(String(g.movesLeft));
+      this.movesLabel.setPosition(mx2, my2 + mr + (M ? 16 : 12)).setText('MOVES · PAR ' + g.level.par);
+    }
 
     // tide gauge: a round dial that drains
     var tg = this.tideG; tg.clear();
@@ -322,6 +336,17 @@ TT.UIScene = new Phaser.Class({
   },
 
   // ---------- results ----------
+  showArcadeResult: function (res, layer, card, px, py, pw, ph) {
+    var g = this.game2, M = TT.MOBILE;
+    layer.add([this.shade(), card, TT.UI.title(this, px, py - ph / 2 + 44, res.newBest ? 'New best!' : 'Time\'s up', 32)]);
+    layer.add(TT.UI.title(this, px, py - ph / 2 + 112, 'Waves cleared: ' + res.cleared, 26, '#ffd75e'));
+    var lines = ['Animals freed ' + res.freed, 'Score ' + res.score.toLocaleString(), 'Best: ' + res.best.wave + ' waves · ' + res.best.score.toLocaleString()];
+    layer.add(this.add.text(px, py + 6, lines.join('\n'), { fontFamily: TT.UI.sans, fontStyle: '600', fontSize: TT.UI.fs(17), color: '#e6f8fa', align: 'center', lineSpacing: 10 }).setOrigin(0.5, 0.3));
+    var by = py + ph / 2 - (M ? 50 : 42), bw = M ? 200 : 170, bh = M ? 64 : 48, gap = M ? 120 : 100;
+    layer.add(TT.UI.button(this, px - gap, by, bw, bh, 'Play again', function () { g.restartLevel(); }, { size: 16, fill: 0x16806a, stroke: 0xbff7d2 }));
+    layer.add(TT.UI.button(this, px + gap, by, bw, bh, 'Menu', function () { g.toMenu(); }, { size: 16 }));
+    layer.setAlpha(0); this.tweens.add({ targets: layer, alpha: 1, duration: 250 });
+  },
   showResult: function (res) {
     var C = TT.CFG, W = C.WIDTH, H = C.HEIGHT, g = this.game2, self = this, M = TT.MOBILE;
     g.uiBlocking = true; this.controls.release();
@@ -329,7 +354,9 @@ TT.UIScene = new Phaser.Class({
     var layer = this.add.container(0, 0).setDepth(50);
     var pw = M ? 660 : 540, ph = M ? 480 : 400, px = W / 2, py = H / 2;
     var card = this.add.graphics(); TT.UI.panel(card, px - pw / 2, py - ph / 2, pw, ph, 24, 0x0a3d55, 0.98);
-    var title = res.win ? (res.stars === 3 ? 'Reef restored!' : 'Rescue complete') : (res.how === 'tide' ? 'The tide went out' : 'Animals still trapped');
+    if (res.mode === 'arcade') return this.showArcadeResult(res, layer, card, px, py, pw, ph);
+    var title = res.win ? (res.mode === 'puzzle' ? (res.stars === 3 ? 'Solved on par!' : 'Solved!') : res.stars === 3 ? 'Reef restored!' : 'Rescue complete') :
+      (res.how === 'tide' ? 'The tide went out' : res.how === 'moves' ? 'Out of moves' : 'Animals still trapped');
     layer.add([this.shade(), card, TT.UI.title(this, px, py - ph / 2 + 44, title, 32)]);
     for (var i = 0; i < 3; i++) {
       var on = i < res.stars, sx = px + (i - 1) * 78, sy = py - ph / 2 + 116 - (i === 1 ? 8 : 0);
@@ -337,7 +364,12 @@ TT.UIScene = new Phaser.Class({
       s.setScale(0); layer.add(s);
       this.tweens.add({ targets: s, scale: 1, angle: on ? 360 : 0, delay: 250 + i * 220, duration: 420, ease: 'Back.easeOut' });
     }
-    var lines = [
+    var lines = res.mode === 'puzzle' ? [
+      'Moves used ' + res.moves + '   ·   par ' + res.par,
+      res.win && res.stars < 3 ? 'Solve it in ' + (res.stars === 1 ? res.par + 1 : res.par) + ' moves for the next star' : '',
+      'Animals freed ' + res.freed + ' / ' + res.total,
+      'Score ' + res.score.toLocaleString()
+    ] : [
       'Reef health ' + res.health + '%' + (res.win && res.stars < 3 ? '   (' + (res.stars === 1 ? C.STAR2_HEALTH : C.STAR3_HEALTH) + '% for the next star)' : ''),
       'Animals freed ' + res.freed + ' / ' + res.total,
       'Score ' + res.score.toLocaleString() + (res.win && res.secondsLeft ? '   (' + res.secondsLeft + 's of tide left)' : '')
@@ -345,11 +377,12 @@ TT.UIScene = new Phaser.Class({
     if (res.win && res.junkLeft) lines.push(res.junkLeft + ' piece' + (res.junkLeft === 1 ? '' : 's') + ' of junk left behind');
     if (res.bonusGadget) lines.push('New gadget earned: ' + res.bonusGadget);
     if (res.newCards && res.newCards.length) lines.push('New field-guide cards: ' + res.newCards.length);
-    if (!res.win) lines.push(g.difficulty === 'splash' ? '' : 'Tip: Splash difficulty has no time limit.');
-    layer.add(this.add.text(px, py + 6, lines.join('\n'), { fontFamily: TT.UI.sans, fontStyle: '600', fontSize: TT.UI.fs(16), color: '#e6f8fa', align: 'center', lineSpacing: 8 }).setOrigin(0.5, 0.3));
+    if (!res.win && res.mode === 'puzzle') lines.push('Tip: every ability use is a move. Plan where each one lands.');
+    else if (!res.win) lines.push(g.difficulty === 'splash' ? '' : 'Tip: Splash difficulty has no time limit.');
+    layer.add(this.add.text(px, py + 6, lines.filter(function (l) { return l; }).join('\n'), { fontFamily: TT.UI.sans, fontStyle: '600', fontSize: TT.UI.fs(16), color: '#e6f8fa', align: 'center', lineSpacing: 8 }).setOrigin(0.5, 0.3));
     var by = py + ph / 2 - (M ? 50 : 42), bw = M ? 186 : 150, bh = M ? 64 : 48, gap = M ? 204 : 166;
     layer.add(TT.UI.button(this, px - gap, by, bw, bh, 'Retry', function () { g.restartLevel(); }, { size: 16 }));
-    layer.add(TT.UI.button(this, px, by, bw, bh, 'Levels', function () { g.toMenu(); }, { size: 16 }));
+    layer.add(TT.UI.button(this, px, by, bw, bh, res.mode === 'puzzle' ? 'Puzzles' : 'Levels', function () { g.toMenu(); }, { size: 16 }));
     if (res.win) layer.add(TT.UI.button(this, px + gap, by, bw, bh, 'Next', function () { g.nextLevel(); }, { size: 16, fill: 0x16806a, stroke: 0xbff7d2 }));
     else layer.add(TT.UI.button(this, px + gap, by, bw, bh, 'Field guide', function () { self.scene.stop('UI'); g.scene.start('FieldGuide'); }, { size: 15 }));
     layer.setAlpha(0); this.tweens.add({ targets: layer, alpha: 1, duration: 250 });
