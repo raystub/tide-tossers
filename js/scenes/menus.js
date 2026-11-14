@@ -61,7 +61,7 @@ TT.TitleScene = new Phaser.Class({
     title.setFontSize(TT.MOBILE ? '104px' : '100px');
     this.tweens.add({ targets: title, y: 204, duration: 2200, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     TT.UI.title(this, W / 2, 286, 'Free the trapped. Restore the reef.', 24, '#d8fbff').setDepth(D);
-    this.add.text(W / 2, 326, 'PREVIEW ' + TT.VERSION, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(12), color: '#bdf3ff', stroke: '#06283a', strokeThickness: 3, letterSpacing: 3 }).setOrigin(0.5).setDepth(D);
+    this.add.text(W / 2, 326, (C.UNLOCK_ALL ? 'PREVIEW ' : '') + TT.VERSION, { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(12), color: '#bdf3ff', stroke: '#06283a', strokeThickness: 3, letterSpacing: 3 }).setOrigin(0.5).setDepth(D);
     TT.UI.button(this, W / 2, 404, 300, 72, 'Campaign', function () { TT.Sfx.unlock(); self.scene.start('LevelSelect'); }, { size: 26, fill: 0xff8a3c, stroke: 0xffe2c2, radius: 36 }).setDepth(D);
     var best = TT.Save.arcadeBest();
     TT.UI.button(this, W / 2 - 160, 494, 290, 62, 'Puzzle\n' + TT.PUZZLES.length + ' planning challenges', function () { TT.Sfx.unlock(); self.scene.start('PuzzleSelect'); }, { size: 15, fill: 0x16806a, stroke: 0xbff7d2, radius: 24 }).setDepth(D);
@@ -74,7 +74,36 @@ TT.TitleScene = new Phaser.Class({
       }, { size: 15 }).setDepth(D);
     }
     this.add.text(W / 2, 680, TT.MOBILE ? 'Left thumb swims · right thumb uses your ability' : 'Hold the mouse or use WASD to swim · Space for your ability', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(14), color: '#ffffff', stroke: '#06283a', strokeThickness: 4 }).setOrigin(0.5).setDepth(D);
+    TT.UI.button(this, 110, 680, 170, 40, 'Privacy', function () { self.scene.start('Privacy'); }, { size: 13 }).setDepth(D);
     this.input.keyboard.once('keydown-ENTER', function () { self.scene.start('LevelSelect'); });
+  }
+});
+
+// Privacy: the short version of the policy, readable offline, with the address of the full one.
+TT.PRIVACY_URL = 'https://raystub.github.io/tide-tossers/privacy.html';
+TT.PrivacyScene = new Phaser.Class({
+  Extends: Phaser.Scene,
+  initialize: function PrivacyScene() { Phaser.Scene.call(this, { key: 'Privacy' }); },
+  create: function () {
+    var C = TT.CFG, W = C.WIDTH, self = this, D = 30;
+    TT.menuBackdrop(this, 0.6);
+    TT.UI.title(this, W / 2, 46, 'Privacy', 36).setDepth(D);
+    TT.UI.button(this, 90, 46, 130, 44, '‹ Title', function () { self.scene.start('Title'); }, { size: 15 }).setDepth(D);
+    var lines = [
+      'Tide Tossers does not collect, store or share any personal information.',
+      '',
+      '• No accounts, no sign-in, no ads, no analytics and no tracking.',
+      '• Your progress, stars and settings are saved only on this device. Uninstalling the app (or clearing the browser\'s site data) deletes them.',
+      '• The game runs offline and sends nothing about you over the internet.',
+      '• On Android it asks only to use vibration, for haptic feedback.',
+      '• Animal facts in the field guide are general knowledge; nothing about you is used.',
+      '',
+      'Full policy: ' + TT.PRIVACY_URL,
+      'Questions: hello@swipefinch.com · SwipeFinch LLC, Clearwater, Florida'
+    ];
+    this.add.text(W / 2, 130, lines.join('\n'), { fontFamily: TT.UI.sans, fontStyle: '600', fontSize: TT.UI.fs(17), color: '#ffffff', stroke: '#06283a', strokeThickness: 3,
+      lineSpacing: 10, wordWrap: { width: Math.min(1000, W - 120) } }).setOrigin(0.5, 0).setDepth(D);
+    this.input.keyboard.once('keydown-ESC', function () { self.scene.start('Title'); });
   }
 });
 

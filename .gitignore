@@ -1,2 +1,7 @@
 tests/out/
 __pycache__/
+build/
+TideTossers.apk
+TideTossers.aab
+*.jks
+upload.keystore

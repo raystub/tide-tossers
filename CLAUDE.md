@@ -15,7 +15,8 @@ History: v0.1–v0.4 were a kelp-sling launcher (kept playable at `/v0.4/`). v0.
 - **Animals are never harmed.** Rescuers break junk, not animals. Lionfish swim away when driven off.
 - **Animal facts:** general, widely known facts only, each listed in `docs/FACTS_TO_VERIFY.md` for a person to check.
 - Wrap all localStorage access in try/catch.
-- `UNLOCK_ALL` in config.js opens every level for testing; set it false before a store release.
+- `UNLOCK_ALL` in config.js opens every level for testing (web and test APK). Store builds turn it off automatically: `tools/android/build.sh release`, run by the **Android release** workflow (manual), builds a signed .aab with levels locked, using the four `ANDROID_*` repository secrets, and saves it to a draft release.
+- Privacy policy: `privacy.html` (store listings link to https://raystub.github.io/tide-tossers/privacy.html); the in-game Privacy screen in `menus.js` must say the same. The game must stay data-free unless both change.
 - Rescuer roster (all 42 rescuers, abilities, handling) and the level plan are in the Claude doc linked from `docs/DESIGN.md`.
 - Commits: no Claude co-author lines.
 - After changing any field-guide card or a level hint with a real-world claim, run `node tools/facts.js` to refresh `docs/FACTS_TO_VERIFY.md`.

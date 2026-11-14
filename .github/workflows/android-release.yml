@@ -1,0 +1,42 @@
+# Builds the Google Play release: an app bundle (.aab) signed with the private upload key, with levels unlocking in order.
+# Run it by hand (Actions > Android release > Run workflow). It needs four repository secrets:
+#   ANDROID_KEYSTORE_B64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
+# The bundle goes to a draft GitHub release (drafts are visible only to people with write access to the repo).
+name: Android release
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  aab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+      - name: Check the signing secrets are set
+        env:
+          K: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          P: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          A: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KP: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          [ -n "$K" ] && [ -n "$P" ] && [ -n "$A" ] && [ -n "$KP" ] || { echo "Add the four ANDROID_* secrets in Settings > Secrets and variables > Actions first."; exit 1; }
+      - name: Build the signed app bundle
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: tools/android/build.sh release
+      - name: Save to a draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          V=$(grep -o "TT.VERSION = '[^']*'" js/config.js | cut -d"'" -f2)
+          gh release create "play-${V}-${{ github.run_number }}" TideTossers.aab --draft --target ${{ github.sha }} \
+            --title "Tide Tossers ${V} for Google Play (build ${{ github.run_number }})" \
+            --notes "Upload TideTossers.aab in Play Console > Test and release. Levels unlock in order in this build."
