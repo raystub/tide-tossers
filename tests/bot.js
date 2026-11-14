@@ -35,6 +35,13 @@ window.__bot = function (maxGameSeconds, opts) {
       if (Math.abs(pos.y - y) > 34 && (pos.x - nearX) * dirT <= -20) return { x: nearX, y: y };
       return { x: farX, y: y };
     }
+    // who can uncover buried or hidden things, and where to stand to do it
+    function revealer() { return ['leopardshark', 'risso', 'hatchetfish', 'barreleye', 'batray'].find(function (k) { return has(k) >= 0; }) || null; }
+    function revealAt(rv, p) {
+      var R = { leopardshark: 220, risso: 260, hatchetfish: 200, barreleye: 140, batray: 90 }[rv];
+      if (rv === 'barreleye') return { x: p.x, y: Math.min(C.FLOOR_Y - 60, p.y + 230), kind: 'buried', who: rv, range: R, r: 20 };
+      return { x: p.x, y: Math.min(C.FLOOR_Y - 70, p.y - 40), kind: 'buried', who: rv, range: R, r: 20 };
+    }
     function pick() {
       var pos = P.pos(), cs = G.containers.filter(function (c) { return c.alive && !(c.botSkip > G.clock); }).sort(function (a, b) { return G.arcade ? dist(a.sprite, pos) - dist(b.sprite, pos) : a.sprite.x - b.sprite.x; });
       // crown-of-thorns starfish: send the triton to scent them off the coral
@@ -53,8 +60,8 @@ window.__bot = function (maxGameSeconds, opts) {
         if (watch.c !== c || c.hp < watch.hp) { watch = { c: c, hp: c.hp, t: G.clock }; }
         else if (G.clock - watch.t > 9 && cs.length > 1) { c.botSkip = G.clock + 6; log.push(G.clock.toFixed(1) + ' skip ' + c.ctype + '@' + Math.round(cp.x)); watch = { c: null }; }
         // buried: the leopard shark senses it, the bat ray digs it out
-        if (c.buried) { var rv = has('leopardshark') >= 0 ? 'leopardshark' : has('batray') >= 0 ? 'batray' : null;
-          if (rv) return { x: cp.x, y: Math.min(C.FLOOR_Y - 70, cp.y - 40), kind: 'buried', who: rv, range: rv === 'leopardshark' ? 220 : 90, r: 20 }; }
+        if (c.buried) { var rv = revealer();
+          if (rv) return revealAt(rv, cp); }
         // green crabs guarding it: the otter or the octopus sends them off
         var crab = G.invasives.find(function (l) { return l.alive && l.species === 'greencrab' && dist(l.sprite, cp) < 330; });
         if (crab && (has('octopus') >= 0 || has('otter') >= 0)) { var cw = has('octopus') >= 0 ? 'octopus' : 'otter'; return { x: crab.sprite.x, y: crab.sprite.y - 60, kind: 'crab', who: cw, range: cw === 'octopus' ? 150 : 80, r: 20 }; }
@@ -71,7 +78,8 @@ window.__bot = function (maxGameSeconds, opts) {
         if (has('mantis') >= 0 && c.ctype !== 'line') who = 'mantis';
         if (c.ctype === 'trap') { var tw = ['otter', 'sunstar', 'batray', 'octopus'].find(function (k) { return has(k) >= 0; }); if (tw && has('mantis') < 0) who = tw; }
         if (has('eseal') >= 0 && c.ctype === 'net') who = 'eseal';
-        if (has(who) < 0 || (who === 'tang' && has('tang') < 0)) who = ['mantis', 'eseal', 'sealion', 'penguin', 'swordfish', 'hammerhead', 'bullhead', 'otter', 'octopus', 'batray', 'leopardshark', 'archerfish', 'parrotfish', 'nautilus', 'iguana', 'sunstar'].find(function (k) { return has(k) >= 0; }) || P.team[0].id;
+        if (has('humboldt') >= 0) who = 'humboldt';
+        if (has(who) < 0 || (who === 'tang' && has('tang') < 0)) who = ['mantis', 'humboldt', 'eseal', 'risso', 'sealion', 'penguin', 'swordfish', 'hammerhead', 'bullhead', 'otter', 'octopus', 'batray', 'leopardshark', 'archerfish', 'parrotfish', 'nautilus', 'iguana', 'sunstar'].find(function (k) { return has(k) >= 0; }) || P.team[0].id;
         if (c.ctype === 'net' && c.stagesLeft > 1 && has('swordfish') >= 0) who = 'swordfish';
         if (has(who) < 0) who = P.team[0].id === 'pistolshrimp' || P.team[0].id === 'puffer' ? (has('tang') >= 0 ? 'tang' : P.team[0].id) : P.team[0].id;
         var ty = c.ctype === 'line' ? Math.min(C.FLOOR_Y - 60, Math.max(G.water.y + 60, pos.y)) : cp.y;
@@ -81,13 +89,13 @@ window.__bot = function (maxGameSeconds, opts) {
       if (!opts.noClean) {
         // only junk on this side of any full-height wall (the bot crosses walls left to right only)
         var walled = function (o) { return G.statics.some(function (st) { var b = st.body.bounds; return fullWall(b) && (b.min.x - pos.x) * (b.min.x - o.body.position.x) < 0; }); };
-        var os = G.objects.filter(function (o) { return o.alive && !walled(o) && !(o.buried && has('leopardshark') < 0 && has('batray') < 0); }).sort(function (a, b) { return dist(a.body.position, pos) - dist(b.body.position, pos); });
-        if (os.length) { var o = os[0], w2 = o.material === 'concrete' && has('hammerhead') >= 0 ? 'hammerhead' : (o.material === 'glass' || o.material === 'plastic') && has('pistolshrimp') >= 0 ? 'pistolshrimp' : has('tang') >= 0 ? 'tang' : (['sealion', 'penguin', 'swordfish', 'hammerhead', 'bullhead', 'sheepshead', 'eseal', 'otter', 'octopus', 'batray'].find(function (k) { return has(k) >= 0; }) || P.team[0].id);
+        var os = G.objects.filter(function (o) { return o.alive && !walled(o) && !(o.buried && !revealer()); }).sort(function (a, b) { return dist(a.body.position, pos) - dist(b.body.position, pos); });
+        if (os.length) { var o = os[0], w2 = o.material === 'concrete' && has('hammerhead') >= 0 ? 'hammerhead' : (o.material === 'glass' || o.material === 'plastic') && has('pistolshrimp') >= 0 ? 'pistolshrimp' : has('tang') >= 0 ? 'tang' : (['humboldt', 'sealion', 'penguin', 'swordfish', 'hammerhead', 'bullhead', 'sheepshead', 'eseal', 'risso', 'otter', 'octopus', 'batray'].find(function (k) { return has(k) >= 0; }) || P.team[0].id);
           if (o.pinned && has('archerfish') >= 0) return { x: o.body.position.x - 60, y: G.water.y + 150, kind: 'pinned', who: 'archerfish', range: 60, r: 10, aim: { x: o.body.position.x, y: o.body.position.y } };
           if (o.material === 'rubble' && has('parrotfish') >= 0) w2 = 'parrotfish';
           if (o.material === 'concrete' && has('mantis') >= 0) w2 = 'mantis';
           if (w2 === 'tang' && has('tang') < 0) w2 = P.team[0].id;
-          if (o.buried) { var rv2 = has('leopardshark') >= 0 ? 'leopardshark' : 'batray'; return { x: o.body.position.x, y: o.body.position.y - 50, kind: 'buried', who: rv2, range: rv2 === 'leopardshark' ? 200 : 80, r: 20 }; }
+          if (o.buried) return revealAt(revealer(), o.body.position);
           if (o.pinned) return { x: G.exit.x, y: G.exit.y, kind: 'exit', who: P.id(), range: 0 };
           return { x: o.body.position.x, y: Math.max(G.water.y + 26, o.body.position.y), kind: 'junk', who: w2, range: w2 === 'pistolshrimp' ? 110 : ['bullhead', 'sheepshead', 'iguana', 'mantis', 'parrotfish', 'otter', 'octopus', 'sunstar', 'batray'].indexOf(w2) >= 0 ? Math.max(o.w, o.h) / 2 + 60 : 220, r: Math.max(o.w, o.h) / 2 }; }
       }

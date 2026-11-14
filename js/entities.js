@@ -66,7 +66,7 @@ TT.Entities = (function () {
       var akey = TT.Art.speciesKey(scene, k), sz = TT.Art.SPECIES_SIZE[k];
       var spr = scene.add.sprite(d.x, d.y, akey).setDepth(7.4);
       TT.Art.playSwim(spr, k);
-      var scale = TT.Art.scaleFor(scene, akey, sz[0] * (k === 'fishschool' ? 0.9 : sz[0] >= 120 ? 1 : 1.35));
+      var scale = TT.Art.scaleFor(scene, akey, sz[0] * (TT.isSchool(k) ? 0.9 : sz[0] >= 120 ? 1 : 1.35));
       spr.setScale(scale);
       var n = list.length, ox = n > 1 ? (i - (n - 1) / 2) * Math.min(sz[0] >= 80 ? d.w * 0.8 / n : 26, sz[0] >= 80 ? 90 : d.w * 0.4) : 0;
       if (d.k === 'line') ox = 14;

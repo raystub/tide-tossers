@@ -2,7 +2,7 @@
 // Units: positions in px, velocities in px per 1/60 s (independent of the physics rate), times in seconds.
 window.TT = window.TT || {};
 
-TT.VERSION = 'v0.7.0';
+TT.VERSION = 'v0.8.0';
 
 // Phones and tablets (coarse pointer) get the touch controls, bigger HUD and a closer camera.
 // Force it on a desktop with ?mobile=1 to preview the phone layout.
@@ -69,6 +69,7 @@ TT.CFG = {
   LIONFISH_FLEE_SPEED: 4,    // junk hitting a lionfish faster than this drives it off
   COTS_DRAIN: 0.1, 
   KELP_DRAG: 0.035,          // extra drag inside a kelp forest (fraction of speed per 1/60 s)
+  LIGHT_REFILL: 6,           // seconds of light meter regained per second near glowing plankton (World 5)
   URCHIN_DRAIN: 0.08,        // reef health % per second while purple urchins graze the kelp          // reef health % per second eaten by each crown-of-thorns starfish still on the reef
   LIONFISH_HUNT_RANGE: 300,  // Arcade lionfish drift toward a rescuer this close...
   LIONFISH_HUNT_SPEED: 48,   // ...at this many px per second
@@ -142,6 +143,12 @@ TT.CFG = {
     sunstar:      { name: 'Sunflower sea star',    radius: 24, density: 0.006,  speed: 3.8, accel: 0.12, cd: 1.6, ability: 'Grip',   len: 2.4, spineproof: true },
     batray:       { name: 'Bat ray',               radius: 22, density: 0.005,  speed: 6.2, accel: 0.12, cd: 1.4, ability: 'Dig',    len: 3.4 },
     eseal:        { name: 'Northern elephant seal', radius: 27, density: 0.007, speed: 6.0, accel: 0.09, cd: 2.4, ability: 'Plunge', len: 3.8, air: 90 },
+    risso:        { name: "Risso's dolphin", radius: 24, density: 0.006, speed: 7.4, accel: 0.15, cd: 1.6, ability: 'Echo', len: 4.0, air: 60 },
+    lanternfish:  { name: 'Lanternfish', radius: 14, density: 0.003, speed: 6.4, accel: 0.2, cd: 1.4, ability: 'Glow', len: 3.4 },
+    humboldt:     { name: 'Humboldt squid', radius: 21, density: 0.005, speed: 6.8, accel: 0.16, cd: 1.5, ability: 'Jet', len: 4.2 },
+    hatchetfish:  { name: 'Silver hatchetfish', radius: 15, density: 0.003, speed: 5.6, accel: 0.18, cd: 1.4, ability: 'Mirror', len: 2.6 },
+    barreleye:    { name: 'Barreleye', radius: 16, density: 0.003, speed: 5.2, accel: 0.16, cd: 1.4, ability: 'Look up', len: 3.4 },
+    vampsquid:    { name: 'Vampire squid', radius: 19, density: 0.004, speed: 5.0, accel: 0.15, cd: 2.0, ability: 'Cloud', len: 2.8 },
     manatee:      { name: 'Florida manatee',       radius: 30, density: 0.008,  speed: 4.3, accel: 0.07, cd: 3.0, ability: 'Push',   len: 3.7, air: 55 }
   },
   // air: seconds of breath for air-breathing rescuers (see AIR_* below).
@@ -201,6 +208,12 @@ TT.CFG = {
     sunGripRadius: 200, sunGripDamage: 70, sunGripTime: 0.35,                 // sunflower sea star: urchins move away; it pries at junk it holds
     digRadius: 150, digDamage: 60,                         // bat ray: flaps sand off buried things and loosens them
     plungeSpeed: 14, plungeTime: 0.6, plungeMassMult: 3,   // elephant seal: a heavy power dive
+    echoRadius: 400,                                       // Risso's dolphin: an echolocation ping finds hidden things
+    glowRadius: 300, glowTime: 4, glowLight: 4,            // lanternfish: lights the water around it and tops up the light meter
+    squidJetSpeed: 15, squidJetTime: 0.45, squidJetMass: 2.5,   // Humboldt squid: a fast, heavy jet
+    mirrorRadius: 330, mirrorTime: 2.5,                    // hatchetfish: silver sides throw light around, showing hidden things
+    lookUpRadius: 280, lookUpRise: 230,                    // barreleye: looks straight up and spots silhouettes above it
+    cloudRadius: 280, cloudTime: 7, cloudLight: 8,         // vampire squid: a long-lasting glowing cloud
     crunchRadius: 70, crunchHard: 130, crunchOther: 50, crunchDash: 9   // sheepshead: a lunge and a bite that cracks shells, metal, wood and traps
   },
 

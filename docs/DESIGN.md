@@ -124,6 +124,14 @@ The field guide has a second tab, Trash, with a card for each kind of junk in th
 
 New systems: snagged junk above the water (archerfish Jet knocks it down); coral rubble and bleached coral that regains colour as reef health rises (parrotfish Grind); gentle giants (mantas) that block a passage until a cleaner wrasse cleans them, and gentle animals tangled in line that only the wrasse can free; crown-of-thorns starfish that slowly eat coral and drain reef health until a giant triton's scent moves them off; a big ghost net that sinks while you tear it (2-6).
 
+## World 5 notes (v0.8.0)
+
+The twilight zone of Monterey Canyon: a new `twilight` palette (blue fading to black, canyon rock), darkness that deepens level by level (`dark` can be a number, the darkness alpha), and a **light meter** (`light: true`) that replaces the tide: it drains over time and refills at glowing plankton (`glowSpots`), with each rescue, and from glowing abilities (`lightBurst`). Hidden things use the World 4 `buried` flag. A **migrating layer** is a current with `migrate: {amp, period}` that rises and sinks. Rescuers: Risso's dolphin (Echo: reveals hidden things), lanternfish (Glow), Humboldt squid (Jet: heavy breaker), silver hatchetfish (Mirror: light and reveal), barreleye (Look up: reveals things above it), vampire squid (Cloud: long glowing cloud). 5-6 ends with a Cuvier's beaked whale in a drift gillnet (three stages); per the plan it becomes the lead of World 6. Rescued animals: ocean sunfish, Pacific hake, glass squid, lanternfish and bristlemouth schools.
+
+## Bait fish (v0.8.0)
+
+The generic sardine school is gone. Each world's rescued schools and background schools are a real local bait fish (`TT.BAIT`): hardhead silverside (Keys), fusilier (Great Barrier Reef), black-striped salema (Galápagos), northern anchovy (Monterey Bay), lanternfish (twilight zone; bristlemouths in 5-4).
+
 ## World 4 notes (v0.7.0)
 
 Monterey Bay: a cool green kelp palette, tall giant-kelp stands (`level.kelp`, slows every swimmer but the sea otter), and three new hazards. Things can be **buried** (`buried: true` on junk or a container): faint and solid to nothing until the leopard shark's Sense or the bat ray's Dig uncovers them. **Green crabs** (invasive) crawl the bottom and pinch like lionfish spines; the otter's Rock or the octopus's Ink sends them off. **Purple urchins** (native, but overgrazing) drain reef health like crown-of-thorns; the sunflower sea star's Grip or the otter moves them. Rescuers: sea otter (Rock), leopard shark (Sense), giant Pacific octopus (Ink), sunflower sea star (Grip, spine-proof), bat ray (Dig), northern elephant seal (Plunge, long breath). 4-6 ends with a humpback in crab-pot lines (three stages). Rescued animals: blue rockfish, sardine schools and otter pups.

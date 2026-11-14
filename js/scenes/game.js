@@ -160,6 +160,9 @@ TT.GameScene = new Phaser.Class({
     if (dark) {
       for (i = 0; i < gs.length; i++) lights.push({ x: gs[i].x, y: gs[i].y, r: C.GLOW_SPOT_RADIUS * (0.9 + 0.1 * Math.sin(t * 1.5 + i)), a: 0.9 });
       lights.push({ x: pb.position.x, y: pb.position.y, r: C.RESCUER_LIGHT_RADIUS, a: 0.95 });
+      // glows from abilities (lanternfish, hatchetfish, vampire squid ...) fade out over their time
+      this.bursts = (this.bursts || []).filter(function (bu) { return bu.until > t; });
+      for (i = 0; i < this.bursts.length; i++) { var bu = this.bursts[i], left = Math.min(1, (bu.until - t) / 0.8); lights.push({ x: bu.follow ? pb.position.x : bu.x, y: bu.follow ? pb.position.y : bu.y, r: bu.r, a: 0.95 * left }); }
       if (this.exitOpen) lights.push({ x: this.exit.x, y: this.exit.y, r: 120, a: 0.9 });
     }
     // lionfish patrol
@@ -217,9 +220,14 @@ TT.GameScene = new Phaser.Class({
       // tide timer
       if (this.timed) {
         this.timeLeft -= dt;
+        if (this.level.light) {
+          // World 5 light meter: glowing plankton tops it up
+          var gs2 = this.level.glowSpots || [];
+          for (var gi = 0; gi < gs2.length; gi++) if (Phaser.Math.Distance.Between(pb.position.x, pb.position.y, gs2[gi].x, gs2[gi].y) < C.GLOW_SPOT_RADIUS) { this.timeLeft = Math.min(this.timeMax, this.timeLeft + TT.CFG.LIGHT_REFILL * dt); break; }
+        }
         var whole = Math.ceil(this.timeLeft);
         if (whole <= 10 && whole < this.lastTick && whole > 0) { this.lastTick = whole; this.sfx.play('tick'); }
-        if (this.timeLeft <= 0) { this.timeLeft = 0; this.finish(this.trapped <= 0, 'tide'); }
+        if (this.timeLeft <= 0) { this.timeLeft = 0; this.finish(this.trapped <= 0, this.level.light ? 'light' : 'tide'); }
       }
       if (this.puzzle) this.puzzleCheck(dt);
       if (this.arcade && this.trapped <= 0 && this.waveClearAt && t > this.waveClearAt) { this.waveClearAt = 0; this.nextWave(); }
@@ -507,15 +515,21 @@ TT.GameScene = new Phaser.Class({
   // Leopard shark Sense / bat ray Dig: buried nets, traps and junk within R come out of the sand.
   reveal: function (x, y, R) {
     var self = this, n = 0;
-    this.fx.ring(x, y, R, 0xf2e2b0);
+    this.fx.ring(x, y, R, this.level.dark ? 0x9fe8ff : 0xf2e2b0);
     this.objects.concat(this.containers).forEach(function (o) {
       if (!o.alive || !o.buried) return;
       if (Phaser.Math.Distance.Between(x, y, o.sprite.x, o.sprite.y) > R) return;
       TT.Entities.unbury(self, o); n++;
+      if (self.level.dark) { self.lightBurst(o.sprite.x, o.sprite.y, 90, 3); self.flash(o.sprite.x, o.sprite.y - 40, o.kind === 'container' ? 'Spotted in the dark!' : 'Hidden junk!', '#bfefff'); return; }
       self.fx.silt(o.sprite.x, Math.min(TT.CFG.FLOOR_Y, o.sprite.y + 20));
       self.flash(o.sprite.x, o.sprite.y - 40, o.kind === 'container' ? 'Found it under the sand!' : 'Buried junk!', '#f2e2b0');
     });
     return n;
+  },
+  // A pool of light from an ability; `follow` keeps it on the rescuer. `meter` adds seconds to the World 5 light meter.
+  lightBurst: function (x, y, r, secs, follow, meter) {
+    (this.bursts = this.bursts || []).push({ x: x, y: y, r: r, until: this.clock + secs, follow: !!follow });
+    if (meter && this.level.light && this.timed) this.timeLeft = Math.min(this.timeMax, this.timeLeft + meter);
   },
   // Is (x, y) inside a giant-kelp stand?
   inKelp: function (x, y) {
@@ -627,7 +641,7 @@ TT.GameScene = new Phaser.Class({
       if (rec.newThreeStar) { var ks = Object.keys(C.GADGETS), g = ks[Math.floor(Math.random() * ks.length)]; TT.Save.addGadget(g); res.bonusGadget = C.GADGETS[g].name; }
       var ids = [];
       this.level.team.forEach(function (q) { if (ids.indexOf(q) < 0) ids.push(q); });
-      (this.level.containers || []).forEach(function (c) { (c.holds || []).forEach(function (h) { if (ids.indexOf(h.k) < 0) ids.push(h.k); }); });
+      (this.level.containers || []).forEach(function (c) { (c.holds || []).forEach(function (h) { var hk = h.k.indexOf('school_') === 0 ? h.k.slice(7) : h.k; if (ids.indexOf(hk) < 0) ids.push(hk); }); });
       (this.level.invasives || []).forEach(function (l) { var sp = l.k || 'lionfish'; if (ids.indexOf(sp) < 0) ids.push(sp); });
       (this.level.gentle || []).forEach(function (gd) { if (ids.indexOf(gd.k) < 0) ids.push(gd.k); });
       if (!this.puzzle) ids.push(TT.worldByN(this.level.world).card);

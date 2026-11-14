@@ -16,7 +16,19 @@ const HINTS = [
   ['2-4 Starfish Outbreak (hint)', 'Claim', 'Crown-of-thorns starfish eat coral and move away from the scent of their predator, the giant triton'],
   ['2-5 Spawning Night (hint)', 'Claim', 'On spawning nights, corals release their eggs and sperm together'],
   ['3-2 Lava Shore (hint)', 'Claim', 'Marine iguanas grip rocks against the waves, and breathe air'],
-  ['3-6 Darwin\'s Pillars (hint)', 'Claim', 'Darwin\'s Arch fell into the sea in 2021, leaving two pillars; whale sharks gather near Darwin Island']
+  ['3-6 Darwin\'s Pillars (hint)', 'Claim', 'Darwin\'s Arch fell into the sea in 2021, leaving two pillars; whale sharks gather near Darwin Island'],
+  ['4-1 Kelp Canopy (hint)', 'Claim', 'Giant kelp grows in tall forests in Monterey Bay; sea otters breathe air'],
+  ['4-2 Elkhorn Slough (hint)', 'Claim', 'Leopard sharks gather in Elkhorn Slough; invasive green crabs live there; sea otters eat crabs'],
+  ['4-3 Harbor Breakwater (hint)', 'Claim', 'Octopuses hide in the rocks of breakwaters'],
+  ['4-4 Urchin Barren (hint)', 'Claim', 'Too many purple urchins can eat a kelp forest down to bare rock; sunflower sea stars eat urchins'],
+  ['4-5 Sand Channel (hint)', 'Claim', 'Bat rays flap their wings to dig clams out of the sand'],
+  ['4-6 Canyon Head (hint)', 'Claim', 'Humpback whales get caught in crab-pot lines; elephant seals are deep divers'],
+  ['5-1 Dusk at the Rim (hint)', 'Claim', 'By about 200 m deep, sunlight is nearly gone; Risso\'s dolphins hunt squid at night using echolocation'],
+  ['5-2 Scattering Layer (hint)', 'Claim', 'The scattering layer is so thick with animals (largely lanternfish) that ship sonar once mistook it for the sea floor; it rises at night and sinks by day'],
+  ['5-3 The Night Rise (hint)', 'Claim', 'Every night lanternfish, squid and shrimp rise toward the surface to feed and sink at dawn; Humboldt squid swim by jet propulsion'],
+  ['5-4 Mirror Halls (hint)', 'Claim', 'Hatchetfish have mirror-like sides and belly lights that hide their shadow from hunters below; bristlemouths may be the most numerous backboned animals on Earth'],
+  ['5-5 Barreleye Window (hint)', 'Claim', 'The barreleye has a see-through head and green tube-shaped eyes that can point straight up'],
+  ['5-6 Oxygen Minimum Zone (hint)', 'Claim', 'The vampire squid lives where the water holds very little oxygen and releases glowing mucus instead of ink; Cuvier\'s beaked whale is the deepest-diving mammal known']
 ];
 
 const strip = (s) => String(s).replace(/\.$/, '');

@@ -204,6 +204,7 @@ TT.habitatTexture = function (scene, card) {
   if (im === 'coral') return TT.Art.coralTexture(scene, 120, 76, 0);
   if (im === 'seagrass') return 'seagrass';
   if (im === 'giantkelp') return 'giantkelp';
+  if (im === 'marinesnow') return 'marinesnow';
   if (im.indexOf('prop:') === 0) return TT.Scenery.propTexture(scene, im.slice(5));
   if (im.indexOf('static:') === 0) { var look = im.slice(7); return TT.Art.staticTexture(scene, look === 'root' ? { look: 'root', w: 46, h: 260 } : { look: look, w: 160, h: 140 }, 900); }
   if (!scene.textures.exists('hab_snow')) {
@@ -224,7 +225,7 @@ TT.FieldGuideScene = new Phaser.Class({
     TT.menuBackdrop(this, 0.62);
     var D = 30, tab = (data && data.tab) || 'wildlife', from = (data && data.from) || 'Title', CARDS = tab === 'trash' ? TT.TRASH : tab === 'habitat' ? TT.HABITAT : TT.GUIDE;
     // cards for levels cleared before these tabs existed
-    TT.LEVELS.forEach(function (l) { if (TT.Save.cleared(l.id)) TT.Save.unlockCards(TT.cardsForLevel(l)); });
+    TT.LEVELS.forEach(function (l) { if (!TT.Save.cleared(l.id)) return; TT.Save.unlockCards(TT.cardsForLevel(l).concat(TT.baitFor(l))); });
     var unlocked = CARDS.filter(function (c) { return TT.Save.cardUnlocked(c.id); }).length;
     TT.UI.title(this, W / 2, 46, 'Field guide', 36).setDepth(D);
     // two tabs: the wildlife and places you meet, and the trash you clear up

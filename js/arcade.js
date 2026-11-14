@@ -11,7 +11,7 @@ TT.Arcade = (function () {
     { x: 1900, t: ['hang', 'line'] }, { x: 2100, t: ['net', 'trap', 'hang', 'line'] }, { x: 2250, t: ['hang', 'line'] },
     { x: 2420, t: ['net', 'trap', 'hang', 'line'] }
   ];
-  var HOLDS = [[{ k: 'hatchling', n: 2 }], [{ k: 'hatchling', n: 1 }], [{ k: 'seahorse', n: 1 }], [{ k: 'fishschool', n: 1 }]];
+  var HOLDS = [[{ k: 'hatchling', n: 2 }], [{ k: 'hatchling', n: 1 }], [{ k: 'seahorse', n: 1 }], [{ k: 'school_silverside', n: 1 }]];
 
   function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
   function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
@@ -48,7 +48,7 @@ TT.Arcade = (function () {
         else if (t === 'trap') { out.containers.push({ k: 'trap', x: s.x, y: 645, w: 100, h: 70, holds: holds }); traps++;
           if (n >= 3) out.objects.push({ k: 'concrete', x: s.x, y: 590, w: 70, h: 40 }); }
         else if (t === 'hang') out.containers.push({ k: 'net', x: s.x, y: 340 + Math.round(Math.random() * 60), w: 74, h: 130, hang: true, holds: holds });
-        else out.containers.push({ k: 'line', x: s.x, y: 430, w: 6, h: 460, holds: [{ k: 'fishschool', n: 1 }] });
+        else out.containers.push({ k: 'line', x: s.x, y: 430, w: 6, h: 460, holds: [{ k: 'school_silverside', n: 1 }] });
       }
       // floating plastic and the odd bottle or drum
       var junk = 1 + Math.min(4, Math.floor(n / 2));

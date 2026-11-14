@@ -202,7 +202,7 @@ TT.Player.prototype.update = function (dt) {
     this.wasUnder = under;
     if (now - this.lastSplash > 0.15) {
       this.lastSplash = now;
-      var heavy = e.id === 'loggerhead' || e.id === 'hammerhead' || e.id === 'manatee' || e.id === 'sealion' || e.id === 'eseal';
+      var heavy = e.id === 'loggerhead' || e.id === 'hammerhead' || e.id === 'manatee' || e.id === 'sealion' || e.id === 'eseal' || e.id === 'risso';
       g.fx.splash(b.position.x, g.water.y, heavy || sp > 9);
       g.sfx.play(under ? 'splash' : 'breach'); TT.Haptics.buzz(under ? 12 : 6);
     }
@@ -353,6 +353,28 @@ TT.Player.prototype.useAbility = function () {
     case 'batray':
       this.boost(8, 0.16); g.reveal(x, y + 30, A.digRadius); g.crunch(x, y + 20, A.digRadius * 0.6, e, A.digDamage, A.digDamage * 0.5);
       g.fx.silt(x, Math.min(TT.CFG.FLOOR_Y, y + 40)); g.sfx.play('whoosh');
+      break;
+    case 'risso':
+      // echolocation clicks: hidden nets and junk show up
+      this.boost(9, 0.16); g.reveal(x, y, A.echoRadius);
+      for (var ek = 1; ek <= 3; ek++) g.fx.ring(x, y, A.echoRadius * ek / 3, 0x9fe8ff); g.sfx.play('ready');
+      break;
+    case 'lanternfish':
+      this.boost(8, 0.14); g.lightBurst(x, y, A.glowRadius, A.glowTime, true, A.glowLight); g.fx.ring(x, y, A.glowRadius * 0.5, 0x7ff3ff); g.sfx.play('ready');
+      break;
+    case 'humboldt':
+      this.boost(A.squidJetSpeed, A.squidJetTime); e.shoving = true; M.Body.setMass(b, e.baseMass * A.squidJetMass);
+      g.fx.bubbles(x - hx * 30, y - hy * 30, 12); g.sfx.play('whoosh');
+      break;
+    case 'hatchetfish':
+      g.lightBurst(x, y, A.mirrorRadius, A.mirrorTime, true, 2); g.reveal(x, y, A.mirrorRadius); g.sfx.play('ready');
+      break;
+    case 'barreleye':
+      g.lightBurst(x, y - A.lookUpRise, A.lookUpRadius, 3); g.reveal(x, y - A.lookUpRise, A.lookUpRadius); g.sfx.play('ready');
+      break;
+    case 'vampsquid':
+      g.lightBurst(x, y, A.cloudRadius, A.cloudTime, false, A.cloudLight);
+      for (var vk = 0; vk < 3; vk++) g.fx.ring(x, y, A.cloudRadius * (0.3 + vk * 0.25), 0x6fd0ff); g.sfx.play('puff');
       break;
     case 'eseal':
       this.boost(A.plungeSpeed, A.plungeTime); e.shoving = true; M.Body.setMass(b, e.baseMass * A.plungeMassMult);

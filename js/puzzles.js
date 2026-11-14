@@ -14,7 +14,7 @@ TT.PUZZLES = [
     containers: [
       { k: 'net', x: 650, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] },
       { k: 'net', x: 1100, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'seahorse', n: 1 }] },
-      { k: 'net', x: 1500, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] }
+      { k: 'net', x: 1500, y: 605, w: 84, h: 150, holds: [{ k: 'school_silverside', n: 1 }] }
     ],
     coral: [{ x: 850, y: 640, w: 120, h: 76 }], invasives: [], startHealth: 40,
     hint: 'Every dash is a move. Line up each net before you dash: three nets, three dashes.'
@@ -25,10 +25,10 @@ TT.PUZZLES = [
     statics: [{ x: 1250, y: 640, w: 160, h: 80, look: 'rock' }],
     objects: [{ k: 'glass', x: 560, y: 650, w: 18, h: 60 }, { k: 'glass', x: 1600, y: 650, w: 18, h: 60 }],
     containers: [
-      { k: 'line', x: 640, y: 430, w: 6, h: 460, holds: [{ k: 'fishschool', n: 1 }] },
-      { k: 'line', x: 730, y: 430, w: 6, h: 460, holds: [{ k: 'fishschool', n: 1 }] },
-      { k: 'line', x: 1500, y: 430, w: 6, h: 460, holds: [{ k: 'fishschool', n: 1 }] },
-      { k: 'line', x: 1590, y: 430, w: 6, h: 460, holds: [{ k: 'fishschool', n: 1 }] },
+      { k: 'line', x: 640, y: 430, w: 6, h: 460, holds: [{ k: 'school_silverside', n: 1 }] },
+      { k: 'line', x: 730, y: 430, w: 6, h: 460, holds: [{ k: 'school_silverside', n: 1 }] },
+      { k: 'line', x: 1500, y: 430, w: 6, h: 460, holds: [{ k: 'school_silverside', n: 1 }] },
+      { k: 'line', x: 1590, y: 430, w: 6, h: 460, holds: [{ k: 'school_silverside', n: 1 }] },
       { k: 'net', x: 1060, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'seahorse', n: 1 }] }
     ],
     coral: [], invasives: [], startHealth: 40,
@@ -42,7 +42,7 @@ TT.PUZZLES = [
     containers: [
       { k: 'net', x: 600, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] },
       { k: 'net', x: 1400, y: 605, w: 84, h: 150, holds: [{ k: 'seahorse', n: 1 }] },
-      { k: 'net', x: 1800, y: 390, w: 74, h: 130, hang: true, holds: [{ k: 'fishschool', n: 1 }] }
+      { k: 'net', x: 1800, y: 390, w: 74, h: 130, hang: true, holds: [{ k: 'school_silverside', n: 1 }] }
     ],
     coral: [{ x: 1600, y: 640, w: 120, h: 76 }], invasives: [], startHealth: 40,
     hint: 'The sandbar blocks the way. One leap gets you over; spend the rest on dashes.'
@@ -70,7 +70,7 @@ TT.PUZZLES = [
       { k: 'concrete', x: 1510, y: 620, w: 40, h: 120 }, { k: 'concrete', x: 1650, y: 620, w: 40, h: 120 }, { k: 'concrete', x: 1580, y: 540, w: 120, h: 40 }
     ],
     containers: [
-      { k: 'trap', x: 830, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] },
+      { k: 'trap', x: 830, y: 645, w: 100, h: 70, holds: [{ k: 'school_silverside', n: 1 }] },
       { k: 'trap', x: 1580, y: 645, w: 100, h: 70, holds: [{ k: 'hatchling', n: 2 }] }
     ],
     coral: [], invasives: [], startHealth: 40,
@@ -85,7 +85,7 @@ TT.PUZZLES = [
     containers: [
       { k: 'net', x: 700, y: 430, w: 74, h: 130, holds: [{ k: 'hatchling', n: 1 }] },
       { k: 'net', x: 850, y: 430, w: 74, h: 130, holds: [{ k: 'seahorse', n: 1 }] },
-      { k: 'net', x: 1000, y: 430, w: 74, h: 130, holds: [{ k: 'fishschool', n: 1 }] },
+      { k: 'net', x: 1000, y: 430, w: 74, h: 130, holds: [{ k: 'school_silverside', n: 1 }] },
       { k: 'net', x: 1700, y: 360, w: 74, h: 130, hang: true, holds: [{ k: 'hatchling', n: 2 }] }
     ],
     coral: [], invasives: [], startHealth: 40,

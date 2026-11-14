@@ -25,6 +25,11 @@ window.TT = window.TT || {};
       far: 'rgba(108,168,150,0.55)', far2: 'rgba(58,118,112,0.8)', mid: '#1d5850', mid2: '#14453e',
       sand: ['#c7b98f', '#a5966c', '#7a6f52'], ray: 'rgba(240,255,235,', glow: '#c8ffe8'
     },
+    twilight: {   // Monterey Canyon twilight zone: blue fading to black, muddy canyon walls
+      sky: ['#26405e', '#4d6f8f', '#8aa6bd'], water: ['#1d5f8a', '#0f3d66', '#08244a', '#030c1e'],
+      far: 'rgba(40,90,140,0.5)', far2: 'rgba(20,56,100,0.8)', mid: '#0b2342', mid2: '#071830',
+      sand: ['#6b6a66', '#4c4b48', '#33322f'], ray: 'rgba(170,210,255,', glow: '#8fd8ff'
+    },
     cave: {
       sky: ['#05121c', '#07202e', '#0a2c3e'], water: ['#135a78', '#0c3f5c', '#07263f', '#030f1c'],
       far: 'rgba(30,96,124,0.6)', far2: 'rgba(16,64,90,0.85)', mid: '#0a2a40', mid2: '#071d2e',
@@ -136,7 +141,7 @@ window.TT = window.TT || {};
       ctx.globalAlpha = near ? 0.96 : 0.8; ctx.lineCap = 'round';
       (function (px, gy, s, kind) {
         wrap(ctx, px, 130 * s, function (x) {
-          if (fam === 'cave' || ((fam === 'galapagos' || fam === 'kelp') && kind < 2)) {   // rock spires and stacks
+          if (fam === 'cave' || fam === 'twilight' || ((fam === 'galapagos' || fam === 'kelp') && kind < 2)) {   // rock spires and stacks
             var bw = (40 + r() * 50) * s, bh = (90 + r() * 150) * s;
             ctx.beginPath(); ctx.moveTo(x - bw, gy + 20);
             ctx.lineTo(x - bw * 0.7, gy - bh * 0.5); ctx.lineTo(x - bw * 0.25, gy - bh * 0.92); ctx.lineTo(x + bw * 0.1, gy - bh);
@@ -322,7 +327,8 @@ window.TT = window.TT || {};
     keys: ['brain', 'tubes', 'fan', 'staghorn', 'anemone', 'grass', 'grass', 'star', 'boulder', 'fan', 'tubes'],
     galapagos: ['boulder', 'kelp', 'cups', 'urchin', 'kelp', 'star', 'boulder', 'cups'],   // no seagrass: the Galápagos have almost none
     kelp: ['kelp', 'boulder', 'kelp', 'urchin', 'star', 'anemone', 'kelp', 'boulder', 'cups'],
-    cave: ['boulder', 'glowtube', 'urchin', 'boulder', 'glowtube', 'cups']
+    cave: ['boulder', 'glowtube', 'urchin', 'boulder', 'glowtube', 'cups'],
+    twilight: ['boulder', 'cups', 'anemone', 'boulder', 'cups', 'star']
   };
   function propTexture(scene, name, hue, fam, dark) {
     var key = 'prop_' + name + '_' + hue + (dark ? '_fg' : '') + (fam === 'cave' ? '_c' : '');
@@ -428,7 +434,7 @@ window.TT = window.TT || {};
     if (!opts.noForeground) {
       var fx = 300 + r() * 400;
       while (fx < worldW * 1.25) {
-        var fname = fam === 'keys' ? ['grass', 'staghorn', 'grass', 'fan'][Math.floor(r() * 4)] : fam === 'kelp' ? (r() < 0.6 ? 'kelp' : 'boulder') : (r() < 0.5 ? 'grass' : 'boulder');
+        var fname = fam === 'keys' ? ['grass', 'staghorn', 'grass', 'fan'][Math.floor(r() * 4)] : fam === 'kelp' ? (r() < 0.6 ? 'kelp' : 'boulder') : fam === 'twilight' ? 'boulder' : (r() < 0.5 ? 'grass' : 'boulder');
         var fdef = PROPS[fname], fs = 1.6 + r() * 0.5, show = 90 + r() * 70;   // how many px poke up into view
         var fimg = scene.add.image(fx, C.HEIGHT + fdef.h * fs - show, propTexture(scene, fname, 0, fam, true)).setOrigin(0.5, 1).setScale(fs / PS).setDepth(14).setAlpha(0.5).setScrollFactor(1.25, 1);
         if (fdef.sway) { fimg.ttSway = fdef.sway * 0.5; fimg.ttPh = r() * 6.28; }
@@ -504,13 +510,15 @@ window.TT = window.TT || {};
   TT.Scenery.prototype.update = function (t) {
     var g = this.scene, cam = g.cameras.main, v = cam.worldView;
     placeLayers(this.L, v.x, v.y, this.water.y, t);
+    var cs = this.level.currents || [];
+    for (var ci = 0; ci < cs.length; ci++) if (cs[ci].migrate && this.currentFx[ci]) this.currentFx[ci].setY(this.water.currentY(cs[ci]));
     this.snow.setPosition(v.centerX, Math.max(v.centerY, this.water.y + this.view.h / 2));
     if (this.darkRT) {
       var rt = this.darkRT, lit = g.lit;
       rt.setVisible(!lit);
       for (var i = 0; i < this.glows.length; i++) this.glows[i].setScale(0.7 + 0.06 * Math.sin(t * 1.5 + i)).setVisible(!lit);
       if (!lit) {
-        rt.setPosition(v.x - 60, v.y - 60); rt.clear(); rt.fill(0x000000, TT.CFG.DARK_ALPHA);
+        rt.setPosition(v.x - 60, v.y - 60); rt.clear(); rt.fill(0x000000, typeof this.level.dark === 'number' ? this.level.dark : TT.CFG.DARK_ALPHA);
         for (var k = 0; k < g.lights.length; k++) {
           var L = g.lights[k];
           this.stamp.setPosition(L.x - rt.x, L.y - rt.y).setScale((L.r * 2) / 256).setAlpha(L.a === undefined ? 1 : L.a);

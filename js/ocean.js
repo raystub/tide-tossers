@@ -62,18 +62,19 @@ TT.School = function (game) {
 TT.School.prototype.join = function (container) {
   var g = this.game, self = this;
   container.animals.forEach(function (a) {
-    if (a.k === 'fishschool') {
+    if (TT.isSchool(a.k)) {
+      var one = a.k === 'fishschool' ? 'smallfish' : a.k.slice(7);
       for (var f = 0; f < 6; f++) {
-        var key = TT.Art.speciesKey(g, 'smallfish');
+        var key = TT.Art.speciesKey(g, one);
         var fish = g.add.sprite(a.sprite.x + (Math.random() - 0.5) * 40, a.sprite.y + (Math.random() - 0.5) * 30, key).setDepth(8.6);
-        fish.setScale(TT.Art.scaleFor(g, key, 26)); TT.Art.playSwim(fish, 'smallfish');
-        self.add(fish, 'smallfish');
+        fish.setScale(TT.Art.scaleFor(g, key, 26)); TT.Art.playSwim(fish, one);
+        self.add(fish, one);
       }
       a.sprite.destroy();
     } else { a.sprite.setDepth(8.6); self.add(a.sprite, a.k); }
   });
   container.animals = [];
-  g.time.delayedCall(2500, function () { g.ocean.addSwimmer('smallfish'); });
+  g.time.delayedCall(2500, function () { g.ocean.addSwimmer(); });
 };
 TT.School.prototype.add = function (sprite, kind) {
   var n = this.live().length;
@@ -135,7 +136,7 @@ TT.Ocean = function (scene, level, water) {
   this.targetSat = TT.CFG.SATURATION_AT_START; this.shownSat = this.targetSat + 0.01;
   // a few background schools from the start; more appear as animals are freed
   var n = level.dark ? 1 : Math.max(3, Math.round(level.width / 700));
-  for (var k = 0; k < n; k++) this.addSwimmer('smallfish', true);
+  for (var k = 0; k < n; k++) this.addSwimmer(null, true);
 };
 
 TT.Ocean.prototype.setHealth = function (health, start) {
@@ -147,7 +148,7 @@ TT.Ocean.prototype.setHealth = function (health, start) {
 TT.Ocean.prototype.addSwimmer = function (kind, initial) {
   var scene = this.scene, water = this.water, C = TT.CFG, W = this.level.width;
   if (this.swimmers.length > 10) return;
-  var key = TT.Art.speciesKey(scene, 'smallfish');
+  var fishId = TT.baitFor(this.level), key = TT.Art.speciesKey(scene, fishId);
   var group = [], n = 4 + Math.floor(Math.random() * 6);
   var dir = Math.random() < 0.5 ? 1 : -1;
   var y = Phaser.Math.Between(Math.round(water.y + 60), C.FLOOR_Y - 90);
@@ -155,7 +156,7 @@ TT.Ocean.prototype.addSwimmer = function (kind, initial) {
   for (var i = 0; i < n; i++) {
     var s = scene.add.sprite(x0 + (Math.random() - 0.5) * 70, y + (Math.random() - 0.5) * 36, key).setDepth(3.5).setAlpha(0.5);
     s.setScale(TT.Art.scaleFor(scene, key, 18 + Math.random() * 6));
-    TT.Art.playSwim(s, 'smallfish');
+    TT.Art.playSwim(s, fishId);
     if (dir < 0) s.setFlipX(true);
     group.push({ s: s, ox: s.x - x0, oy: s.y - y, ph: Math.random() * 6 });
   }

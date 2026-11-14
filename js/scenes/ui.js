@@ -58,6 +58,12 @@ TT.UI = {
     triton: 'Scent: crown-of-thorns starfish nearby move away. Slow, armoured and not hurt by their spines.',
     mantis: 'Punch: one very hard strike that cracks concrete, traps and shells.',
     nautilus: 'Buoy: rises or sinks straight up or down, shoving junk aside.',
+    risso: "Echo: clicks that find nets and junk hidden in the dark. Breathes air: come up before the ring runs out.",
+    lanternfish: 'Glow: lights the water around you and tops up your light meter.',
+    humboldt: 'Jet: a fast, heavy jet that snaps longlines and breaks junk.',
+    hatchetfish: 'Mirror: throws light around you and shows anything hidden nearby.',
+    barreleye: 'Look up: spots nets and junk hidden in the dark above you.',
+    vampsquid: 'Cloud: a glowing cloud that lights the area for a long time and tops up your light meter.',
     otter: 'Rock: bangs a stone on crab pots and shells. Crabs and urchins nearby scatter. Slips through kelp at full speed. Breathes air.',
     leopardshark: 'Sense: finds nets, traps and junk buried under the sand nearby.',
     octopus: 'Ink: an ink cloud sends crabs and lionfish away, and its arms pry at what is in front.',
@@ -115,7 +121,7 @@ TT.UIScene = new Phaser.Class({
     // tide gauge (right of centre)
     this.tideG = this.add.graphics();
     this.tideText = this.add.text(0, 0, '', { fontFamily: TT.UI.display, fontStyle: '800', fontSize: TT.UI.fs(20), stroke: '#031c2a', strokeThickness: 4, color: '#ffffff' }).setOrigin(0.5);
-    this.tideLabel = this.add.text(0, 0, g.arcade ? 'TIME' : 'TIDE', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(10), color: '#bdf3ff', stroke: '#031c2a', strokeThickness: 3 }).setOrigin(0.5);
+    this.tideLabel = this.add.text(0, 0, g.arcade ? 'TIME' : g.level.light ? 'LIGHT' : 'TIDE', { fontFamily: TT.UI.sans, fontStyle: '700', fontSize: TT.UI.fs(10), color: '#bdf3ff', stroke: '#031c2a', strokeThickness: 3 }).setOrigin(0.5);
     this.tideText.setVisible(g.timed); this.tideLabel.setVisible(g.timed);
     // Puzzle: moves left (in the dial's place)
     this.movesText = this.add.text(0, 0, '', { fontFamily: TT.UI.display, fontStyle: '800', fontSize: TT.UI.fs(20), stroke: '#031c2a', strokeThickness: 4, color: '#ffffff' }).setOrigin(0.5).setVisible(g.puzzle);
@@ -373,7 +379,7 @@ TT.UIScene = new Phaser.Class({
     var card = this.add.graphics(); TT.UI.panel(card, px - pw / 2, py - ph / 2, pw, ph, 24, 0x0a3d55, 0.98);
     if (res.mode === 'arcade') return this.showArcadeResult(res, layer, card, px, py, pw, ph);
     var title = res.win ? (res.mode === 'puzzle' ? (res.stars === 3 ? 'Solved on par!' : 'Solved!') : res.stars === 3 ? 'Reef restored!' : 'Rescue complete') :
-      (res.how === 'tide' ? 'The tide went out' : res.how === 'moves' ? 'Out of moves' : 'Animals still trapped');
+      (res.how === 'tide' ? 'The tide went out' : res.how === 'light' ? 'Your light ran out' : res.how === 'moves' ? 'Out of moves' : 'Animals still trapped');
     layer.add([this.shade(), card, TT.UI.title(this, px, py - ph / 2 + 44, title, 32)]);
     for (var i = 0; i < 3; i++) {
       var on = i < res.stars, sx = px + (i - 1) * 78, sy = py - ph / 2 + 116 - (i === 1 ? 8 : 0);

@@ -33,12 +33,18 @@ TT.Water.prototype.update = function (dt) {
 TT.Water.prototype.tideRising = function () { return !!this.tide && Math.cos(this.tidePhase) < 0; };
 
 // Push from currents at a point, in px per (1/60 s)^2.
+// A migrating layer (World 5): a band of drifting life that rises and sinks over `migrate.period` seconds.
+TT.Water.prototype.currentY = function (c) {
+  if (!c.migrate) return c.y;
+  return c.y + Math.sin((this.t || 0) * Math.PI * 2 / c.migrate.period) * c.migrate.amp;
+};
 TT.Water.prototype.currentAt = function (x, y, out) {
   out.x = 0; out.y = 0;
   if (!this.isUnder(y)) return out;
   for (var i = 0; i < this.currents.length; i++) {
     var c = this.currents[i];
-    if (x > c.x - c.w / 2 && x < c.x + c.w / 2 && y > c.y - c.h / 2 && y < c.y + c.h / 2) {
+    var cyy = c.migrate ? this.currentY(c) : c.y;
+    if (x > c.x - c.w / 2 && x < c.x + c.w / 2 && y > cyy - c.h / 2 && y < cyy + c.h / 2) {
       // surge: waves push in and pull back again
       var m = c.surge ? Math.sin((this.t || 0) * Math.PI * 2 / TT.CFG.SURGE_PERIOD) : 1;
       out.x += c.fx * m; out.y += c.fy * m;

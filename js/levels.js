@@ -25,7 +25,7 @@ TT.WORLDS = [
     plan: ['Rising Tide', 'Lava Shore', 'Penguin Rocks', 'Longline', 'Lava Tube', 'Darwin\'s Pillars'] },
   { n: 4, name: 'Monterey Bay Kelp', depth: '0–300 m', card: 'place_monterey', background: 'kelp',
     plan: ['Kelp Canopy', 'Elkhorn Slough', 'Harbor Breakwater', 'Urchin Barren', 'Sand Channel', 'Canyon Head'] },
-  { n: 5, name: 'Twilight Zone', depth: '200–1,000 m', card: 'place_twilight', background: 'cave',
+  { n: 5, name: 'Twilight Zone', depth: '200–1,000 m', card: 'place_twilight', background: 'twilight',
     plan: ['Dusk at the Rim', 'Scattering Layer', 'The Night Rise', 'Mirror Halls', 'Barreleye Window', 'Oxygen Minimum Zone'] }
 ];
 TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.WORLDS[i].n === n) return TT.WORLDS[i]; return TT.WORLDS[0]; };
@@ -51,7 +51,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       containers: [
         { k: 'net', x: 1250, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] },
         { k: 'net', x: 1930, y: 400, w: 74, h: 130, hang: true, holds: [{ k: 'seahorse', n: 1 }] },
-        { k: 'net', x: 2480, y: 610, w: 90, h: 140, holds: [{ k: 'fishschool', n: 1 }] }
+        { k: 'net', x: 2480, y: 610, w: 90, h: 140, holds: [{ k: 'school_silverside', n: 1 }] }
       ],
       coral: [{ x: 1100, y: 640, w: 130, h: 80 }, { x: 1780, y: 640, w: 130, h: 80 }],
       invasives: [], startHealth: 30,
@@ -78,7 +78,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       containers: [
         { k: 'net', x: 1330, y: 610, w: 80, h: 140, holds: [{ k: 'reddrum', n: 1 }] },
         { k: 'net', x: 1600, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'seahorse', n: 1 }] },
-        { k: 'trap', x: 2350, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'trap', x: 2350, y: 645, w: 100, h: 70, holds: [{ k: 'school_silverside', n: 1 }] },
         { k: 'net', x: 2880, y: 390, w: 74, h: 130, hang: true, holds: [{ k: 'reddrum', n: 1 }] }
       ],
       coral: [{ x: 1150, y: 640, w: 130, h: 80 }, { x: 2620, y: 640, w: 130, h: 80 }],
@@ -103,7 +103,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       containers: [
         { k: 'net', x: 1140, y: 638, w: 96, h: 84, holds: [{ k: 'seahorse', n: 1 }] },
         { k: 'net', x: 1990, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] },
-        { k: 'trap', x: 2600, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] }
+        { k: 'trap', x: 2600, y: 645, w: 100, h: 70, holds: [{ k: 'school_silverside', n: 1 }] }
       ],
       coral: [{ x: 1350, y: 640, w: 130, h: 80 }, { x: 2250, y: 640, w: 130, h: 80 }],
       invasives: [], startHealth: 30,
@@ -118,7 +118,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'glass', x: 2140, y: 560, w: 18, h: 60 }, { k: 'tin', x: 1480, y: 640, w: 44, h: 80 }
       ],
       containers: [
-        { k: 'trap', x: 1280, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'trap', x: 1280, y: 645, w: 100, h: 70, holds: [{ k: 'school_silverside', n: 1 }] },
         { k: 'net', x: 2020, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] },
         { k: 'net', x: 2620, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'seahorse', n: 1 }] }
       ],
@@ -142,7 +142,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       containers: [
         { k: 'trap', x: 1120, y: 645, w: 100, h: 70, holds: [{ k: 'seahorse', n: 1 }] },
         { k: 'trap', x: 2020, y: 645, w: 100, h: 70, holds: [{ k: 'hatchling', n: 2 }] },
-        { k: 'trap', x: 2600, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'trap', x: 2600, y: 645, w: 100, h: 70, holds: [{ k: 'school_silverside', n: 1 }] },
         { k: 'net', x: 1650, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'seahorse', n: 1 }] },
         { k: 'net', x: 2960, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] }
       ],
@@ -169,7 +169,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       containers: [
         { k: 'net', x: 1590, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] },
         { k: 'net', x: 1880, y: 360, w: 74, h: 130, hang: true, holds: [{ k: 'seahorse', n: 1 }] },
-        { k: 'trap', x: 2440, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'trap', x: 2440, y: 645, w: 100, h: 70, holds: [{ k: 'school_silverside', n: 1 }] },
         { k: 'net', x: 3220, y: 560, w: 250, h: 150, stages: 3, hang: true, holds: [{ k: 'sawfish', n: 1 }] }
       ],
       coral: [{ x: 2080, y: 640, w: 120, h: 76 }],
@@ -191,11 +191,11 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'tin', x: 1450, y: 640, w: 44, h: 80 }, { k: 'plastic', x: 2050, y: 225, w: 60, h: 40 }
       ],
       containers: [
-        { k: 'net', x: 900, y: 600, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 900, y: 600, w: 84, h: 150, holds: [{ k: 'school_fusilier', n: 1 }] },
         { k: 'net', x: 1450, y: 400, w: 74, h: 120, holds: [{ k: 'hatchling', n: 2 }] },
         { k: 'trap', x: 2000, y: 645, w: 100, h: 70, holds: [{ k: 'clownfish', n: 2 }] },
         { k: 'net', x: 2550, y: 420, w: 74, h: 120, holds: [{ k: 'seahorse', n: 1 }] },
-        { k: 'trap', x: 2950, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] }
+        { k: 'trap', x: 2950, y: 645, w: 100, h: 70, holds: [{ k: 'school_fusilier', n: 1 }] }
       ],
       coral: [{ x: 1250, y: 640, w: 120, h: 76 }, { x: 2600, y: 640, w: 120, h: 76 }], invasives: [], startHealth: 30,
       hint: 'Plastic is snagged in the mangroves above the water. The archerfish JETS water to knock it down: aim up and tap. The loggerhead shoves traps open.'
@@ -211,7 +211,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       ],
       containers: [
         { k: 'net', x: 1150, y: 600, w: 84, h: 150, holds: [{ k: 'clownfish', n: 2 }] },
-        { k: 'net', x: 1450, y: 360, w: 74, h: 130, hang: true, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 1450, y: 360, w: 74, h: 130, hang: true, holds: [{ k: 'school_fusilier', n: 1 }] },
         { k: 'trap', x: 2100, y: 645, w: 100, h: 70, holds: [{ k: 'hatchling', n: 2 }] },
         { k: 'net', x: 3000, y: 600, w: 84, h: 150, holds: [{ k: 'clownfish', n: 2 }] }
       ],
@@ -236,7 +236,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       containers: [
         { k: 'net', x: 900, y: 600, w: 84, h: 150, holds: [{ k: 'clownfish', n: 2 }] },
         { k: 'line', x: 1800, y: 430, w: 6, h: 460, gentle: true, holds: [{ k: 'manta', n: 1 }] },
-        { k: 'net', x: 2900, y: 600, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 2900, y: 600, w: 84, h: 150, holds: [{ k: 'school_fusilier', n: 1 }] },
         { k: 'net', x: 3150, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'hatchling', n: 1 }] }
       ],
       coral: [{ x: 650, y: 640, w: 120, h: 76 }, { x: 2650, y: 640, w: 120, h: 76 }], invasives: [], startHealth: 30,
@@ -249,7 +249,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       objects: [{ k: 'rubble', x: 1150, y: 650, w: 80, h: 50 }, { k: 'plastic', x: 1400, y: 195, w: 56, h: 38 }, { k: 'rubble', x: 2400, y: 650, w: 80, h: 50 }, { k: 'glass', x: 2900, y: 650, w: 18, h: 60 }],
       containers: [
         { k: 'net', x: 1000, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'clownfish', n: 2 }] },
-        { k: 'net', x: 1950, y: 600, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 1950, y: 600, w: 84, h: 150, holds: [{ k: 'school_fusilier', n: 1 }] },
         { k: 'net', x: 2650, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'hatchling', n: 2 }] },
         { k: 'net', x: 3150, y: 600, w: 84, h: 150, holds: [{ k: 'clownfish', n: 1 }] }
       ],
@@ -269,7 +269,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       ],
       containers: [
         { k: 'trap', x: 950, y: 645, w: 100, h: 70, holds: [{ k: 'clownfish', n: 2 }] },
-        { k: 'trap', x: 1950, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'trap', x: 1950, y: 645, w: 100, h: 70, holds: [{ k: 'school_fusilier', n: 1 }] },
         { k: 'net', x: 2250, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'hatchling', n: 2 }] },
         { k: 'trap', x: 2950, y: 645, w: 100, h: 70, holds: [{ k: 'clownfish', n: 1 }] }
       ],
@@ -290,7 +290,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       objects: [{ k: 'concrete', x: 1000, y: 620, w: 40, h: 120 }, { k: 'tin', x: 1850, y: 640, w: 44, h: 80 }, { k: 'plastic', x: 2600, y: 195, w: 56, h: 38 }, { k: 'concrete', x: 2700, y: 590, w: 70, h: 40 }],
       containers: [
         { k: 'trap', x: 1100, y: 645, w: 100, h: 70, holds: [{ k: 'clownfish', n: 2 }] },
-        { k: 'net', x: 1900, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 1900, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'school_fusilier', n: 1 }] },
         { k: 'trap', x: 2700, y: 645, w: 100, h: 70, holds: [{ k: 'hatchling', n: 2 }] },
         { k: 'net', x: 3250, y: 300, w: 300, h: 160, stages: 3, sink: 7, sinkTo: 560, holds: [{ k: 'loggerhead', n: 2 }] }
       ],
@@ -316,7 +316,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'tin', x: 2760, y: 570, w: 44, h: 80 }, { k: 'plastic', x: 2620, y: 255, w: 56, h: 38 }
       ],
       containers: [
-        { k: 'net', x: 1120, y: 330, w: 74, h: 130, hang: true, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 1120, y: 330, w: 74, h: 130, hang: true, holds: [{ k: 'school_salema', n: 1 }] },
         { k: 'net', x: 1990, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] },
         { k: 'net', x: 2400, y: 340, w: 74, h: 130, hang: true, holds: [{ k: 'hatchling', n: 1 }] },
         { k: 'trap', x: 2760, y: 645, w: 100, h: 70, holds: [{ k: 'seahorse', n: 1 }] }
@@ -342,9 +342,9 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'glass', x: 2600, y: 650, w: 18, h: 60 }, { k: 'plastic', x: 3000, y: 235, w: 56, h: 38 }
       ],
       containers: [
-        { k: 'net', x: 860, y: 420, w: 74, h: 120, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 860, y: 420, w: 74, h: 120, holds: [{ k: 'school_salema', n: 1 }] },
         { k: 'net', x: 1500, y: 610, w: 84, h: 140, holds: [{ k: 'hatchling', n: 2 }] },
-        { k: 'net', x: 1880, y: 420, w: 74, h: 120, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 1880, y: 420, w: 74, h: 120, holds: [{ k: 'school_salema', n: 1 }] },
         { k: 'trap', x: 2620, y: 645, w: 100, h: 70, holds: [{ k: 'hatchling', n: 1 }] },
         { k: 'net', x: 2980, y: 600, w: 110, h: 150, holds: [{ k: 'sealion', n: 1 }] }
       ],
@@ -367,13 +367,13 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'glass', x: 1080, y: 650, w: 18, h: 60 }, { k: 'tin', x: 2480, y: 640, w: 44, h: 80 }
       ],
       containers: [
-        { k: 'net', x: 760, y: 470, w: 70, h: 110, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 760, y: 470, w: 70, h: 110, holds: [{ k: 'school_salema', n: 1 }] },
         { k: 'net', x: 1080, y: 470, w: 70, h: 110, holds: [{ k: 'penguin', n: 1 }] },
-        { k: 'net', x: 1420, y: 470, w: 70, h: 110, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 1420, y: 470, w: 70, h: 110, holds: [{ k: 'school_salema', n: 1 }] },
         { k: 'net', x: 1780, y: 470, w: 70, h: 110, holds: [{ k: 'penguin', n: 1 }] },
         { k: 'net', x: 2120, y: 470, w: 70, h: 110, holds: [{ k: 'hatchling', n: 1 }] },
         { k: 'net', x: 2480, y: 470, w: 70, h: 110, holds: [{ k: 'penguin', n: 1 }] },
-        { k: 'trap', x: 3000, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] }
+        { k: 'trap', x: 3000, y: 645, w: 100, h: 70, holds: [{ k: 'school_salema', n: 1 }] }
       ],
       coral: [], invasives: [], startHealth: 30,
       hint: 'Weave between the rocks. The penguin BURSTS: a quick dart that recharges fast. It has the shortest breath, so surface often.'
@@ -392,10 +392,10 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'concrete', x: 2480, y: 620, w: 60, h: 120 }
       ],
       containers: [
-        { k: 'line', x: 900, y: 430, w: 6, h: 460, holds: [{ k: 'fishschool', n: 1 }] },
-        { k: 'line', x: 1300, y: 430, w: 6, h: 460, holds: [{ k: 'fishschool', n: 1 }] },
-        { k: 'line', x: 1700, y: 430, w: 6, h: 460, holds: [{ k: 'fishschool', n: 1 }] },
-        { k: 'line', x: 2100, y: 430, w: 6, h: 460, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'line', x: 900, y: 430, w: 6, h: 460, holds: [{ k: 'school_salema', n: 1 }] },
+        { k: 'line', x: 1300, y: 430, w: 6, h: 460, holds: [{ k: 'school_salema', n: 1 }] },
+        { k: 'line', x: 1700, y: 430, w: 6, h: 460, holds: [{ k: 'school_salema', n: 1 }] },
+        { k: 'line', x: 2100, y: 430, w: 6, h: 460, holds: [{ k: 'school_salema', n: 1 }] },
         { k: 'net', x: 3300, y: 300, w: 80, h: 120, hang: true, holds: [{ k: 'hatchling', n: 2 }] }
       ],
       coral: [], invasives: [], startHealth: 30,
@@ -420,7 +420,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       containers: [
         { k: 'net', x: 1500, y: 605, w: 84, h: 150, holds: [{ k: 'hatchling', n: 2 }] },
         { k: 'trap', x: 2450, y: 645, w: 100, h: 70, holds: [{ k: 'seahorse', n: 1 }] },
-        { k: 'net', x: 2900, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] }
+        { k: 'net', x: 2900, y: 605, w: 84, h: 150, holds: [{ k: 'school_salema', n: 1 }] }
       ],
       coral: [], invasives: [], startHealth: 30, grantGlow: true,
       hint: 'It\'s dark in the lava tube. The bullhead shark hugs the bottom, and its CRUSH cracks traps and concrete. Glowing plankton lights anything that moves.'
@@ -440,9 +440,9 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'concrete', x: 2900, y: 590, w: 70, h: 40 }, { k: 'plastic', x: 3500, y: 195, w: 56, h: 38 }
       ],
       containers: [
-        { k: 'trap', x: 1000, y: 645, w: 100, h: 70, holds: [{ k: 'fishschool', n: 1 }] },
-        { k: 'line', x: 1800, y: 430, w: 6, h: 460, holds: [{ k: 'fishschool', n: 1 }] },
-        { k: 'line', x: 2100, y: 430, w: 6, h: 460, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'trap', x: 1000, y: 645, w: 100, h: 70, holds: [{ k: 'school_salema', n: 1 }] },
+        { k: 'line', x: 1800, y: 430, w: 6, h: 460, holds: [{ k: 'school_salema', n: 1 }] },
+        { k: 'line', x: 2100, y: 430, w: 6, h: 460, holds: [{ k: 'school_salema', n: 1 }] },
         { k: 'trap', x: 2900, y: 645, w: 100, h: 70, holds: [{ k: 'hatchling', n: 2 }] },
         { k: 'net', x: 3420, y: 470, w: 330, h: 170, stages: 3, hang: true, holds: [{ k: 'whaleshark', n: 1 }] }
       ],
@@ -463,7 +463,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'trap', x: 600, y: 645, w: 100, h: 70, holds: [{ k: 'rockfish', n: 2 }] },
         { k: 'net', x: 1250, y: 330, w: 74, h: 130, hang: true, holds: [{ k: 'otter', n: 1 }] },
         { k: 'trap', x: 2000, y: 645, w: 100, h: 70, holds: [{ k: 'rockfish', n: 2 }] },
-        { k: 'net', x: 2650, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] }
+        { k: 'net', x: 2650, y: 605, w: 84, h: 150, holds: [{ k: 'school_anchovy', n: 1 }] }
       ],
       coral: [], invasives: [], startHealth: 30,
       hint: 'Giant kelp grows in tall forests here. The sea otter slips through the kelp and bangs crab pots open with a ROCK. Otters breathe air, so come up when the ring runs low.'
@@ -478,7 +478,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       containers: [
         { k: 'trap', x: 750, y: 645, w: 100, h: 70, holds: [{ k: 'rockfish', n: 1 }] },
         { k: 'trap', x: 1350, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'rockfish', n: 2 }] },
-        { k: 'net', x: 1950, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 1950, y: 605, w: 84, h: 150, holds: [{ k: 'school_anchovy', n: 1 }] },
         { k: 'trap', x: 2550, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'otter', n: 1 }] }
       ],
       coral: [], startHealth: 30,
@@ -499,7 +499,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       ],
       containers: [
         { k: 'trap', x: 1450, y: 645, w: 100, h: 70, holds: [{ k: 'rockfish', n: 2 }] },
-        { k: 'net', x: 2000, y: 340, w: 74, h: 130, hang: true, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 2000, y: 340, w: 74, h: 130, hang: true, holds: [{ k: 'school_anchovy', n: 1 }] },
         { k: 'trap', x: 2650, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'rockfish', n: 2 }] },
         { k: 'net', x: 3000, y: 605, w: 84, h: 150, holds: [{ k: 'otter', n: 1 }] }
       ],
@@ -520,7 +520,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
         { k: 'trap', x: 900, y: 645, w: 100, h: 70, holds: [{ k: 'rockfish', n: 2 }] },
         { k: 'net', x: 1500, y: 340, w: 74, h: 130, hang: true, holds: [{ k: 'otter', n: 1 }] },
         { k: 'trap', x: 2250, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'rockfish', n: 1 }] },
-        { k: 'net', x: 2750, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] }
+        { k: 'net', x: 2750, y: 605, w: 84, h: 150, holds: [{ k: 'school_anchovy', n: 1 }] }
       ],
       coral: [], startHealth: 15,
       invasives: [
@@ -541,7 +541,7 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       ],
       containers: [
         { k: 'trap', x: 950, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'rockfish', n: 2 }] },
-        { k: 'net', x: 1450, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 1450, y: 605, w: 84, h: 150, holds: [{ k: 'school_anchovy', n: 1 }] },
         { k: 'trap', x: 2000, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'rockfish', n: 1 }] },
         { k: 'trap', x: 2700, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'otter', n: 1 }] }
       ],
@@ -561,14 +561,127 @@ TT.worldByN = function (n) { for (var i = 0; i < TT.WORLDS.length; i++) if (TT.W
       containers: [
         { k: 'trap', x: 950, y: 645, w: 100, h: 70, holds: [{ k: 'rockfish', n: 2 }] },
         { k: 'trap', x: 1800, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'otter', n: 1 }] },
-        { k: 'net', x: 2300, y: 605, w: 84, h: 150, holds: [{ k: 'fishschool', n: 1 }] },
+        { k: 'net', x: 2300, y: 605, w: 84, h: 150, holds: [{ k: 'school_anchovy', n: 1 }] },
         { k: 'net', x: 3250, y: 400, w: 340, h: 160, stages: 3, hang: true, holds: [{ k: 'humpback', n: 1 }] }
       ],
       coral: [], startHealth: 30,
       invasives: [{ k: 'greencrab', x: 1550, y: 662, patrol: 50, size: 56 }, { k: 'greencrab', x: 2650, y: 662, patrol: 60, size: 56 }],
       hint: 'A humpback whale is caught in crab-pot lines! Tear the lines three times to free it. Elephant seals are deep divers: the seal\'s PLUNGE hits like a battering ram.'
+    },
+    // ---------- World 5: the twilight zone of Monterey Canyon ----------
+    // light: true swaps the tide for a light meter that drains over time; glowing plankton (glowSpots), rescues and glowing abilities top it up.
+    {
+      id: '5-1', name: 'Dusk at the Rim', world: 5, place: 'Monterey Canyon', background: 'twilight', dark: 0.5, light: true,
+      width: 3200, waterline: 170, start: { x: 170, y: 40 }, team: ['risso', 'eseal'], time: 120, exit: { x: 3080, y: 430 },
+      glowSpots: [{ x: 900, y: 450 }, { x: 1800, y: 380 }, { x: 2600, y: 480 }],
+      statics: [{ x: 1350, y: 610, w: 220, h: 140, look: 'rock' }],
+      objects: [
+        { k: 'plastic', x: 700, y: 175, w: 56, h: 38 }, { k: 'glass', x: 1100, y: 650, w: 18, h: 60, buried: true },
+        { k: 'tin', x: 2200, y: 640, w: 44, h: 80, buried: true }, { k: 'plastic', x: 2800, y: 175, w: 56, h: 38 }
+      ],
+      containers: [
+        { k: 'net', x: 800, y: 360, w: 90, h: 140, hang: true, holds: [{ k: 'sunfish', n: 1 }] },
+        { k: 'net', x: 1700, y: 605, w: 84, h: 150, buried: true, holds: [{ k: 'school_lanternfish', n: 1 }] },
+        { k: 'net', x: 2450, y: 380, w: 74, h: 130, hang: true, buried: true, holds: [{ k: 'hake', n: 1 }] }
+      ],
+      coral: [], invasives: [], startHealth: 30,
+      hint: 'Sunlight fades as you go deeper; by about 200 m it is nearly gone. Risso\'s dolphins hunt squid at night by ECHO: its clicks find nets hidden in the gloom. Glowing plankton tops up your light.'
+    },
+    {
+      id: '5-2', name: 'Scattering Layer', world: 5, place: 'Monterey Canyon', background: 'twilight', dark: 0.65, light: true,
+      width: 3400, waterline: 170, start: { x: 170, y: 40 }, team: ['lanternfish', 'risso', 'eseal'], time: 110, exit: { x: 3280, y: 430 },
+      glowSpots: [{ x: 750, y: 520 }, { x: 1500, y: 330 }, { x: 2300, y: 520 }, { x: 3000, y: 360 }],
+      currents: [{ x: 1900, y: 440, w: 1200, h: 160, fx: 0.16, fy: 0, migrate: { amp: 120, period: 16 } }],
+      objects: [
+        { k: 'plastic', x: 1000, y: 175, w: 56, h: 38 }, { k: 'plastic', x: 1600, y: 420, w: 56, h: 38 },
+        { k: 'plastic', x: 2400, y: 380, w: 56, h: 38 }, { k: 'glass', x: 2900, y: 650, w: 18, h: 60, buried: true }
+      ],
+      containers: [
+        { k: 'net', x: 900, y: 380, w: 74, h: 130, hang: true, holds: [{ k: 'school_lanternfish', n: 1 }] },
+        { k: 'net', x: 1650, y: 605, w: 84, h: 150, holds: [{ k: 'school_lanternfish', n: 1 }] },
+        { k: 'net', x: 2250, y: 360, w: 74, h: 130, hang: true, buried: true, holds: [{ k: 'school_lanternfish', n: 1 }] },
+        { k: 'net', x: 2850, y: 605, w: 84, h: 150, holds: [{ k: 'hake', n: 1 }] }
+      ],
+      coral: [], invasives: [], startHealth: 30,
+      hint: 'The scattering layer is so thick with lanternfish that ship sonar once mistook it for the sea floor. It rises at night and sinks by day. The lanternfish\'s GLOW lights the water and tops up your light.'
+    },
+    {
+      id: '5-3', name: 'The Night Rise', world: 5, place: 'Monterey Canyon', background: 'twilight', dark: 0.75, light: true,
+      width: 3500, waterline: 170, start: { x: 170, y: 40 }, team: ['humboldt', 'lanternfish', 'risso'], time: 110, exit: { x: 3380, y: 430 },
+      glowSpots: [{ x: 700, y: 460 }, { x: 1450, y: 560 }, { x: 2200, y: 340 }, { x: 2900, y: 520 }],
+      currents: [{ x: 1300, y: 420, w: 900, h: 150, fx: -0.14, fy: 0, migrate: { amp: 140, period: 14 } }, { x: 2700, y: 460, w: 800, h: 150, fx: 0.14, fy: 0, migrate: { amp: 120, period: 18 } }],
+      objects: [
+        { k: 'tin', x: 1100, y: 640, w: 44, h: 80 }, { k: 'plastic', x: 1900, y: 175, w: 56, h: 38 },
+        { k: 'concrete', x: 2500, y: 650, w: 70, h: 40 }
+      ],
+      containers: [
+        { k: 'line', x: 900, y: 430, w: 6, h: 460, holds: [{ k: 'hake', n: 2 }] },
+        { k: 'line', x: 1650, y: 430, w: 6, h: 460, holds: [{ k: 'hake', n: 2 }] },
+        { k: 'net', x: 2350, y: 605, w: 84, h: 150, holds: [{ k: 'school_lanternfish', n: 1 }] },
+        { k: 'line', x: 3050, y: 430, w: 6, h: 460, buried: true, holds: [{ k: 'hake', n: 2 }] }
+      ],
+      coral: [], invasives: [], startHealth: 30,
+      hint: 'Every night, lanternfish, squid and shrimp rise toward the surface to feed, and sink again at dawn. The Humboldt squid swims by jet propulsion: its JET hits hard enough to snap a lost longline.'
+    },
+    {
+      id: '5-4', name: 'Mirror Halls', world: 5, place: 'Monterey Canyon', background: 'twilight', dark: 0.82, light: true,
+      width: 3400, waterline: 170, start: { x: 170, y: 40 }, team: ['hatchetfish', 'humboldt', 'lanternfish'], time: 110, exit: { x: 3280, y: 430 },
+      glowSpots: [{ x: 650, y: 520 }, { x: 1300, y: 330 }, { x: 1950, y: 560 }, { x: 2650, y: 380 }],
+      statics: [{ x: 1100, y: 600, w: 200, h: 160, look: 'rock' }, { x: 2300, y: 610, w: 220, h: 140, look: 'rock' }],
+      objects: [
+        { k: 'glass', x: 800, y: 650, w: 18, h: 60, buried: true }, { k: 'plastic', x: 1600, y: 175, w: 56, h: 38 },
+        { k: 'tin', x: 2700, y: 640, w: 44, h: 80, buried: true }
+      ],
+      containers: [
+        { k: 'net', x: 850, y: 380, w: 74, h: 130, hang: true, buried: true, holds: [{ k: 'school_bristlemouth', n: 1 }] },
+        { k: 'net', x: 1550, y: 605, w: 84, h: 150, holds: [{ k: 'school_bristlemouth', n: 1 }] },
+        { k: 'net', x: 2000, y: 360, w: 74, h: 130, hang: true, buried: true, holds: [{ k: 'school_bristlemouth', n: 1 }] },
+        { k: 'trap', x: 2900, y: 645, w: 100, h: 70, buried: true, holds: [{ k: 'hake', n: 1 }] }
+      ],
+      coral: [], invasives: [], startHealth: 30,
+      hint: 'Hatchetfish have mirror-like silver sides and lights on their bellies that hide their shadow from hunters below. Its MIRROR throws light around and shows what is hidden. Bristlemouths may be the most numerous backboned animals on Earth.'
+    },
+    {
+      id: '5-5', name: 'Barreleye Window', world: 5, place: 'Monterey Canyon', background: 'twilight', dark: 0.86, light: true,
+      width: 3500, waterline: 170, start: { x: 170, y: 40 }, team: ['barreleye', 'hatchetfish', 'humboldt'], time: 110, exit: { x: 3380, y: 430 },
+      glowSpots: [{ x: 700, y: 560 }, { x: 1400, y: 580 }, { x: 2100, y: 560 }, { x: 2800, y: 580 }],
+      objects: [
+        { k: 'plastic', x: 1000, y: 330, w: 56, h: 38, buried: true }, { k: 'tin', x: 1800, y: 640, w: 44, h: 80 },
+        { k: 'plastic', x: 2500, y: 300, w: 56, h: 38, buried: true }
+      ],
+      containers: [
+        { k: 'net', x: 900, y: 330, w: 74, h: 130, hang: true, buried: true, holds: [{ k: 'glasssquid', n: 1 }] },
+        { k: 'line', x: 1600, y: 430, w: 6, h: 460, holds: [{ k: 'school_lanternfish', n: 1 }] },
+        { k: 'net', x: 2250, y: 320, w: 74, h: 130, hang: true, buried: true, holds: [{ k: 'glasssquid', n: 1 }] },
+        { k: 'net', x: 3000, y: 605, w: 84, h: 150, holds: [{ k: 'hake', n: 1 }] }
+      ],
+      coral: [], invasives: [], startHealth: 30,
+      hint: 'The barreleye has a see-through head. Its green, tube-shaped eyes inside can point straight up to spot the shadows of animals above. LOOK UP to find nets drifting overhead.'
+    },
+    {
+      id: '5-6', name: 'Oxygen Minimum Zone', world: 5, place: 'Monterey Canyon', background: 'twilight', dark: 0.9, light: true,
+      width: 3900, waterline: 170, start: { x: 170, y: 40 }, team: ['vampsquid', 'humboldt', 'barreleye'], time: 120, exit: { x: 3780, y: 430 },
+      glowSpots: [{ x: 700, y: 520 }, { x: 1400, y: 360 }, { x: 2100, y: 560 }, { x: 2800, y: 380 }],
+      currents: [{ x: 1700, y: 300, w: 1000, h: 160, fx: 0, fy: 0.08 }],
+      objects: [
+        { k: 'tin', x: 1000, y: 640, w: 44, h: 80, buried: true }, { k: 'plastic', x: 1800, y: 175, w: 56, h: 38 },
+        { k: 'concrete', x: 2400, y: 650, w: 70, h: 40 }
+      ],
+      containers: [
+        { k: 'net', x: 900, y: 605, w: 84, h: 150, holds: [{ k: 'hake', n: 1 }] },
+        { k: 'net', x: 1600, y: 340, w: 74, h: 130, hang: true, buried: true, holds: [{ k: 'glasssquid', n: 1 }] },
+        { k: 'line', x: 2200, y: 430, w: 6, h: 460, holds: [{ k: 'school_lanternfish', n: 1 }] },
+        { k: 'net', x: 3150, y: 400, w: 340, h: 160, stages: 3, hang: true, holds: [{ k: 'beakedwhale', n: 1 }] }
+      ],
+      coral: [], invasives: [], startHealth: 30,
+      hint: 'Here the water holds very little oxygen, but the vampire squid lives here easily. Instead of ink, it puffs out a CLOUD of glowing mucus. A Cuvier\'s beaked whale, the deepest-diving mammal known, is caught in a drift gillnet: tear it three times.'
     }
   ];
+
+  // The bait fish that schools in each world: rescued schools are 'school_<fish>', and the same fish swim in the background.
+  TT.BAIT = { 1: 'silverside', 2: 'fusilier', 3: 'salema', 4: 'anchovy', 5: 'lanternfish' };
+  TT.baitFor = function (level) { return TT.BAIT[(level && level.world) || 1] || 'silverside'; };
+  TT.isSchool = function (k) { return k === 'school_anchovy' || k.indexOf('school_') === 0; };
 
   TT.levelById = function (id) {
     var lists = [TT.LEVELS, TT.PUZZLES || []];

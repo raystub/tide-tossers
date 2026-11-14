@@ -348,6 +348,157 @@ TT.Art = (function () {
     }
   };
 
+
+
+  // ---------- Twilight zone ----------
+  // Risso's dolphin: blunt rounded head with no beak, tall dorsal fin, grey body covered in white scars.
+  species.risso = function (ctx, w, h) {
+    var cy = h * 0.56;
+    ctx.beginPath(); ctx.moveTo(w * 0.12, cy); ctx.quadraticCurveTo(w * 0.04, cy - h * 0.28, w * 0.0, cy - h * 0.3); ctx.quadraticCurveTo(w * 0.05, cy, w * 0.0, cy + h * 0.28); ctx.quadraticCurveTo(w * 0.05, cy + h * 0.26, w * 0.12, cy); finFill(ctx, '#5a6672', 0.97);
+    ctx.beginPath(); ctx.moveTo(w * 0.56, cy - h * 0.2); ctx.quadraticCurveTo(w * 0.5, cy - h * 0.5, w * 0.42, cy - h * 0.56); ctx.quadraticCurveTo(w * 0.46, cy - h * 0.3, w * 0.42, cy - h * 0.18); finFill(ctx, '#58646f', 0.97);
+    ctx.beginPath(); ctx.moveTo(w * 0.1, cy);
+    ctx.bezierCurveTo(w * 0.3, cy - h * 0.3, w * 0.74, cy - h * 0.34, w * 0.92, cy - h * 0.16);
+    ctx.quadraticCurveTo(w * 1.0, cy - h * 0.02, w * 0.94, cy + h * 0.1);
+    ctx.bezierCurveTo(w * 0.74, cy + h * 0.28, w * 0.3, cy + h * 0.24, w * 0.1, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.34, 0, cy + h * 0.26, [[0, '#6e7a86'], [0.55, '#9aa6b0'], [1, '#dfe5ea']]); ctx.fill();
+    ctx.save(); ctx.clip(); var r = rng(31); ctx.strokeStyle = 'rgba(245,248,250,0.75)'; ctx.lineWidth = 1.1;
+    for (var i = 0; i < 26; i++) { var x = w * (0.2 + r() * 0.72), y = cy - h * (0.28 - r() * 0.4); ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + (r() - 0.5) * 14, y + (r() - 0.5) * 6); ctx.stroke(); }
+    ctx.restore();
+    ctx.beginPath(); ctx.moveTo(w * 0.7, cy + h * 0.1); ctx.quadraticCurveTo(w * 0.62, cy + h * 0.34, w * 0.54, cy + h * 0.36); ctx.quadraticCurveTo(w * 0.6, cy + h * 0.2, w * 0.64, cy + h * 0.1); finFill(ctx, '#5f6b77', 0.96);
+    eye(ctx, w * 0.86, cy - h * 0.04, h * 0.05);
+  };
+  // Humboldt squid: red-purple mantle with fins at the back end, big eye, arms trailing forward.
+  species.humboldt = function (ctx, w, h) {
+    var cy = h * 0.5;
+    ctx.strokeStyle = '#a83a46'; ctx.lineCap = 'round';
+    for (var a = 0; a < 5; a++) { ctx.lineWidth = h * (0.1 - a * 0.012); ctx.beginPath(); ctx.moveTo(w * 0.66, cy + (a - 2) * h * 0.05); ctx.quadraticCurveTo(w * 0.84, cy + (a - 2) * h * 0.1, w * 0.99, cy + (a - 2) * h * 0.13); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(w * 0.0, cy); ctx.lineTo(w * 0.16, cy - h * 0.4); ctx.lineTo(w * 0.24, cy); ctx.lineTo(w * 0.16, cy + h * 0.4); ctx.closePath(); finFill(ctx, '#b54652', 0.95);
+    ctx.beginPath(); ctx.moveTo(w * 0.06, cy); ctx.bezierCurveTo(w * 0.2, cy - h * 0.28, w * 0.56, cy - h * 0.28, w * 0.68, cy - h * 0.16); ctx.lineTo(w * 0.68, cy + h * 0.16); ctx.bezierCurveTo(w * 0.56, cy + h * 0.28, w * 0.2, cy + h * 0.28, w * 0.06, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.28, 0, cy + h * 0.28, [[0, '#8e2234'], [0.5, '#c8505c'], [1, '#e88a86']]); ctx.fill();
+    ctx.save(); ctx.clip(); var r = rng(9); ctx.fillStyle = 'rgba(110,20,40,0.45)'; for (var i = 0; i < 30; i++) { ctx.beginPath(); ctx.arc(w * (0.1 + r() * 0.6), cy + (r() - 0.5) * h * 0.5, 1.6, 0, 7); ctx.fill(); } ctx.restore();
+    ctx.fillStyle = '#c4505a'; ctx.beginPath(); ctx.ellipse(w * 0.7, cy, w * 0.06, h * 0.16, 0, 0, 7); ctx.fill();
+    eye(ctx, w * 0.7, cy - h * 0.03, h * 0.1);
+  };
+  // Silver hatchetfish: a tiny, deep, flat-sided body like a hatchet blade, mirror-silver, with big upward eyes and light organs on the belly.
+  species.hatchetfish = function (ctx, w, h) {
+    var cy = h * 0.42;
+    ctx.beginPath(); ctx.moveTo(w * 0.2, cy); ctx.lineTo(w * 0.02, cy - h * 0.18); ctx.lineTo(w * 0.04, cy + h * 0.16); ctx.closePath(); finFill(ctx, '#9eb2c4', 0.85);
+    ctx.beginPath(); ctx.moveTo(w * 0.18, cy - h * 0.06); ctx.lineTo(w * 0.86, cy - h * 0.2); ctx.quadraticCurveTo(w * 1.0, cy - h * 0.1, w * 0.92, cy + h * 0.08);
+    ctx.quadraticCurveTo(w * 0.72, cy + h * 0.56, w * 0.42, cy + h * 0.5); ctx.quadraticCurveTo(w * 0.24, cy + h * 0.3, w * 0.18, cy + h * 0.08); ctx.closePath();
+    ctx.fillStyle = lin(ctx, w * 0.2, cy - h * 0.2, w * 0.8, cy + h * 0.5, [[0, '#7d8fa4'], [0.35, '#e6eef6'], [0.6, '#b8c8d8'], [1, '#f4f8fc']]); ctx.fill();
+    ctx.fillStyle = '#7ff3ff'; for (var i = 0; i < 7; i++) { ctx.beginPath(); ctx.arc(w * (0.36 + i * 0.07), cy + h * (0.42 - Math.abs(i - 3) * 0.03), h * 0.03, 0, 7); ctx.fill(); }
+    eye(ctx, w * 0.8, cy - h * 0.06, h * 0.12);
+  };
+  // Barreleye: a see-through dome on its head, with two green tube eyes inside that point up.
+  species.barreleye = function (ctx, w, h) {
+    var cy = h * 0.6;
+    ctx.beginPath(); ctx.moveTo(w * 0.16, cy); ctx.lineTo(w * 0.0, cy - h * 0.18); ctx.lineTo(w * 0.02, cy + h * 0.16); ctx.closePath(); finFill(ctx, '#5a4a40', 0.9);
+    ctx.beginPath(); ctx.moveTo(w * 0.14, cy); ctx.bezierCurveTo(w * 0.3, cy - h * 0.2, w * 0.7, cy - h * 0.22, w * 0.94, cy - h * 0.06); ctx.quadraticCurveTo(w * 0.98, cy + h * 0.08, w * 0.86, cy + h * 0.14); ctx.bezierCurveTo(w * 0.6, cy + h * 0.24, w * 0.3, cy + h * 0.18, w * 0.14, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.22, 0, cy + h * 0.2, [[0, '#4a3c34'], [0.6, '#7a6658'], [1, '#a89080']]); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(w * 0.74, cy - h * 0.24, w * 0.2, h * 0.3, 0, Math.PI, 0); ctx.closePath();   // the clear dome
+    ctx.fillStyle = 'rgba(190,240,255,0.22)'; ctx.fill(); ctx.strokeStyle = 'rgba(220,250,255,0.8)'; ctx.lineWidth = 1.4; ctx.stroke();
+    [0.68, 0.8].forEach(function (ex) { ctx.fillStyle = '#3fd36a'; ctx.beginPath(); ctx.ellipse(w * ex, cy - h * 0.34, w * 0.03, h * 0.12, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#d6ffe0'; ctx.beginPath(); ctx.arc(w * ex, cy - h * 0.43, h * 0.03, 0, 7); ctx.fill(); });
+    ctx.fillStyle = '#1a1410'; ctx.beginPath(); ctx.arc(w * 0.93, cy - h * 0.02, h * 0.03, 0, 7); ctx.fill();   // nostril (looks like an eye)
+  };
+  // Vampire squid: dark red-black, a cloak of webbing between its arms, two ear-like fins and big blue eyes.
+  species.vampsquid = function (ctx, w, h) {
+    var cx = w * 0.46, cy = h * 0.5;
+    ctx.beginPath(); ctx.moveTo(w * 0.5, cy - h * 0.2); ctx.bezierCurveTo(w * 0.8, cy - h * 0.46, w * 1.0, cy - h * 0.1, w * 0.98, cy); ctx.bezierCurveTo(w * 1.0, cy + h * 0.1, w * 0.8, cy + h * 0.46, w * 0.5, cy + h * 0.2); ctx.closePath();
+    ctx.fillStyle = lin(ctx, w * 0.5, 0, w, 0, [[0, '#4a0d1c'], [1, '#2a0610']]); ctx.fill();   // webbed arm cloak, flared forward
+    ctx.strokeStyle = 'rgba(240,220,230,0.6)'; ctx.lineWidth = 1; for (var i = 0; i < 6; i++) { ctx.beginPath(); ctx.moveTo(w * 0.6, cy); ctx.lineTo(w * 0.96, cy + (i - 2.5) * h * 0.13); ctx.stroke(); }
+    ctx.beginPath(); ctx.ellipse(cx, cy, w * 0.26, h * 0.26, 0, 0, 7); ctx.fillStyle = rad(ctx, cx - w * 0.06, cy - h * 0.08, 2, w * 0.3, [[0, '#9a2a3c'], [1, '#4e0e1e']]); ctx.fill();
+    ctx.fillStyle = '#7a1e30'; ctx.beginPath(); ctx.ellipse(w * 0.22, cy - h * 0.2, w * 0.1, h * 0.06, -0.6, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(w * 0.22, cy + h * 0.2, w * 0.1, h * 0.06, 0.6, 0, 7); ctx.fill();
+    ctx.fillStyle = '#5fd8ff'; ctx.beginPath(); ctx.arc(w * 0.62, cy - h * 0.04, h * 0.06, 0, 7); ctx.fill();
+    eye(ctx, w * 0.6, cy - h * 0.06, h * 0.08);
+  };
+  // Ocean sunfish (young): tall, flat, almost no tail, long dorsal and anal fins.
+  species.sunfish = function (ctx, w, h) {
+    var cx = w * 0.5, cy = h * 0.5;
+    ctx.beginPath(); ctx.moveTo(w * 0.42, cy - h * 0.2); ctx.lineTo(w * 0.36, cy - h * 0.5); ctx.lineTo(w * 0.52, cy - h * 0.24); finFill(ctx, '#7f8c98', 0.95);
+    ctx.beginPath(); ctx.moveTo(w * 0.42, cy + h * 0.2); ctx.lineTo(w * 0.36, cy + h * 0.5); ctx.lineTo(w * 0.52, cy + h * 0.24); finFill(ctx, '#7f8c98', 0.95);
+    ctx.beginPath(); ctx.ellipse(cx, cy, w * 0.38, h * 0.32, 0, 0, 7);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.32, 0, cy + h * 0.32, [[0, '#7a8896'], [0.5, '#b6c2cc'], [1, '#e2e8ec']]); ctx.fill();
+    ctx.fillStyle = '#8c98a4'; ctx.beginPath(); ctx.moveTo(w * 0.14, cy - h * 0.2); ctx.quadraticCurveTo(w * 0.06, cy, w * 0.14, cy + h * 0.2); ctx.fill();   // clavus, the stubby rudder
+    eye(ctx, w * 0.76, cy - h * 0.06, h * 0.07);
+  };
+  // Pacific hake: a long, slim, silver-grey fish with a big mouth and two dorsal fins.
+  species.hake = function (ctx, w, h) {
+    var cy = h * 0.55;
+    ctx.beginPath(); ctx.moveTo(w * 0.12, cy); ctx.lineTo(w * 0.0, cy - h * 0.22); ctx.lineTo(w * 0.02, cy + h * 0.22); ctx.closePath(); finFill(ctx, '#7a8894', 0.9);
+    ctx.beginPath(); ctx.moveTo(w * 0.6, cy - h * 0.2); ctx.lineTo(w * 0.56, cy - h * 0.46); ctx.lineTo(w * 0.5, cy - h * 0.2); finFill(ctx, '#6e7c88', 0.95);
+    ctx.beginPath(); ctx.moveTo(w * 0.46, cy - h * 0.2); ctx.lineTo(w * 0.42, cy - h * 0.34); ctx.lineTo(w * 0.14, cy - h * 0.12); finFill(ctx, '#6e7c88', 0.9);
+    ctx.beginPath(); ctx.moveTo(w * 0.1, cy); ctx.bezierCurveTo(w * 0.3, cy - h * 0.26, w * 0.78, cy - h * 0.3, w * 0.98, cy - h * 0.04); ctx.lineTo(w * 0.9, cy + h * 0.1); ctx.bezierCurveTo(w * 0.7, cy + h * 0.28, w * 0.3, cy + h * 0.2, w * 0.1, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.3, 0, cy + h * 0.26, [[0, '#5d6c7a'], [0.55, '#b8c4ce'], [1, '#eef2f5']]); ctx.fill();
+    eye(ctx, w * 0.86, cy - h * 0.08, h * 0.08);
+  };
+  // Glass squid: almost completely see-through, a round body with a few dark spots and short arms.
+  species.glasssquid = function (ctx, w, h) {
+    var cy = h * 0.5;
+    ctx.strokeStyle = 'rgba(210,240,255,0.7)'; ctx.lineWidth = 2; for (var a = 0; a < 4; a++) { ctx.beginPath(); ctx.moveTo(w * 0.72, cy); ctx.lineTo(w * 0.98, cy + (a - 1.5) * h * 0.1); ctx.stroke(); }
+    ctx.beginPath(); ctx.ellipse(w * 0.42, cy, w * 0.34, h * 0.36, 0, 0, 7); ctx.fillStyle = 'rgba(190,235,255,0.35)'; ctx.fill(); ctx.strokeStyle = 'rgba(230,250,255,0.9)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.fillStyle = 'rgba(180,80,60,0.6)'; [[0.3, -0.1], [0.42, 0.12], [0.52, -0.04], [0.24, 0.1]].forEach(function (d) { ctx.beginPath(); ctx.arc(w * d[0], cy + h * d[1], h * 0.04, 0, 7); ctx.fill(); });
+    ctx.fillStyle = 'rgba(120,160,180,0.6)'; ctx.beginPath(); ctx.ellipse(w * 0.45, cy, w * 0.1, h * 0.12, 0, 0, 7); ctx.fill();   // gut
+    eye(ctx, w * 0.72, cy - h * 0.08, h * 0.08);
+  };
+  // Cuvier's beaked whale: rounded grey-brown body, small goose-like beak, pale head and many scars.
+  species.beakedwhale = function (ctx, w, h) {
+    var cy = h * 0.52;
+    ctx.beginPath(); ctx.moveTo(w * 0.1, cy); ctx.quadraticCurveTo(w * 0.04, cy - h * 0.3, w * 0.0, cy - h * 0.28); ctx.quadraticCurveTo(w * 0.05, cy, w * 0.0, cy + h * 0.28); ctx.quadraticCurveTo(w * 0.04, cy + h * 0.3, w * 0.1, cy); finFill(ctx, '#5a554f', 0.97);
+    ctx.beginPath(); ctx.moveTo(w * 0.36, cy - h * 0.22); ctx.lineTo(w * 0.3, cy - h * 0.38); ctx.lineTo(w * 0.26, cy - h * 0.22); ctx.closePath(); ctx.fillStyle = '#5c5650'; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(w * 0.08, cy);
+    ctx.bezierCurveTo(w * 0.3, cy - h * 0.3, w * 0.76, cy - h * 0.34, w * 0.92, cy - h * 0.12);
+    ctx.quadraticCurveTo(w * 0.98, cy - h * 0.04, w * 1.0, cy + h * 0.02);
+    ctx.quadraticCurveTo(w * 0.94, cy + h * 0.1, w * 0.88, cy + h * 0.12);
+    ctx.bezierCurveTo(w * 0.7, cy + h * 0.3, w * 0.3, cy + h * 0.24, w * 0.08, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.34, 0, cy + h * 0.26, [[0, '#5e5852'], [0.55, '#8c847a'], [1, '#c4bcb0']]); ctx.fill();
+    ctx.save(); ctx.clip();
+    ctx.fillStyle = rad(ctx, w * 0.9, cy - h * 0.04, 2, w * 0.16, [[0, 'rgba(236,228,214,0.95)'], [1, 'rgba(236,228,214,0)']]); ctx.fillRect(0, 0, w, h);
+    var r = rng(17); ctx.strokeStyle = 'rgba(240,236,228,0.7)'; ctx.lineWidth = 1; for (var i = 0; i < 18; i++) { var x = w * (0.2 + r() * 0.6), y = cy - h * (0.2 - r() * 0.35); ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 16, y + (r() - 0.5) * 4); ctx.stroke(); }
+    ctx.restore();
+    eye(ctx, w * 0.84, cy - h * 0.02, h * 0.04);
+  };
+
+  // ---------- bait fish, one kind per world (the rescued schools and the background schools) ----------
+  // A slim little fish; `st` sets its colours and markings.
+  function baitFish(ctx, w, h, st) {
+    var cy = h / 2;
+    ctx.beginPath(); ctx.moveTo(w * 0.18, cy); ctx.lineTo(w * 0.02, cy - h * 0.32); ctx.lineTo(w * 0.07, cy); ctx.lineTo(w * 0.02, cy + h * 0.32); ctx.closePath(); finFill(ctx, st.tail, 0.9);
+    ctx.beginPath(); ctx.moveTo(w * 0.16, cy); ctx.bezierCurveTo(w * 0.3, cy - h * st.depth, w * 0.8, cy - h * st.depth, w * 0.98, cy);
+    ctx.bezierCurveTo(w * 0.8, cy + h * st.depth * 0.9, w * 0.3, cy + h * st.depth * 0.85, w * 0.16, cy);
+    ctx.fillStyle = lin(ctx, 0, cy - h * 0.3, 0, cy + h * 0.3, [[0, st.back], [0.45, st.mid], [0.6, st.belly], [1, st.belly]]); ctx.fill();
+    ctx.save(); ctx.clip();
+    if (st.stripe) { ctx.fillStyle = st.stripe; ctx.fillRect(w * 0.18, cy - h * 0.04, w * 0.72, h * 0.08); }
+    if (st.lines) { ctx.fillStyle = st.lines; for (var i = -2; i <= 2; i++) ctx.fillRect(w * 0.2, cy + i * h * 0.1 - h * 0.018, w * 0.7, h * 0.036); }
+    if (st.dots) { ctx.fillStyle = st.dots; for (var d = 0; d < 6; d++) { ctx.beginPath(); ctx.arc(w * (0.3 + d * 0.1), cy + h * 0.16, h * 0.045, 0, 7); ctx.fill(); } }
+    ctx.restore();
+    eye(ctx, w * 0.86, cy - h * 0.04, h * (st.eye || 0.09));
+  }
+  var BAIT = {
+    // Hardhead silverside (Florida Keys): see-through greenish body with a bright silver stripe.
+    silverside: { back: '#6f9a86', mid: '#a9c9b8', belly: '#e9f3ee', tail: '#8fb3a2', stripe: 'rgba(240,250,255,0.95)', depth: 0.26 },
+    // Fusilier (Great Barrier Reef): blue back, pale belly, yellow tail.
+    fusilier: { back: '#2f6fc0', mid: '#5b9ae0', belly: '#eaf2fb', tail: '#ffd23c', stripe: 'rgba(255,214,70,0.9)', depth: 0.3 },
+    // Black-striped salema (Galápagos): silver-gold with dark stripes along the body.
+    salema: { back: '#8c8a6a', mid: '#d8cf9a', belly: '#f6f0d8', tail: '#c9b870', lines: 'rgba(30,30,30,0.8)', depth: 0.32 },
+    // Northern anchovy (Monterey Bay): blue-green back, silver sides.
+    anchovy: { back: '#2f6a73', mid: '#7fb0b4', belly: '#eef6f6', tail: '#6c9aa0', stripe: 'rgba(225,238,240,0.8)', depth: 0.24 },
+    // Lanternfish (twilight zone): dark body with rows of glowing light organs (photophores) and big eyes.
+    // Bristlemouth: tiny, slim, dark, with a row of light organs; maybe the most numerous vertebrate on Earth.
+    bristlemouth: { back: '#20262e', mid: '#3a4452', belly: '#5e6a7a', tail: '#2a323e', dots: '#9fe8ff', depth: 0.2, eye: 0.08 },
+    lanternfish: { back: '#1c2430', mid: '#46546a', belly: '#8492a8', tail: '#2c3646', dots: '#7ff3ff', depth: 0.3, eye: 0.14 }
+  };
+  Object.keys(BAIT).forEach(function (id) {
+    species[id] = function (ctx, w, h) { baitFish(ctx, w, h, BAIT[id]); };
+    species['school_' + id] = function (ctx, w, h) {
+      var r = rng(5);
+      for (var i = 0; i < 9; i++) {
+        var fw = w * 0.42, fh = h * 0.16, x = r() * (w - fw), y = r() * (h - fh);
+        ctx.save(); ctx.translate(x + fw / 2, y + fh / 2); ctx.rotate((r() - 0.5) * 0.6); ctx.translate(-fw / 2, -fh / 2);
+        baitFish(ctx, fw, fh, BAIT[id]); ctx.restore();
+      }
+    };
+  });
+
   // Lionfish (invasive in Florida): red-brown and white vertical stripes, long fan pectorals, spines.
   species.lionfish = function (ctx, w, h) {
     var cy = h * 0.55;
@@ -1339,7 +1490,7 @@ TT.Art = (function () {
 
   // Swim animation: how far the tail end bends, as a share of body height (0 = no animation).
   var WIGGLE = { tang: 0.08, flyingfish: 0.09, puffer: 0.06, puffer_inflated: 0, pistolshrimp: 0.05, loggerhead: 0.035, swordfish: 0.1,
-    hammerhead: 0.11, manatee: 0.04, sheepshead: 0.07, reddrum: 0.09, sealion: 0.05, iguana: 0.1, penguin: 0.03, bullhead: 0.09, whaleshark: 0.05, archerfish: 0.08, parrotfish: 0.07, wrasse: 0.12, triton: 0, mantis: 0.06, nautilus: 0, manta: 0.05, cots: 0, clownfish: 0.09, otter: 0.05, leopardshark: 0.1, octopus: 0.04, sunstar: 0, batray: 0.05, eseal: 0.05, humpback: 0.04, greencrab: 0, purpleurchin: 0, rockfish: 0.08, sawfish: 0.07, hatchling: 0.07, seahorse: 0.03, smallfish: 0.16, fishschool: 0, lionfish: 0.06 };
+    hammerhead: 0.11, manatee: 0.04, sheepshead: 0.07, reddrum: 0.09, sealion: 0.05, iguana: 0.1, penguin: 0.03, bullhead: 0.09, whaleshark: 0.05, archerfish: 0.08, parrotfish: 0.07, wrasse: 0.12, triton: 0, mantis: 0.06, nautilus: 0, manta: 0.05, cots: 0, clownfish: 0.09, otter: 0.05, leopardshark: 0.1, octopus: 0.04, sunstar: 0, batray: 0.05, eseal: 0.05, humpback: 0.04, greencrab: 0, purpleurchin: 0, rockfish: 0.08, sawfish: 0.07, hatchling: 0.07, seahorse: 0.03, smallfish: 0.16, fishschool: 0, risso: 0.05, humboldt: 0.04, hatchetfish: 0.05, barreleye: 0.07, vampsquid: 0.03, sunfish: 0.03, hake: 0.1, glasssquid: 0.03, beakedwhale: 0.04, silverside: 0.16, fusilier: 0.16, salema: 0.16, anchovy: 0.16, lanternfish: 0.16, bristlemouth: 0.16, school_bristlemouth: 0, school_silverside: 0, school_fusilier: 0, school_salema: 0, school_anchovy: 0, school_lanternfish: 0, lionfish: 0.06 };
   var SWIM_FRAMES = 8;
   // Bake a looping swim cycle from one picture: slice it into thin columns and bend them in a travelling wave
   // that is still at the head (right) and widest at the tail (left). Works in WebGL and Canvas alike.
@@ -1366,7 +1517,10 @@ TT.Art = (function () {
   var SPECIES_SIZE = {
     tang: [64, 52], flyingfish: [72, 46], puffer: [62, 44], puffer_inflated: [120, 120], pistolshrimp: [58, 40],
     loggerhead: [84, 62], swordfish: [110, 40], hammerhead: [100, 46], hatchling: [34, 22], seahorse: [24, 44],
-    smallfish: [26, 10], fishschool: [70, 50], lionfish: [72, 56],
+    smallfish: [26, 10], fishschool: [70, 50],
+    risso: [100, 40], humboldt: [96, 40], hatchetfish: [44, 40], barreleye: [64, 40], vampsquid: [64, 50], sunfish: [64, 70], hake: [70, 24], glasssquid: [48, 40], beakedwhale: [300, 90],
+    silverside: [26, 9], fusilier: [26, 10], salema: [26, 10], anchovy: [26, 8], lanternfish: [52, 20], bristlemouth: [26, 7],
+    school_silverside: [70, 50], school_fusilier: [70, 50], school_salema: [70, 50], school_anchovy: [70, 50], school_lanternfish: [70, 50], school_bristlemouth: [70, 50], lionfish: [72, 56],
     manatee: [100, 52], sawfish: [170, 40], sheepshead: [66, 48], reddrum: [84, 32],
     sealion: [96, 44], iguana: [100, 36], penguin: [62, 38], bullhead: [86, 36], whaleshark: [260, 76],
     archerfish: [64, 40], parrotfish: [70, 48], wrasse: [56, 22], triton: [74, 50], mantis: [70, 36], nautilus: [64, 46], manta: [210, 120], cots: [76, 50], clownfish: [40, 26],
@@ -1388,7 +1542,7 @@ TT.Art = (function () {
         // the base picture has spare rows above and below so the swim frames have room to bend
         canvas(scene, key, w, h + pad * 2, function (ctx, cw, ch) {
           ctx.save(); ctx.translate(0, pad); species[id](ctx, w, h); ctx.restore();
-          stylize(ctx, cw, ch, { outline: id === 'fishschool' || id === 'smallfish' ? 2 : 3.5 });
+          stylize(ctx, cw, ch, { outline: id === 'fishschool' || id === 'smallfish' || BAIT[id] || id.indexOf('school_') === 0 ? 2 : 3.5 });
         });
         if (amp > 0) bakeSwim(scene, id, key, amp);
       });
@@ -1406,6 +1560,10 @@ TT.Art = (function () {
         ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.arc(w / 2 + 3, w / 2 + 4, 24, 0, 7); ctx.fill();
         ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.beginPath(); ctx.arc(w / 2, w / 2, 22, 0, 7); ctx.fill();
         ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(w / 2, w / 2, 38, 0, 7); ctx.stroke();
+      });
+      canvas(scene, 'marinesnow', 140, 140, function (ctx, w, h) {
+        ctx.fillStyle = lin(ctx, 0, 0, 0, h, [[0, '#14345a'], [1, '#040c1c']]); ctx.fillRect(0, 0, w, h);
+        var r = rng(3); for (var i = 0; i < 70; i++) { ctx.fillStyle = 'rgba(230,240,250,' + (0.4 + r() * 0.5) + ')'; ctx.beginPath(); ctx.ellipse(r() * w, r() * h, 1 + r() * 2.5, 1 + r() * 1.5, r() * 3, 0, 7); ctx.fill(); }
       });
       canvas(scene, 'giantkelp', 80, 520, function (ctx, w, h) { drawGiantKelp(ctx, w, h, rng(5)); stylize(ctx, w, h, { sat: 1.2, outline: 1.5 }); });
       canvas(scene, 'seagrass', 60, 96, function (ctx, w, h) { drawSeagrass(ctx, w, h); stylize(ctx, w, h, { sat: 1.3, outline: 1.5 }); });
